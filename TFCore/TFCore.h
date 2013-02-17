@@ -35,5 +35,6 @@ namespace TFCore
 		HWND   m_hMainWnd;
 		size_t m_nClientWidth;
 		size_t m_nClientHeight;
+		bool   m_bResizing;
 	};
 }

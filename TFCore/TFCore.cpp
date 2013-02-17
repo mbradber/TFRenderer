@@ -25,7 +25,8 @@ namespace TFCore
 		 m_nMsaaQuality(0),
 		 m_bEnable4xMsaa(false),
 		 m_nClientWidth(1024),
-		 m_nClientHeight(768)
+		 m_nClientHeight(768),
+		 m_bResizing(false)
 	{
 		g_TFWinBase = this;
 	}
@@ -34,7 +35,10 @@ namespace TFCore
 	{
 		g_TFWinBase = NULL;
 
-		m_pd3dImmDeviceContext->ClearState();
+		if(m_pd3dImmDeviceContext)
+		{
+			m_pd3dImmDeviceContext->ClearState();
+		}
 
 		ReleaseCOM(m_pd3dDevice);
 		ReleaseCOM(m_pd3dImmDeviceContext);
@@ -54,12 +58,26 @@ namespace TFCore
 		case WM_SIZE:
 			m_nClientWidth  = LOWORD(lParam);
 			m_nClientHeight = HIWORD(lParam);
-			if(wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED)
+			if(m_pd3dDevice)
 			{
-				OnResize();
+				if(wParam == SIZE_MAXIMIZED)
+				{
+					OnResize();
+				}
+				else if(wParam == SIZE_RESTORED)
+				{
+					if(!m_bResizing)
+					{
+						OnResize();
+					}
+				}
 			}
 			return 0;
+		case WM_ENTERSIZEMOVE:
+			m_bResizing = true;
+			return 0;
 		case WM_EXITSIZEMOVE:
+			m_bResizing = false;
 			OnResize();
 			return 0;
 		case WM_KEYDOWN:
