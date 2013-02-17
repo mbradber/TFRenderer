@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TFCore", "TFCore\TFCore.vcxproj", "{A579FCC6-46CB-436D-AB08-06BA3915275C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{538B11B2-FF9D-4DB0-82BD-4DA4C2BC2CCC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{538B11B2-FF9D-4DB0-82BD-4DA4C2BC2CCC}.Debug|Win32.Build.0 = Debug|Win32
+		{538B11B2-FF9D-4DB0-82BD-4DA4C2BC2CCC}.Release|Win32.ActiveCfg = Release|Win32
+		{538B11B2-FF9D-4DB0-82BD-4DA4C2BC2CCC}.Release|Win32.Build.0 = Release|Win32
+		{A579FCC6-46CB-436D-AB08-06BA3915275C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A579FCC6-46CB-436D-AB08-06BA3915275C}.Debug|Win32.Build.0 = Debug|Win32
+		{A579FCC6-46CB-436D-AB08-06BA3915275C}.Release|Win32.ActiveCfg = Release|Win32
+		{A579FCC6-46CB-436D-AB08-06BA3915275C}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
