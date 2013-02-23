@@ -1,10 +1,12 @@
-#include "TFCore.h"
+#include "TFDriver.h"
+
+
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, 
     LPSTR lpCmdLine, int nCmdShow)
 {
-	TFCore::TFWinBase _tfApp;
+	TFApplication _tfApp;
 	_tfApp.InitWindowsApp(hInstance, nCmdShow);
 	_tfApp.InitD3D();
 

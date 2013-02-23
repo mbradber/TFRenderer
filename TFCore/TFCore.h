@@ -19,7 +19,7 @@ namespace TFCore
 		virtual void    UpdateScene(float a_fDelta);
 		virtual void    RenderScene();
 
-	private:
+	protected:
 		ID3D11Device*           m_pd3dDevice;
 		ID3D11DeviceContext*    m_pd3dImmDeviceContext;
 		IDXGISwapChain*         m_pSwapChain;

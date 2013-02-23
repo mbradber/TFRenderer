@@ -24,9 +24,21 @@
     <ClInclude Include="TFUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TFCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TFMath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TFVertices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TFCore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TFCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

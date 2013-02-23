@@ -94,10 +94,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TFCore.h" />
+    <ClInclude Include="TFCube.h" />
+    <ClInclude Include="TFMath.h" />
     <ClInclude Include="TFUtils.h" />
+    <ClInclude Include="TFVertices.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TFCore.cpp" />
+    <ClCompile Include="TFCube.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
