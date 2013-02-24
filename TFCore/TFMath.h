@@ -1,8 +1,6 @@
-#include <xnamath.h>
+#pragma once
 
-typedef XMFLOAT3 tfFloat3;
-typedef XMFLOAT4 tfFloat4;
-typedef XMMATRIX tfMatrix;
+
 
 
 
