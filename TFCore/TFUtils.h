@@ -4,6 +4,11 @@
 #include <Windows.h>
 #include <D3DX11.h>
 #include <DxErr.h>
+#include <tchar.h>
+
+//---------------------------------------------------------------------------------------
+// Simple assertion for TreeFrog Engine
+//---------------------------------------------------------------------------------------
 
 #define LINE_NO   __LINE__
 #define FILE_NAME __FILE__
@@ -55,3 +60,24 @@ inline void TF_ASSERT(bool a_bCondition, char* a_cbFileName, size_t a_nLineNum)
 //---------------------------------------------------------------------------------------
 
 #define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
+
+//---------------------------------------------------------------------------------------
+// HRESULT interpreter from MSDN
+//---------------------------------------------------------------------------------------
+
+inline void TFErrorDescription(HRESULT hr) 
+{ 
+     if(FACILITY_WINDOWS == HRESULT_FACILITY(hr)) 
+         hr = HRESULT_CODE(hr); 
+     TCHAR* szErrMsg; 
+
+     if(FormatMessage( 
+       FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM, 
+       NULL, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), 
+       (LPTSTR)&szErrMsg, 0, NULL) != 0) 
+     { 
+		 OutputDebugString(szErrMsg);
+         LocalFree(szErrMsg); 
+     } else 
+		OutputDebugString(L"[Could not find a description for error.]");
+}

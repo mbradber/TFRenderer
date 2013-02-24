@@ -17,7 +17,7 @@ namespace TFCore
 
 	TFShaderManager::~TFShaderManager()
 	{
-
+		//TODO: Clean up COM objects when they are decided upon
 	}
 
 	void TFShaderManager::Init(ID3D11Device* a_pd3dDevice)
@@ -44,6 +44,8 @@ namespace TFCore
 			{
 				OutputDebugStringA((char*)_pErrorBlob->GetBufferPointer());
 			}
+
+			HR(_hr);
 		}
 
 		ReleaseCOM(_pErrorBlob);
@@ -53,7 +55,7 @@ namespace TFCore
 	{
 		// Generate compiled object
 		ID3DBlob* _pVSBlob = NULL;
-		CompileShaderFromFile(L"SimplePosCol.hlsl", "VS", "vs_4_0", &_pVSBlob);
+		CompileShaderFromFile(L"SimplePosCol.fx", "VS", "vs_4_0", &_pVSBlob);
 
 		// Create vertex shader from compiled object
 		HR(m_pd3dDevice->CreateVertexShader(_pVSBlob->GetBufferPointer(), _pVSBlob->GetBufferSize(), NULL, &m_pVertexShader));

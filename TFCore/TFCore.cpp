@@ -328,7 +328,7 @@ namespace TFCore
 		// Just clear the backbuffer
 		float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
 		m_pd3dImmDeviceContext->ClearRenderTargetView( m_pRenderTargetView, ClearColor );
-		m_pSwapChain->Present( 0, 0 );
+		//m_pSwapChain->Present( 0, 0 );
 	}
 
 

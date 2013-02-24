@@ -24,6 +24,9 @@ namespace TFCore
 		void GenerateDefaultPosColVertexShader();
 		void GenerateDefaultPosColPixelShader();
 		void GenerateDefaultPosColWVPBuffer();
+		inline ID3D11Buffer* GetWVPBuffer() { return m_pConstantBuffer; }
+		inline ID3D11VertexShader* GetActiveVertexShader() { return m_pVertexShader; }
+		inline ID3D11PixelShader* GetActivePixelShader()  { return m_pPixelShader;  }
 
 	private:
 		ID3D11Device*        m_pd3dDevice;

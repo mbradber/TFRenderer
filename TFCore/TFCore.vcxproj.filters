@@ -55,7 +55,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="SimplePosCol.hlsl">
+    <FxCompile Include="SimplePosCol.fx">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
