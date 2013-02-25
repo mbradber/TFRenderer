@@ -325,9 +325,10 @@ namespace TFCore
 
 	void TFWinBase::RenderScene()
 	{
-		// Just clear the backbuffer
+		// Just clear the backbuffer and depth stencil view
 		float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
 		m_pd3dImmDeviceContext->ClearRenderTargetView( m_pRenderTargetView, ClearColor );
+		m_pd3dImmDeviceContext->ClearDepthStencilView( m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 		//m_pSwapChain->Present( 0, 0 );
 	}
 

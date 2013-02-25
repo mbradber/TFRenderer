@@ -11,7 +11,7 @@ cbuffer ConstantBuffer : register( b0 )
 {
 	matrix World;
 	matrix View;
-	matrix Projection;
+	matrix Projection; 
 }
 
 //--------------------------------------------------------------------------------------
@@ -42,3 +42,12 @@ float4 PS( VS_OUTPUT input ) : SV_Target
 {
     return input.Color;
 }
+
+//technique11 SimpleShader
+//{
+//	pass P0
+//	{
+//		SetVertexShader(CompileShader(vs_4_0, VS()));
+//		SetPixelShader(CompileShader(vs_4_0, PS()));
+//	}
+//}

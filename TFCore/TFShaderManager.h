@@ -19,7 +19,7 @@ namespace TFCore
 		TFShaderManager(void);
 		~TFShaderManager(void);
 
-		void Init(ID3D11Device* a_pd3dDevice);
+		void Init(ID3D11Device* a_pd3dDevice, ID3D11DeviceContext* a_pDeviceContext);
 		void CompileShaderFromFile(WCHAR* a_cbFileName, LPCSTR a_pEntryPoint, LPCSTR a_pShaderModel, ID3DBlob** a_ppBlobOut);
 		void GenerateDefaultPosColVertexShader();
 		void GenerateDefaultPosColPixelShader();
@@ -35,6 +35,7 @@ namespace TFCore
 		ID3D11PixelShader*   m_pPixelShader;
 		ID3D11InputLayout*   m_pInputLayout;
 		ID3D11Buffer*        m_pConstantBuffer;
+		WCHAR*               m_cbDefaultPosColShaderPath;
 	};
 
 }

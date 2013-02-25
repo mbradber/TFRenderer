@@ -7,7 +7,7 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	InitD3D();
 
 	// Init shader management
-	m_shaderManager.Init(m_pd3dDevice);
+	m_shaderManager.Init(m_pd3dDevice, m_pd3dImmDeviceContext);
 	// The next two calls generate vertex and pixel shaders from a stock shader file
 	// and set the active vertex and pixel shader objects.
 	m_shaderManager.GenerateDefaultPosColVertexShader();
@@ -16,7 +16,7 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	m_shaderManager.GenerateDefaultPosColWVPBuffer();
 
 	// Init geometry
-	m_cube1.Init(m_pd3dDevice, m_pd3dImmDeviceContext, 5.0f);
+	m_cube1.Init(m_pd3dDevice, m_pd3dImmDeviceContext, 1.0f);
 
 	// Set up initial matrices for WVP
 	m_matWorld = TFGetMatrixIdentity();
@@ -42,6 +42,18 @@ void TFApplication::UpdateScene(float a_fDelta)
 void TFApplication::RenderScene()
 {
 	TFCore::TFWinBase::RenderScene();
+
+	// Set wireframe/no cull mode for debug
+	D3D11_RASTERIZER_DESC rd;
+	ZeroMemory(&rd, sizeof(D3D11_RASTERIZER_DESC));
+	rd.FillMode = D3D11_FILL_WIREFRAME;
+	rd.CullMode = D3D11_CULL_NONE;
+	rd.FrontCounterClockwise = false;
+	rd.DepthClipEnable = true;
+
+	ID3D11RasterizerState* _pRasterizerState;
+	m_pd3dDevice->CreateRasterizerState(&rd, &_pRasterizerState);
+	m_pd3dImmDeviceContext->RSSetState(_pRasterizerState);
 
 	// Update WVP constant buffer
 	TFCore::TFBufferWVP cb;

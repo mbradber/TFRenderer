@@ -10,7 +10,8 @@ namespace TFCore
 		:m_pd3dDevice(NULL),
 		 m_pDeviceContext(NULL),
 		 m_pVertexShader(NULL),
-		 m_pInputLayout(NULL)
+		 m_pInputLayout(NULL),
+		 m_cbDefaultPosColShaderPath(L"SimplePosCol.fx")
 	{
 
 	}
@@ -20,9 +21,10 @@ namespace TFCore
 		//TODO: Clean up COM objects when they are decided upon
 	}
 
-	void TFShaderManager::Init(ID3D11Device* a_pd3dDevice)
+	void TFShaderManager::Init(ID3D11Device* a_pd3dDevice, ID3D11DeviceContext* a_pDeviceContext)
 	{
-		m_pd3dDevice = a_pd3dDevice;
+		m_pd3dDevice     = a_pd3dDevice;
+		m_pDeviceContext = a_pDeviceContext;
 	}
 
 	void TFShaderManager::CompileShaderFromFile(WCHAR* a_cbFileName, LPCSTR a_pEntryPoint, LPCSTR a_pShaderModel, ID3DBlob** a_ppBlobOut)
@@ -55,7 +57,7 @@ namespace TFCore
 	{
 		// Generate compiled object
 		ID3DBlob* _pVSBlob = NULL;
-		CompileShaderFromFile(L"SimplePosCol.fx", "VS", "vs_4_0", &_pVSBlob);
+		CompileShaderFromFile(m_cbDefaultPosColShaderPath, "VS", "vs_4_0", &_pVSBlob);
 
 		// Create vertex shader from compiled object
 		HR(m_pd3dDevice->CreateVertexShader(_pVSBlob->GetBufferPointer(), _pVSBlob->GetBufferSize(), NULL, &m_pVertexShader));
@@ -74,7 +76,7 @@ namespace TFCore
 	void TFShaderManager::GenerateDefaultPosColPixelShader()
 	{
 		ID3DBlob* _pPSBlob = NULL;
-		CompileShaderFromFile( L"SimplePosCol.hlsl", "PS", "ps_4_0", &_pPSBlob );
+		CompileShaderFromFile(m_cbDefaultPosColShaderPath, "PS", "ps_4_0", &_pPSBlob );
 
 		// Create the pixel shader
 		HR(m_pd3dDevice->CreatePixelShader( _pPSBlob->GetBufferPointer(), _pPSBlob->GetBufferSize(), NULL, &m_pPixelShader));
