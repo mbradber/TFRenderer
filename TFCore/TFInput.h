@@ -19,6 +19,8 @@ namespace TFCore
 		int GetMouseDeltaY();
 		bool IsRightPressed();
 		bool IsLeftPressed();
+		bool IsForwardPressed();
+		bool IsBackPressed();
 
 	private:
 		TFInput();

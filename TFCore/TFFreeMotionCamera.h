@@ -13,16 +13,20 @@ namespace TFCore
 
 		void MoveRight(float a_fDelta);
 		void MoveLeft(float a_fDelta);
+		void MoveForward(float a_fDelta);
+		void MoveBack(float a_fDelta);
 		void RotateCameraYaw(float a_fDeltaTime, float a_fDeltaDistance);
 		void RotateCameraPitch(float a_fDeltaTime, float a_fDeltaDistance);
 		XMMATRIX GetView();
 
 	private:
-		XMFLOAT4 m_vEye;
-		XMFLOAT4 m_vAt;
+		XMFLOAT4 m_vPosition;
+		XMFLOAT4 m_vForward;
 		XMFLOAT4 m_vUp;
+		XMFLOAT4 m_vSide;
 
 		const float CAMERA_ROTATION_BUFFER_YAW;
+		const float CAMERA_MOVEMENT_BUFFER;
 	};
 }
 

@@ -23,7 +23,8 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 
 	// Set up initial matrices for WVP
 	m_matWorld = TFGetMatrixIdentity();
-	m_matProj = TFMatrixPerspectiveLH(TF_PIDIV2, m_nClientWidth / static_cast<float>(m_nClientHeight), 0.01f, 100.0f);
+	m_matProj  = TFMatrixPerspectiveLH(TF_PIDIV2, m_nClientWidth / static_cast<float>(m_nClientHeight), 0.01f, 100.0f);
+	m_matView  = XMMatrixLookAtLH(XMVectorSet(-5.0f, 0.0f, -5.0f, 1.0f), XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f), XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
 void TFApplication::Run()
@@ -44,9 +45,17 @@ void TFApplication::UpdateScene(float a_fDelta)
 	{
 		m_fmCamera.MoveLeft(a_fDelta);
 	}
+	if(TFInput::Instance()->IsForwardPressed())
+	{
+		m_fmCamera.MoveForward(a_fDelta);
+	}
+	if(TFInput::Instance()->IsBackPressed())
+	{
+		m_fmCamera.MoveBack(a_fDelta);
+	}
 
 	// Camera updates from mouse (rotations)
-	m_fmCamera.RotateCameraYaw(a_fDelta, TFInput::Instance()->GetMouseDeltaX());
+	m_fmCamera.RotateCameraYaw(a_fDelta, static_cast<float>(TFInput::Instance()->GetMouseDeltaX()));
 
 	// Grab view matrix from the camera
 	m_matView = m_fmCamera.GetView();
@@ -64,9 +73,9 @@ void TFApplication::RenderScene()
 	rd.FrontCounterClockwise = false;
 	rd.DepthClipEnable = true;
 
-	//ID3D11RasterizerState* _pRasterizerState;
-	//m_pd3dDevice->CreateRasterizerState(&rd, &_pRasterizerState);
-	//m_pd3dImmDeviceContext->RSSetState(_pRasterizerState);
+	ID3D11RasterizerState* _pRasterizerState;
+	m_pd3dDevice->CreateRasterizerState(&rd, &_pRasterizerState);
+	m_pd3dImmDeviceContext->RSSetState(_pRasterizerState);
 
 	// Update WVP constant buffer
 	TFCore::TFBufferWVP cb;
@@ -75,9 +84,9 @@ void TFApplication::RenderScene()
 	cb.view       = TFMatrixTranspose(m_matView);
 	cb.projection = TFMatrixTranspose(m_matProj);
 
-	m_pd3dImmDeviceContext->UpdateSubresource(m_shaderManager.GetWVPBuffer(), 0, NULL, &cb, 0, 0);
 	ID3D11Buffer* _pConstantBuffer = m_shaderManager.GetWVPBuffer();
-
+	m_pd3dImmDeviceContext->UpdateSubresource(_pConstantBuffer, 0, NULL, &cb, 0, 0);
+	
 	// Render geometry
 	m_pd3dImmDeviceContext->VSSetShader(m_shaderManager.GetActiveVertexShader(), NULL, 0);
 	m_pd3dImmDeviceContext->PSSetShader(m_shaderManager.GetActivePixelShader(), NULL, 0);

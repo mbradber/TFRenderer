@@ -120,12 +120,22 @@ namespace TFCore
 
 	bool TFInput::IsRightPressed()
 	{
-		return m_aKeyDown[VK_RIGHT];
+		return m_aKeyDown[D_KEY];
 	}
 
 	bool TFInput::IsLeftPressed()
 	{
-		return m_aKeyDown[VK_LEFT];
+		return m_aKeyDown[A_KEY];
+	}
+
+	bool TFInput::IsForwardPressed()
+	{
+		return m_aKeyDown[W_KEY];
+	}
+
+	bool TFInput::IsBackPressed()
+	{
+		return m_aKeyDown[S_KEY];
 	}
 
 }
