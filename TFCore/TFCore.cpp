@@ -79,14 +79,12 @@ namespace TFCore
 			m_bResizing = false;
 			OnResize();
 			return 0;
-		case WM_KEYDOWN:
-			if(wParam == VK_ESCAPE)
-				DestroyWindow(m_hMainWnd);
-			return 0;
 		case WM_DESTROY:
 			PostQuitMessage(0);
 
 		// User input messages
+
+		// Mouse...
 		case WM_MOUSEACTIVATE:
 			TFInput::Instance()->InitializeMouse();
 			return 0;
@@ -98,6 +96,26 @@ namespace TFCore
 			return 0;
 		case WM_MOUSEMOVE:
 			TFInput::Instance()->TrackMouseMove(lParam);
+			return 0;
+		// Keyboard ...
+		case WM_KEYDOWN:
+			if(wParam == VK_ESCAPE)
+				DestroyWindow(m_hMainWnd);
+			else
+			{
+				if ((wParam >= 0) && (wParam <= 255))
+				{
+					TFInput::Instance()->SetKeyDown(wParam);
+				}
+			}
+
+			return 0;
+
+		case WM_KEYUP:
+			if ((wParam >= 0) && (wParam <= 255))
+			{
+				TFInput::Instance()->SetKeyUp(wParam);
+			}
 			return 0;
 		}
 

@@ -12,9 +12,13 @@ namespace TFCore
 		void InitializeMouse();
 		void SetLeftMouseDown(LPARAM lMouseCoords);
 		void SetLeftMouseUp();
+		void SetKeyDown(WPARAM wKeyPress);
+		void SetKeyUp(WPARAM wKeyRelease);
 		void TrackMouseMove(LPARAM lMouseCoords);
 		int GetMouseDeltaX();
 		int GetMouseDeltaY();
+		bool IsRightPressed();
+		bool IsLeftPressed();
 
 	private:
 		TFInput();
@@ -27,6 +31,8 @@ namespace TFCore
 		int m_nOriginalY;
 		int m_nDeltaX;
 		int m_nDeltaY;
+
+		bool m_aKeyDown[256];
 	};
 
 }

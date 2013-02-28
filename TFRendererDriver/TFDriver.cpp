@@ -1,5 +1,8 @@
 #include "TFDriver.h"
 #include "TFMath.h"
+#include "TFInput.h"
+
+using namespace TFCore;
 
 void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 {
@@ -32,11 +35,21 @@ void TFApplication::UpdateScene(float a_fDelta)
 {
 	TFCore::TFWinBase::UpdateScene(a_fDelta);
 
-	tfVector eye = TFVectorSet(0.0f, 1.0f, -5.0f, 0.0f);
-	tfVector at  = TFVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	tfVector up  = TFVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	// Camera updates from keyboard (directional)
+	if(TFInput::Instance()->IsRightPressed())
+	{
+		m_fmCamera.MoveRight(a_fDelta);
+	}
+	if(TFInput::Instance()->IsLeftPressed())
+	{
+		m_fmCamera.MoveLeft(a_fDelta);
+	}
 
-	m_matView = TFMatrixLookAtLH(eye, at, up);
+	// Camera updates from mouse (rotations)
+	m_fmCamera.RotateCameraYaw(a_fDelta, TFInput::Instance()->GetMouseDeltaX());
+
+	// Grab view matrix from the camera
+	m_matView = m_fmCamera.GetView();
 }
 
 void TFApplication::RenderScene()
@@ -51,9 +64,9 @@ void TFApplication::RenderScene()
 	rd.FrontCounterClockwise = false;
 	rd.DepthClipEnable = true;
 
-	ID3D11RasterizerState* _pRasterizerState;
-	m_pd3dDevice->CreateRasterizerState(&rd, &_pRasterizerState);
-	m_pd3dImmDeviceContext->RSSetState(_pRasterizerState);
+	//ID3D11RasterizerState* _pRasterizerState;
+	//m_pd3dDevice->CreateRasterizerState(&rd, &_pRasterizerState);
+	//m_pd3dImmDeviceContext->RSSetState(_pRasterizerState);
 
 	// Update WVP constant buffer
 	TFCore::TFBufferWVP cb;

@@ -1,6 +1,17 @@
 #include "TFInput.h"
 #include <sstream>
 
+#define W_KEY 0x57
+#define A_KEY 0x41
+#define D_KEY 0x44
+#define E_KEY 0x45
+#define F_KEY 0x46
+#define Q_KEY 0x51
+#define S_KEY 0x53
+#define T_KEY 0x54
+#define X_KEY 0x58
+#define Z_KEY 0x5A
+
 namespace TFCore
 {
 	TFInput* TFInput::m_pInstance = NULL;
@@ -12,6 +23,7 @@ namespace TFCore
 		 m_nDeltaX(0),
 		 m_nDeltaY(0)
 	{
+		memset(m_aKeyDown, 0, 256 * sizeof(bool));
 	}
 
 	TFInput* TFInput::Instance()
@@ -72,7 +84,13 @@ namespace TFCore
 	{
 		if(m_bLeftMouseDown)
 		{
-			return m_nDeltaX;
+			// store the delta since last check
+			int _delta    = m_nDeltaX; 
+			// Update the original position to the current position and reset the delta field
+			m_nOriginalX += m_nDeltaX; 
+			m_nDeltaX     = 0;
+
+			return _delta;
 		}
 
 		return 0;
@@ -88,5 +106,26 @@ namespace TFCore
 		return 0;
 	}
 
+	void TFInput::SetKeyDown(WPARAM wKeyPress)
+	{
+		OutputDebugString(L"Key down\n");
+		m_aKeyDown[wKeyPress] = true;
+	}
+
+	void TFInput::SetKeyUp(WPARAM wKeyPress)
+	{
+		OutputDebugStringA("Key up\n");
+		m_aKeyDown[wKeyPress] = false;
+	}
+
+	bool TFInput::IsRightPressed()
+	{
+		return m_aKeyDown[VK_RIGHT];
+	}
+
+	bool TFInput::IsLeftPressed()
+	{
+		return m_aKeyDown[VK_LEFT];
+	}
 
 }
