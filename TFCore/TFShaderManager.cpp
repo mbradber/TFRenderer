@@ -76,7 +76,7 @@ namespace TFCore
 	void TFShaderManager::GenerateDefaultPosColPixelShader()
 	{
 		ID3DBlob* _pPSBlob = NULL;
-		CompileShaderFromFile(m_cbDefaultPosColShaderPath, "PS", "ps_4_0", &_pPSBlob );
+		CompileShaderFromFile(m_cbDefaultPosColShaderPath, "PS", "ps_5_0", &_pPSBlob );
 
 		// Create the pixel shader
 		HR(m_pd3dDevice->CreatePixelShader( _pPSBlob->GetBufferPointer(), _pPSBlob->GetBufferSize(), NULL, &m_pPixelShader));
