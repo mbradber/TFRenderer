@@ -1,7 +1,7 @@
 #pragma once
 
 #include <d3d11.h>
-
+#include "TFShaderManager.h"
 
 namespace TFCore
 {
@@ -36,5 +36,7 @@ namespace TFCore
 		size_t m_nClientWidth;
 		size_t m_nClientHeight;
 		bool   m_bResizing;
+
+		TFShaderManager m_shaderManager;
 	};
 }

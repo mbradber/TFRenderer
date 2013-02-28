@@ -24,5 +24,10 @@ inline tfMatrix TFMatrixLookAtLH(tfVector a_eye, tfVector a_at, tfVector a_up)
 	return XMMatrixLookAtLH(a_eye, a_at, a_up);
 }
 
+inline tfMatrix TFMatrixTranspose(CXMMATRIX a_matSubject)
+{
+	return XMMatrixTranspose(a_matSubject);
+}
+
 
 

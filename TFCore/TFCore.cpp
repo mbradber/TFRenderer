@@ -1,6 +1,7 @@
 
 #include "TFCore.h"
 #include "TFUtils.h"
+#include "TFInput.h"
 
 namespace TFCore
 {
@@ -53,8 +54,6 @@ namespace TFCore
 	{
 		switch(msg)
 		{
-		case WM_LBUTTONDOWN:
-			return 0;
 		case WM_SIZE:
 			m_nClientWidth  = LOWORD(lParam);
 			m_nClientHeight = HIWORD(lParam);
@@ -86,6 +85,19 @@ namespace TFCore
 			return 0;
 		case WM_DESTROY:
 			PostQuitMessage(0);
+
+		// User input messages
+		case WM_MOUSEACTIVATE:
+			TFInput::Instance()->InitializeMouse();
+			return 0;
+		case WM_LBUTTONDOWN:
+			TFInput::Instance()->SetLeftMouseDown(lParam);
+			return 0;
+		case WM_LBUTTONUP:
+			TFInput::Instance()->SetLeftMouseUp();
+			return 0;
+		case WM_MOUSEMOVE:
+			TFInput::Instance()->TrackMouseMove(lParam);
 			return 0;
 		}
 
@@ -142,9 +154,9 @@ namespace TFCore
 	bool TFWinBase::InitD3D()
 	{
 		UINT _createDeviceFlags = 0;
-	#if defined (DEBUG) || defined(_DEBUG)
+#if defined(DEBUG) || defined(_DEBUG)
 		_createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-	#endif
+#endif
 
 		D3D_FEATURE_LEVEL _featureLevel;
 		HRESULT _hr = D3D11CreateDevice(
@@ -329,8 +341,6 @@ namespace TFCore
 		float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
 		m_pd3dImmDeviceContext->ClearRenderTargetView( m_pRenderTargetView, ClearColor );
 		m_pd3dImmDeviceContext->ClearDepthStencilView( m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-		//m_pSwapChain->Present( 0, 0 );
 	}
-
 
 }

@@ -11,6 +11,8 @@ public:
 	void Run();
 	void UpdateScene(float a_fDelta);
 	void RenderScene();
+	void InitStockShaders();
+
 private:
 	TFCore::TFCube m_cube1;
 	TFCore::TFShaderManager m_shaderManager;

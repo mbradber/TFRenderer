@@ -11,7 +11,7 @@ namespace TFCore
 		 m_pDeviceContext(NULL),
 		 m_pVertexShader(NULL),
 		 m_pInputLayout(NULL),
-		 m_cbDefaultPosColShaderPath(L"SimplePosCol.fx")
+		 m_cbDefaultPosColShaderPath(L"SimplePosCol.hlsl")
 	{
 
 	}
@@ -31,9 +31,9 @@ namespace TFCore
 	{
 		DWORD _dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 
-	#if defined( DEBUG ) || defined( _DEBUG )
+#if defined(DEBUG) || defined(_DEBUG)
 		_dwShaderFlags |= D3DCOMPILE_DEBUG;
-	#endif
+#endif
 
 		ID3DBlob* _pErrorBlob = NULL;
 		HRESULT _hr = D3DX11CompileFromFile(a_cbFileName, NULL, NULL, a_pEntryPoint, a_pShaderModel, 
@@ -57,7 +57,7 @@ namespace TFCore
 	{
 		// Generate compiled object
 		ID3DBlob* _pVSBlob = NULL;
-		CompileShaderFromFile(m_cbDefaultPosColShaderPath, "VS", "vs_4_0", &_pVSBlob);
+		CompileShaderFromFile(m_cbDefaultPosColShaderPath, "VS", "vs_5_0", &_pVSBlob);
 
 		// Create vertex shader from compiled object
 		HR(m_pd3dDevice->CreateVertexShader(_pVSBlob->GetBufferPointer(), _pVSBlob->GetBufferSize(), NULL, &m_pVertexShader));

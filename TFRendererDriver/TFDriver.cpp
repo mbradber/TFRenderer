@@ -20,7 +20,7 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 
 	// Set up initial matrices for WVP
 	m_matWorld = TFGetMatrixIdentity();
-	m_matProj = TFMatrixPerspectiveLH(XM_PIDIV2, m_nClientWidth / static_cast<float>(m_nClientHeight), 0.01f, 100.0f);
+	m_matProj = TFMatrixPerspectiveLH(TF_PIDIV2, m_nClientWidth / static_cast<float>(m_nClientHeight), 0.01f, 100.0f);
 }
 
 void TFApplication::Run()
@@ -58,9 +58,9 @@ void TFApplication::RenderScene()
 	// Update WVP constant buffer
 	TFCore::TFBufferWVP cb;
 
-	cb.world      = XMMatrixTranspose(m_matWorld);
-	cb.view       = XMMatrixTranspose(m_matView);
-	cb.projection = XMMatrixTranspose(m_matProj);
+	cb.world      = TFMatrixTranspose(m_matWorld);
+	cb.view       = TFMatrixTranspose(m_matView);
+	cb.projection = TFMatrixTranspose(m_matProj);
 
 	m_pd3dImmDeviceContext->UpdateSubresource(m_shaderManager.GetWVPBuffer(), 0, NULL, &cb, 0, 0);
 	ID3D11Buffer* _pConstantBuffer = m_shaderManager.GetWVPBuffer();
