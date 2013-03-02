@@ -23,8 +23,15 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 
 	// Set up initial matrices for WVP
 	m_matWorld = TFGetMatrixIdentity();
-	m_matProj  = TFMatrixPerspectiveLH(TF_PIDIV2, m_nClientWidth / static_cast<float>(m_nClientHeight), 0.01f, 100.0f);
+	m_matProj  = TFMatrixPerspectiveLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 0.01f, 100.0f);
 	m_matView  = XMMatrixLookAtLH(XMVectorSet(-5.0f, 0.0f, -5.0f, 1.0f), XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f), XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+}
+
+void TFApplication::OnResize()
+{
+	TFWinBase::OnResize();
+	// Rebuild projection matrix on window resize
+	m_matProj = TFMatrixPerspectiveLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 0.01f, 100.0f);
 }
 
 void TFApplication::Run()
@@ -41,7 +48,7 @@ void TFApplication::UpdateScene(float a_fDelta)
 	{
 		m_fmCamera.MoveRight(a_fDelta);
 	}
-	if(TFInput::Instance()->IsLeftPressed())
+	if(TFInput::Instance()->IsLeftPressed())   
 	{
 		m_fmCamera.MoveLeft(a_fDelta);
 	}
@@ -80,9 +87,14 @@ void TFApplication::RenderScene()
 	// Update WVP constant buffer
 	TFCore::TFBufferWVP cb;
 
-	cb.world      = TFMatrixTranspose(m_matWorld);
-	cb.view       = TFMatrixTranspose(m_matView);
-	cb.projection = TFMatrixTranspose(m_matProj);
+	//cb.world      = TFMatrixTranspose(m_matWorld);
+	//cb.view       = TFMatrixTranspose(m_matView);
+	//cb.projection = TFMatrixTranspose(m_matProj);
+
+	XMMATRIX _matWVP = XMMatrixMultiply(m_matWorld, m_matView);
+	_matWVP = XMMatrixMultiply(_matWVP, m_matProj);
+	cb.wvpMatrix = TFMatrixTranspose(_matWVP);
+
 
 	ID3D11Buffer* _pConstantBuffer = m_shaderManager.GetWVPBuffer();
 	m_pd3dImmDeviceContext->UpdateSubresource(_pConstantBuffer, 0, NULL, &cb, 0, 0);

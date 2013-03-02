@@ -43,7 +43,6 @@ namespace TFCore
 
 	void TFInput::InitializeMouse()
 	{
-		OutputDebugString(L"Mouse init\n");
 	}
 
 	void TFInput::SetLeftMouseDown(LPARAM lMouseCoords)
@@ -52,16 +51,11 @@ namespace TFCore
 		m_nOriginalX = _points.x;
 		m_nOriginalY = _points.y;
 
-		std::stringstream _ss;
-		_ss << "Mouse pos clicked at X:" << m_nOriginalX << ", Y:" << m_nOriginalY << std::endl;
-		OutputDebugStringA(_ss.str().c_str());
-
 		m_bLeftMouseDown = true;
 	}
 
 	void TFInput::SetLeftMouseUp()
 	{
-		OutputDebugString(L"Left mouse RELEASED.\n");
 		m_bLeftMouseDown = false;
 	}
 
@@ -72,11 +66,6 @@ namespace TFCore
 			POINTS _points = MAKEPOINTS(lMouseCoords);
 			m_nDeltaX = _points.x - m_nOriginalX;
 			m_nDeltaY = _points.y - m_nOriginalY;
-
-			std::stringstream _ss;
-			_ss << "Mouse delta X:" << m_nDeltaX << ", Y:" << m_nDeltaY << std::endl;
-
-			OutputDebugStringA(_ss.str().c_str());
 		}
 	}
 
@@ -108,13 +97,11 @@ namespace TFCore
 
 	void TFInput::SetKeyDown(WPARAM wKeyPress)
 	{
-		OutputDebugString(L"Key down\n");
 		m_aKeyDown[wKeyPress] = true;
 	}
 
 	void TFInput::SetKeyUp(WPARAM wKeyPress)
 	{
-		OutputDebugStringA("Key up\n");
 		m_aKeyDown[wKeyPress] = false;
 	}
 

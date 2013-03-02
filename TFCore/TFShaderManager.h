@@ -8,9 +8,10 @@ namespace TFCore
 	// Layout of the buffer for world-view-projection matrix
 	struct TFBufferWVP
 	{
-		tfMatrix world;
-		tfMatrix view;
-		tfMatrix projection;
+		//tfMatrix world;
+		//tfMatrix view;
+		//tfMatrix projection;
+		XMMATRIX wvpMatrix;
 	};
 
 	class TFShaderManager

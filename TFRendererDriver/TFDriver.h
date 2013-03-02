@@ -13,6 +13,7 @@ public:
 	void UpdateScene(float a_fDelta);
 	void RenderScene();
 	void InitStockShaders();
+	void OnResize();
 
 private:
 	TFCore::TFCube m_cube1;
