@@ -330,6 +330,9 @@ namespace TFCore
 
 		while(msg.message != WM_QUIT)
 		{
+			m_timer.UpdateTimer();
+			float _fElapsedTime = m_timer.GetElapsedTime();
+
 			if(PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 			{
 				TranslateMessage(&msg);
@@ -342,7 +345,7 @@ namespace TFCore
 			}
 			else
 			{
-				UpdateScene(0.0f);
+				UpdateScene(_fElapsedTime);
 				RenderScene();
 			}
 		}

@@ -113,11 +113,11 @@ namespace TFCore
 		// Set vertex buffer
 		size_t stride = sizeof( TFSimpleVertex );
 		size_t offset = 0;
-		m_pDeviceContext->IASetVertexBuffers( 0, 1, &m_pVertexBuffer, &stride, &offset );
+		m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
 		// Set index buffer
-		m_pDeviceContext->IASetIndexBuffer( m_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0 );
+		m_pDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 		// Set primitive topology
-		m_pDeviceContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+		m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		// Draw self
 		m_pDeviceContext->DrawIndexed(INDEX_COUNT, 0, 0);
 	}

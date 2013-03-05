@@ -45,6 +45,9 @@
     <ClInclude Include="TFFreeMotionCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TFTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TFCore.cpp">
@@ -60,6 +63,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TFFreeMotionCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TFTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

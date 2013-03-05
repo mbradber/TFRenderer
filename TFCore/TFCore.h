@@ -2,6 +2,7 @@
 
 #include <d3d11.h>
 #include "TFShaderManager.h"
+#include "TFTimer.h"
 
 namespace TFCore
 {
@@ -38,5 +39,6 @@ namespace TFCore
 		bool   m_bResizing;
 
 		TFShaderManager m_shaderManager;
+		TFTimer m_timer;
 	};
 }
