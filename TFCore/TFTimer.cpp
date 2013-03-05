@@ -14,7 +14,7 @@ namespace TFCore
 	}
 
 
-	TFTimer::~TFTimer(void)
+	TFTimer::~TFTimer()
 	{
 	}
 
@@ -30,12 +30,12 @@ namespace TFCore
 		m_nElapsedFrameCount = m_nElapsedGameCount - _nCachedGameCount;
 	}
 
-	float TFTimer::GetElapsedTime()
+	float TFTimer::GetElapsedTime() const
 	{
 		return static_cast<float>(m_nElapsedFrameCount) / static_cast<float>(m_nCountsPerSecond);
 	}
 
-	float TFTimer::GetGameTime()
+	float TFTimer::GetGameTime() const
 	{
 		return static_cast<float>(m_nElapsedGameCount) / static_cast<float>(m_nCountsPerSecond);
 	}

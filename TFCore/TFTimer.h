@@ -8,12 +8,12 @@ namespace TFCore
 	class TFTimer
 	{
 	public:
-		TFTimer(void);
-		~TFTimer(void);
+		TFTimer();
+		~TFTimer();
 
 		void UpdateTimer();
-		float GetElapsedTime();
-		float GetGameTime();
+		float GetElapsedTime() const;
+		float GetGameTime()    const;
 
 	private:
 		__int64 m_nCountsPerSecond;

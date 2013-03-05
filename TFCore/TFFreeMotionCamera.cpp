@@ -1,4 +1,5 @@
 #include "TFFreeMotionCamera.h"
+#include "TFInput.h"
 
 namespace TFCore
 {
@@ -9,7 +10,7 @@ namespace TFCore
 		 m_vUp(0.0f, 1.0f, 0.0f, 0.0f),
 		 m_vSide(1.0f, 0.0f, 0.0f, 0.0f),
 		 CAMERA_ROTATION_BUFFER_YAW(500.0f),
-		 CAMERA_MOVEMENT_BUFFER(0.003f)
+		 CAMERA_MOVEMENT_BUFFER(5.0f)
 	{
 	}
 
@@ -18,13 +19,45 @@ namespace TFCore
 	{
 	}
 
+	void TFFreeMotionCamera::Update(float a_fDelta)
+	{
+		// Camera updates from keyboard (directional)
+		if(TFInput::Instance()->IsRightPressed())
+		{
+			MoveRight(a_fDelta);
+		}
+		if(TFInput::Instance()->IsLeftPressed())   
+		{
+			MoveLeft(a_fDelta);
+		}
+		if(TFInput::Instance()->IsForwardPressed())
+		{
+			MoveForward(a_fDelta);
+		}
+		if(TFInput::Instance()->IsBackPressed())
+		{
+			MoveBack(a_fDelta);
+		}
+		if(TFInput::Instance()->IsUpPressed())
+		{
+			MoveUp(a_fDelta);
+		}
+		if(TFInput::Instance()->IsDownPressed())
+		{
+			MoveDown(a_fDelta);
+		}
+
+		// Camera updates from mouse (rotations)
+		RotateCameraYaw(a_fDelta, static_cast<float>(TFInput::Instance()->GetMouseDeltaX()));
+	}
+
 	void TFFreeMotionCamera::MoveRight(float a_fDelta)
 	{
 		// Move the position along the side axis
 		XMVECTOR _vPos  = XMLoadFloat4(&m_vPosition);
 		XMVECTOR _vSide = XMLoadFloat4(&m_vSide);
 
-		_vPos += _vSide * CAMERA_MOVEMENT_BUFFER;
+		_vPos += _vSide * a_fDelta * CAMERA_MOVEMENT_BUFFER;
 
 		XMStoreFloat4(&m_vPosition, _vPos);
 	}
@@ -35,7 +68,7 @@ namespace TFCore
 		XMVECTOR _vPos  = XMLoadFloat4(&m_vPosition);
 		XMVECTOR _vSide = XMLoadFloat4(&m_vSide);
 
-		_vPos -= _vSide * CAMERA_MOVEMENT_BUFFER;
+		_vPos -= _vSide * a_fDelta * CAMERA_MOVEMENT_BUFFER;
 
 		XMStoreFloat4(&m_vPosition, _vPos);
 	}
@@ -45,7 +78,7 @@ namespace TFCore
 		XMVECTOR _vPos = XMLoadFloat4(&m_vPosition);
 		XMVECTOR _vFor = XMLoadFloat4(&m_vForward);
 
-		_vPos += _vFor * CAMERA_MOVEMENT_BUFFER;
+		_vPos += _vFor * a_fDelta * CAMERA_MOVEMENT_BUFFER;
 
 		XMStoreFloat4(&m_vPosition, _vPos);
 	}
@@ -55,7 +88,27 @@ namespace TFCore
 		XMVECTOR _vPos = XMLoadFloat4(&m_vPosition);
 		XMVECTOR _vFor = XMLoadFloat4(&m_vForward);
 
-		_vPos -= _vFor * CAMERA_MOVEMENT_BUFFER;
+		_vPos -= _vFor * a_fDelta * CAMERA_MOVEMENT_BUFFER;
+
+		XMStoreFloat4(&m_vPosition, _vPos);
+	}
+
+	void TFFreeMotionCamera::MoveUp(float a_fDelta)
+	{
+		XMVECTOR _vPos = XMLoadFloat4(&m_vPosition);
+		XMVECTOR _vUp = XMLoadFloat4(&m_vUp);
+
+		_vPos += _vUp * a_fDelta * CAMERA_MOVEMENT_BUFFER;
+
+		XMStoreFloat4(&m_vPosition, _vPos);
+	}
+
+	void TFFreeMotionCamera::MoveDown(float a_fDelta)
+	{
+		XMVECTOR _vPos = XMLoadFloat4(&m_vPosition);
+		XMVECTOR _vUp = XMLoadFloat4(&m_vUp);
+
+		_vPos -= _vUp * a_fDelta * CAMERA_MOVEMENT_BUFFER;
 
 		XMStoreFloat4(&m_vPosition, _vPos);
 	}

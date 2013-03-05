@@ -11,10 +11,13 @@ namespace TFCore
 		TFFreeMotionCamera();
 		~TFFreeMotionCamera();
 
+		void Update(float a_fDelta);
 		void MoveRight(float a_fDelta);
 		void MoveLeft(float a_fDelta);
 		void MoveForward(float a_fDelta);
 		void MoveBack(float a_fDelta);
+		void MoveUp(float a_fDelta);
+		void MoveDown(float a_fDelta);
 		void RotateCameraYaw(float a_fDeltaTime, float a_fDeltaDistance);
 		void RotateCameraPitch(float a_fDeltaTime, float a_fDeltaDistance);
 		XMMATRIX GetView();

@@ -17,10 +17,12 @@ namespace TFCore
 		void TrackMouseMove(LPARAM lMouseCoords);
 		int GetMouseDeltaX();
 		int GetMouseDeltaY();
-		bool IsRightPressed();
-		bool IsLeftPressed();
-		bool IsForwardPressed();
-		bool IsBackPressed();
+		bool IsRightPressed()   const;
+		bool IsLeftPressed()    const;
+		bool IsForwardPressed() const;
+		bool IsBackPressed()    const;
+		bool IsDownPressed()    const;
+		bool IsUpPressed()      const;
 
 	private:
 		TFInput();

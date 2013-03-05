@@ -8,6 +8,9 @@
 class TFApplication: public TFCore::TFWinBase
 {
 public:
+	TFApplication();
+	~TFApplication();
+
 	void Init(HINSTANCE hInstance, int nCmdShow);
 	void Run();
 	void UpdateScene(float a_fDelta);
@@ -16,7 +19,7 @@ public:
 	void OnResize();
 
 private:
-	TFCore::TFCube m_cube1;
+	TFCore::TFIRenderable* m_pCube1;
 	TFCore::TFShaderManager m_shaderManager;
 	TFCore::TFFreeMotionCamera m_fmCamera;
 

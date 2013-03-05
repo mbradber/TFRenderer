@@ -41,6 +41,7 @@ namespace TFCore
 		delete m_pInstance;
 	}
 
+
 	void TFInput::InitializeMouse()
 	{
 	}
@@ -105,24 +106,34 @@ namespace TFCore
 		m_aKeyDown[wKeyPress] = false;
 	}
 
-	bool TFInput::IsRightPressed()
+	bool TFInput::IsRightPressed() const
 	{
 		return m_aKeyDown[D_KEY];
 	}
 
-	bool TFInput::IsLeftPressed()
+	bool TFInput::IsLeftPressed() const
 	{
 		return m_aKeyDown[A_KEY];
 	}
 
-	bool TFInput::IsForwardPressed()
+	bool TFInput::IsForwardPressed() const
 	{
 		return m_aKeyDown[W_KEY];
 	}
 
-	bool TFInput::IsBackPressed()
+	bool TFInput::IsBackPressed() const
 	{
 		return m_aKeyDown[S_KEY];
+	}
+
+	bool TFInput::IsUpPressed() const
+	{
+		return m_aKeyDown[E_KEY];
+	}
+
+	bool TFInput::IsDownPressed() const
+	{
+		return m_aKeyDown[Q_KEY];
 	}
 
 }

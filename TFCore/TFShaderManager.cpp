@@ -73,6 +73,11 @@ namespace TFCore
 		ReleaseCOM(_pVSBlob);
 	}
 
+	void TFShaderManager::RegisterRenderable(TFIRenderable* a_pRenderable)
+	{
+		m_pRenderables.push_back(a_pRenderable);
+	}
+
 	void TFShaderManager::GenerateDefaultPosColPixelShader()
 	{
 		ID3DBlob* _pPSBlob = NULL;
