@@ -2,6 +2,7 @@
 
 #include <d3d11.h>
 #include <string>
+#include <xnamath.h>
 
 namespace TFCore
 {
@@ -15,6 +16,8 @@ namespace TFCore
 		virtual void Init(ID3D11Device* a_pDevice, ID3D11DeviceContext* a_pDeviceContext, float a_fScale, const std::wstring& a_sFilePath) = 0;
 		virtual ID3D11VertexShader* GetVertexShader() const = 0;
 		virtual ID3D11PixelShader*  GetPixelShader()  const = 0;
+		virtual void UpdateTransform(const XMMATRIX& a_matWVP) = 0;
+		virtual void ActivateShaders() = 0;
 
 		// Renderable object utility function
 		void CompileShaderFromFile(const wchar_t* a_cbFileName, LPCSTR a_pEntryPoint, LPCSTR a_pShaderModel, ID3DBlob** a_ppBlobOut);
@@ -22,6 +25,8 @@ namespace TFCore
 		virtual ~TFIRenderable() {};
 
 	private:
+		// Enforce that each renderable object is responsible for their own shaders
 		virtual void GenerateShaders() = 0;
+		virtual void GenerateShaderResources() = 0;
 	};
 }

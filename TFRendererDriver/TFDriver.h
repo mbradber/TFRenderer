@@ -2,7 +2,6 @@
 
 #include "TFCore.h"
 #include "TFCube.h"
-#include "TFShaderManager.h"
 #include "TFFreeMotionCamera.h"
 
 class TFApplication: public TFCore::TFWinBase
@@ -20,10 +19,9 @@ public:
 
 private:
 	TFCore::TFIRenderable* m_pCube1;
-	TFCore::TFShaderManager m_shaderManager;
 	TFCore::TFFreeMotionCamera m_fmCamera;
 
-	tfMatrix m_matView;
-	tfMatrix m_matProj;
-	tfMatrix m_matWorld;
+	XMMATRIX m_matView;
+	XMMATRIX m_matProj;
+	XMMATRIX m_matWorld;
 };

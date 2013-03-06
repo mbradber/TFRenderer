@@ -4,6 +4,22 @@
 
 using namespace TFCore;
 
+struct DirectionalLight
+{
+	XMFLOAT4 Ambient;
+	XMFLOAT4 Diffuse;
+	XMFLOAT4 Specular;
+	XMFLOAT3 Direction;
+
+	DirectionalLight()
+	{
+		Ambient   = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+		Diffuse   = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		Specular  = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		Direction = XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	}
+};
+
 TFApplication::TFApplication()
 	:m_pCube1(NULL)
 {
@@ -21,20 +37,7 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	InitWindowsApp(hInstance, nCmdShow);
 	InitD3D();
 
-	// Init shader management
-	m_shaderManager.Init(m_pd3dDevice, m_pd3dImmDeviceContext);
-	// The next two calls generate vertex and pixel shaders from a stock shader file
-	// and set the active vertex and pixel shader objects.
-	//m_shaderManager.GenerateDefaultPosColVertexShader();
-	//m_shaderManager.GenerateDefaultPosColPixelShader();
-	// Generates a constant buffer object that will communicate the WVP matrix between CPU-GPU
-	m_shaderManager.GenerateDefaultPosColWVPBuffer();
-
-	// Initialize geometry to pass to shader manager
 	m_pCube1->Init(m_pd3dDevice, m_pd3dImmDeviceContext, 1.0f, L"SimplePosCol.hlsl");
-
-	// Init geometry
-	//m_cube1.Init(m_pd3dDevice, m_pd3dImmDeviceContext, 1.0f);
 
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();
@@ -81,30 +84,15 @@ void TFApplication::RenderScene()
 	m_pd3dDevice->CreateRasterizerState(&rd, &_pRasterizerState);
 	m_pd3dImmDeviceContext->RSSetState(_pRasterizerState);
 
-	// Update WVP constant buffer
-	TFCore::TFBufferWVP cb;
+	// Update the geometry with their respective transforms
+	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
 
-	//cb.world      = TFMatrixTranspose(m_matWorld);
-	//cb.view       = TFMatrixTranspose(m_matView);
-	//cb.projection = TFMatrixTranspose(m_matProj);
-
-	XMMATRIX _matWVP = XMMatrixMultiply(m_matWorld, m_matView);
-	_matWVP = XMMatrixMultiply(_matWVP, m_matProj);
-	cb.wvpMatrix = TFMatrixTranspose(_matWVP);
-
-
-	ID3D11Buffer* _pConstantBuffer = m_shaderManager.GetWVPBuffer();
-	m_pd3dImmDeviceContext->UpdateSubresource(_pConstantBuffer, 0, NULL, &cb, 0, 0);
-	
-	// Render geometry
-	//m_pd3dImmDeviceContext->VSSetShader(m_shaderManager.GetActiveVertexShader(), NULL, 0);
-	//m_pd3dImmDeviceContext->PSSetShader(m_shaderManager.GetActivePixelShader(), NULL, 0);
-	m_pd3dImmDeviceContext->VSSetShader(m_pCube1->GetVertexShader(), NULL, 0);
-	m_pd3dImmDeviceContext->PSSetShader(m_pCube1->GetPixelShader(), NULL, 0);
-	m_pd3dImmDeviceContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
-
+	// Update and activate the shaders, then draw the geometry
+	m_pCube1->UpdateTransform(_matWVP);
+	m_pCube1->ActivateShaders();
 	m_pCube1->Draw();
 
+	// Display the back buffer
 	m_pSwapChain->Present( 0, 0 );
 }
 
