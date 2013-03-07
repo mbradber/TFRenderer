@@ -84,12 +84,7 @@ void TFApplication::RenderScene()
 	// Update WVP constant buffer
 	TFCore::TFBufferWVP cb;
 
-	//cb.world      = TFMatrixTranspose(m_matWorld);
-	//cb.view       = TFMatrixTranspose(m_matView);
-	//cb.projection = TFMatrixTranspose(m_matProj);
-
-	XMMATRIX _matWVP = XMMatrixMultiply(m_matWorld, m_matView);
-	_matWVP = XMMatrixMultiply(_matWVP, m_matProj);
+	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
 	cb.wvpMatrix = TFMatrixTranspose(_matWVP);
 
 
