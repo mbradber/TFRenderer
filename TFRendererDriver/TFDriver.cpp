@@ -57,16 +57,16 @@ void TFApplication::RenderScene()
 	TFCore::TFWinBase::RenderScene();
 
 	// Set wireframe/no cull mode for debug
-	D3D11_RASTERIZER_DESC rd;
-	ZeroMemory(&rd, sizeof(D3D11_RASTERIZER_DESC));
-	rd.FillMode = D3D11_FILL_WIREFRAME;
-	rd.CullMode = D3D11_CULL_NONE;
-	rd.FrontCounterClockwise = false;
-	rd.DepthClipEnable = true;
+	//D3D11_RASTERIZER_DESC rd;
+	//ZeroMemory(&rd, sizeof(D3D11_RASTERIZER_DESC));
+	//rd.FillMode = D3D11_FILL_WIREFRAME;
+	//rd.CullMode = D3D11_CULL_NONE;
+	//rd.FrontCounterClockwise = false;
+	//rd.DepthClipEnable = true;
 
-	ID3D11RasterizerState* _pRasterizerState;
-	m_pd3dDevice->CreateRasterizerState(&rd, &_pRasterizerState);
-	m_pd3dImmDeviceContext->RSSetState(_pRasterizerState);
+	//ID3D11RasterizerState* _pRasterizerState;
+	//m_pd3dDevice->CreateRasterizerState(&rd, &_pRasterizerState);
+	//m_pd3dImmDeviceContext->RSSetState(_pRasterizerState);
 
 	// Update the geometry with their respective transforms
 	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
