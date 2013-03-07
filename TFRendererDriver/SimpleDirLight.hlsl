@@ -40,7 +40,8 @@ struct VertexIn
 struct VertexOut
 {
 	float4 PosH  : SV_POSITION;
-    float4 Color : COLOR;
+	float4 PosW  : POSITION;
+	float4 NormW : NORMAL;
 };
 
 
@@ -48,30 +49,24 @@ VertexOut VS( VertexIn vin )
 {
 	VertexOut vout;
 	
-	// Transform to homogeneous clip space.
-	vout.PosH = mul(float4(vin.PosL, 1.0f), WorldViewProjectionMatrix);
-
-	// Calculate the normal vector and light vector in world space
-	float4 _normalWorld = mul(float4(vin.Normal, 0.0f), WorldInverseTransposeMatrix);
-	float4 _posWorld    = mul(float4(vin.PosL, 1.0f), WorldMatrix);
-	//float4 _lightVec    = float4(EyePosition, 1.0f) - _posWorld;
-	float4 _lightVec = float4(LightObj.Direction, 0.0f) * -1; // Reverse the light direction for the dot product
-
-	// Calculate the diffuse light using Lambert's 
-	float _lambert = max(0, dot(_lightVec, _normalWorld)); // determines intensity of the light
-	float4 _diffuseLight = _lambert * LightObj.Diffuse;
-	_diffuseLight = _diffuseLight * MaterialObj.Diffuse; // component multiplication with the material's diffuse comp
-
-	// Calculate the ambient light
-	float4 _ambientLight = LightObj.Ambient * MaterialObj.Ambient; // component multiplication with the material's ambient comp
-	
-	// Just pass vertex color into the pixel shader.
-    vout.Color = _ambientLight + _diffuseLight;
+	// Execute transformations
+	vout.PosH  = mul(float4(vin.PosL, 1.0f), WorldViewProjectionMatrix);
+	vout.PosW  = mul(float4(vin.PosL, 1.0f), WorldMatrix);
+	vout.NormW = mul(float4(vin.Normal, 0.0f), WorldInverseTransposeMatrix);
     
     return vout;
 }
 
 float4 PS( VertexOut pin ) : SV_Target
 {
-    return pin.Color;
+	// Renormalize after transformation
+	pin.NormW = normalize(pin.NormW);
+
+	float4 _lightVec     = float4(LightObj.Direction, 0.0f) * -1.0f;
+	float  _lambert      = max(0, dot(_lightVec, pin.NormW));
+	float4 _diffuseLight = _lambert * LightObj.Diffuse * MaterialObj.Diffuse;
+	float4 _ambientLight = LightObj.Ambient * MaterialObj.Ambient;
+	float4 _color        = _ambientLight + _diffuseLight;
+
+	return _color;
 }

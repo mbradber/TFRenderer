@@ -272,6 +272,8 @@ namespace TFCore
 		m_pDeviceContext->PSSetShader(GetPixelShader(), NULL, 0);
 		m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pConstantBufferWVP);
 		m_pDeviceContext->VSSetConstantBuffers(1, 1, &m_pConstantBufferLight);
+		m_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pConstantBufferLight);
+		m_pDeviceContext->PSSetConstantBuffers(0, 1, &m_pConstantBufferWVP);
 
 		// Set the input layout
 		m_pDeviceContext->IASetInputLayout(m_pInputLayout);

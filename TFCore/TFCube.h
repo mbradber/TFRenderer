@@ -19,7 +19,6 @@ namespace TFCore
 			Diffuse   = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 			Specular  = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 			Direction = XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-			//Direction = XMFLOAT3(-1, 0, 0);
 		}
 	};
 
