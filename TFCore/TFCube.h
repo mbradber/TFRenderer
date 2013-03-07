@@ -49,10 +49,10 @@ namespace TFCore
 	// Layout of the buffer for world-view-projection matrix
 	struct TFBufferWVP
 	{
-		//XMMATRIX   worldMatrix;
-		//XMMATRIX   worldInvTransposeMatrix;
+		XMMATRIX   worldMatrix;
+		XMMATRIX   worldInvTransposeMatrix;
 		XMMATRIX   wvpMatrix;
-		//TFMaterial material;
+		TFMaterial material;
 	};
 
 	class TFCube
