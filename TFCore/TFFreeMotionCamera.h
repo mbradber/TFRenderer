@@ -21,6 +21,7 @@ namespace TFCore
 		void RotateCameraYaw(float a_fDeltaTime, float a_fDeltaDistance);
 		void RotateCameraPitch(float a_fDeltaTime, float a_fDeltaDistance);
 		XMMATRIX GetView();
+		XMFLOAT3 GetPosition() const;
 
 	private:
 		XMFLOAT4 m_vPosition;

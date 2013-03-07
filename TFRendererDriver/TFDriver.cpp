@@ -4,22 +4,6 @@
 
 using namespace TFCore;
 
-struct DirectionalLight
-{
-	XMFLOAT4 Ambient;
-	XMFLOAT4 Diffuse;
-	XMFLOAT4 Specular;
-	XMFLOAT3 Direction;
-
-	DirectionalLight()
-	{
-		Ambient   = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-		Diffuse   = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-		Specular  = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-		Direction = XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-	}
-};
-
 TFApplication::TFApplication()
 	:m_pCube1(NULL)
 {
@@ -37,7 +21,7 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	InitWindowsApp(hInstance, nCmdShow);
 	InitD3D();
 
-	m_pCube1->Init(m_pd3dDevice, m_pd3dImmDeviceContext, 1.0f, L"SimplePosCol.hlsl");
+	m_pCube1->Init(m_pd3dDevice, m_pd3dImmDeviceContext, 1.0f, L"SimpleDirLight.hlsl");
 
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();
@@ -88,7 +72,7 @@ void TFApplication::RenderScene()
 	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
 
 	// Update and activate the shaders, then draw the geometry
-	m_pCube1->UpdateTransform(_matWVP);
+	m_pCube1->UpdateResources(_matWVP, m_matWorld, m_fmCamera.GetPosition());
 	m_pCube1->ActivateShaders();
 	m_pCube1->Draw();
 

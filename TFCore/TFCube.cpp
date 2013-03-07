@@ -211,15 +211,15 @@ namespace TFCore
 		HR(m_pd3dDevice->CreateBuffer(&bd, NULL, &m_pConstantBufferWVP));
 
 		// describe the cb for the directional light
-		ZeroMemory(&bd, sizeof(bd));
-		bd.Usage          = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth      = sizeof(TFBufferDirectionalLight);
-		bd.BindFlags      = D3D11_BIND_CONSTANT_BUFFER;
-		bd.CPUAccessFlags = 0;
-		bd.MiscFlags      = 0;
+		//ZeroMemory(&bd, sizeof(bd));
+		//bd.Usage          = D3D11_USAGE_DEFAULT;
+		//bd.ByteWidth      = sizeof(TFBufferDirectionalLight);
+		//bd.BindFlags      = D3D11_BIND_CONSTANT_BUFFER;
+		//bd.CPUAccessFlags = 0;
+		//bd.MiscFlags      = 0;
 
-		// Create the constant buffer with the device
-		HR(m_pd3dDevice->CreateBuffer(&bd, NULL, &m_pConstantBufferLight));
+		//// Create the constant buffer with the device
+		//HR(m_pd3dDevice->CreateBuffer(&bd, NULL, &m_pConstantBufferLight));
 	}
 
 	ID3D11VertexShader* TFCube::GetVertexShader() const
@@ -233,18 +233,45 @@ namespace TFCore
 	}
 
 	// TODO: Address tedious type changing issue...
-	void TFCube::UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const TFMaterial& a_material)
+	void TFCube::UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const XMFLOAT3& a_vEyePos)
 	{
+		//UPDATE TRANSFORM RESOURCE
+
 		TFCore::TFBufferWVP cb;
+
+		//// update world matrix
+		//cb.worldMatrix = XMMatrixTranspose(a_matWorld);
+
+		//// Update world inverse transpose matrix (used to transform normals as it will be distorted 
+		//// with non uniform scaling transforms, see pg. 277 of Luna...
+		//XMMATRIX _wit = a_matWorld;
+		//_wit.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+		//XMVECTOR _witDet = XMMatrixDeterminant(_wit);
+
+		//cb.worldInvTransposeMatrix = XMMatrixInverse(&_witDet, _wit);
+
+		// update wvp of buffer
 		cb.wvpMatrix = XMMatrixTranspose(a_matWVP);
+
+		//update material of buffer
+		//cb.material  = m_material;
+
 		m_pDeviceContext->UpdateSubresource(m_pConstantBufferWVP , 0, NULL, &cb, 0, 0);
+
+		// UPDATE LIGHT RESOURCE
+		//TFBufferDirectionalLight cbLights;
+		//cbLights.DirLight = m_dirLight;
+		//cbLights.EyePos   = a_vEyePos;
+
+		//m_pDeviceContext->UpdateSubresource(m_pConstantBufferLight, 0, NULL, &cbLights, 0, 0);
 	}
 
 	void TFCube::ActivateShaders()
 	{
 		m_pDeviceContext->VSSetShader(GetVertexShader(), NULL, 0);
 		m_pDeviceContext->PSSetShader(GetPixelShader(), NULL, 0);
-		m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
+		m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pConstantBufferWVP);
+		//m_pDeviceContext->VSSetConstantBuffers(1, 1, &m_pConstantBufferLight);
 
 		// Set the input layout
 		m_pDeviceContext->IASetInputLayout(m_pInputLayout);

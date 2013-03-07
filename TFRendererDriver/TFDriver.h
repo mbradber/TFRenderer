@@ -18,7 +18,7 @@ public:
 	void OnResize();
 
 private:
-	TFCore::TFIRenderable* m_pCube1;
+	TFCore::TFCube* m_pCube1;
 	TFCore::TFFreeMotionCamera m_fmCamera;
 
 	XMMATRIX m_matView;

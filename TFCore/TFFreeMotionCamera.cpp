@@ -128,6 +128,16 @@ namespace TFCore
 		return XMMatrixLookAtLH(_vPos, _vAt, _vUp);
 	}
 
+	XMFLOAT3 TFFreeMotionCamera::GetPosition() const
+	{
+		XMFLOAT3 _pos;
+		_pos.x = m_vPosition.x;
+		_pos.y = m_vPosition.y;
+		_pos.z = m_vPosition.z;
+
+		return _pos;
+	}
+
 	void TFFreeMotionCamera::RotateCameraYaw(float a_fDeltaTime, float a_fDeltaDistance)
 	{
 		XMVECTOR _vUp   = XMLoadFloat4(&m_vUp);
