@@ -28,7 +28,7 @@
 
 
 
-cbuffer cbPerObject
+cbuffer cbPerObject : register(cb0)
 {
 	//float4x4 WorldMatrix;
 	//float4x4 WorldInverseTransposeMatrix;
