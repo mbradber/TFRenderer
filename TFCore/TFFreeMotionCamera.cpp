@@ -49,6 +49,7 @@ namespace TFCore
 
 		// Camera updates from mouse (rotations)
 		RotateCameraYaw(a_fDelta, static_cast<float>(TFInput::Instance()->GetMouseDeltaX()));
+		RotateCameraPitch(a_fDelta, static_cast<float>(TFInput::Instance()->GetMouseDeltaY()));
 	}
 
 	void TFFreeMotionCamera::MoveRight(float a_fDelta)
@@ -159,9 +160,18 @@ namespace TFCore
 		XMStoreFloat4(&m_vSide, _vSide);
 	}
 
-	void RotateCameraPitch(float a_fDeltaTime, float a_fDeltaDistance)
+	void TFFreeMotionCamera::RotateCameraPitch(float a_fDeltaTime, float a_fDeltaDistance)
 	{
+		XMVECTOR _vUp   = XMLoadFloat4(&m_vUp);
+		XMVECTOR _vFor  = XMLoadFloat4(&m_vForward);
+		XMVECTOR _vSide = XMLoadFloat4(&m_vSide);
 
+		XMMATRIX _matRotation = XMMatrixRotationAxis(_vSide, a_fDeltaDistance / CAMERA_ROTATION_BUFFER_YAW);
+
+		_vFor = XMVector4Transform(_vFor, _matRotation);
+
+		XMVector4Normalize(_vFor);
+		XMStoreFloat4(&m_vForward, _vFor);
 	}
 
 }

@@ -90,7 +90,12 @@ namespace TFCore
 	{
 		if(m_bLeftMouseDown)
 		{
-			return m_nDeltaY;
+			int _delta = m_nDeltaY;
+
+			m_nOriginalY += m_nDeltaY;
+			m_nDeltaY = 0;
+
+			return _delta;
 		}
 
 		return 0;
