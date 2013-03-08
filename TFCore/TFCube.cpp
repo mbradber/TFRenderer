@@ -24,8 +24,8 @@ namespace TFCore
 		 INDEX_COUNT(36),
 		 m_wsShaderPath(L"")
 	{
-		m_aVertexLayout[0] = TFDefaultSimpleVertexLayout[0];
-		m_aVertexLayout[1] = TFDefaultSimpleVertexLayout[1];
+		m_aVertexLayout[0] = TFPositionNormalTextureLayout[0];
+		m_aVertexLayout[1] = TFPositionNormalTextureLayout[1];
 	}
 
 	TFCube::~TFCube()
@@ -62,16 +62,16 @@ namespace TFCore
 		m_wsShaderPath   = a_sFilePath;
 
 		// static vertex data for cube geometry
-		TFPosNormVertex vertices[] = 
+		TFPosNormTex vertices[] = 
 		{
-			{ XMFLOAT3( -1.0f, 1.0f, -1.0f ), XMFLOAT3( -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT) },  // front, top-left
-			{ XMFLOAT3( 1.0f, 1.0f, -1.0f ),  XMFLOAT3(  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT) },  // front, top-right
-			{ XMFLOAT3( 1.0f, 1.0f, 1.0f ),   XMFLOAT3(  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT) },  // back, top-right
-			{ XMFLOAT3( -1.0f, 1.0f, 1.0f ),  XMFLOAT3( -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT) },  // back, top-left
-			{ XMFLOAT3( -1.0f, -1.0f, -1.0f ),XMFLOAT3( -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT) },  // front, bottom-left
-			{ XMFLOAT3( 1.0f, -1.0f, -1.0f ), XMFLOAT3(  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT) },  // front, bottom-righ
-			{ XMFLOAT3( 1.0f, -1.0f, 1.0f ),  XMFLOAT3(  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT) },  // back, bottom-right
-			{ XMFLOAT3( -1.0f, -1.0f, 1.0f ), XMFLOAT3( -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT) },  // back, bottom-left
+			{ XMFLOAT3( -1.0f, 1.0f, -1.0f ), XMFLOAT3( -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT), XMFLOAT2(0.0f, 0.0f) },  // front, top-left
+			{ XMFLOAT3( 1.0f, 1.0f, -1.0f ),  XMFLOAT3(  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT), XMFLOAT2(1.0f, 0.0f) },  // front, top-right
+			{ XMFLOAT3( 1.0f, 1.0f, 1.0f ),   XMFLOAT3(  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT), XMFLOAT2(0.0f, 0.0f) },  // back, top-right
+			{ XMFLOAT3( -1.0f, 1.0f, 1.0f ),  XMFLOAT3( -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT), XMFLOAT2(1.0f, 0.0f) },  // back, top-left
+			{ XMFLOAT3( -1.0f, -1.0f, -1.0f ),XMFLOAT3( -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT), XMFLOAT2(0.0f, 1.0f) },  // front, bottom-left
+			{ XMFLOAT3( 1.0f, -1.0f, -1.0f ), XMFLOAT3(  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT), XMFLOAT2(1.0f, 1.0f) },  // front, bottom-right
+			{ XMFLOAT3( 1.0f, -1.0f, 1.0f ),  XMFLOAT3(  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT), XMFLOAT2(0.0f, 1.0f) },  // back, bottom-right
+			{ XMFLOAT3( -1.0f, -1.0f, 1.0f ), XMFLOAT3( -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT), XMFLOAT2(1.0f, 1.0f) },  // back, bottom-left
 		};
 
 		// scale the geometry
@@ -86,7 +86,7 @@ namespace TFCore
 		D3D11_BUFFER_DESC bd;
 		ZeroMemory( &bd, sizeof(bd) );
 		bd.Usage          = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth      = sizeof( TFPosNormVertex ) * VERTEX_COUNT;
+		bd.ByteWidth      = sizeof( TFPosNormTex ) * VERTEX_COUNT;
 		bd.BindFlags      = D3D11_BIND_VERTEX_BUFFER;
 		bd.CPUAccessFlags = 0; // No cpu access
 		bd.MiscFlags      = 0; // Unused
@@ -137,6 +137,8 @@ namespace TFCore
 
 	// TODO: Should pass a D3D11_INPUT_ELEMENT_DESC* to this function so we don't have to copy/paste the 
 	// array twice everytime we change it, this will be the source of a bug in the future...
+
+	// TODO: Generate shaders from precompiled CSO, we are currently compiling them twice.
 	void TFCube::GenerateShaders()
 	{
 		// VERTEX SHADER
@@ -149,8 +151,8 @@ namespace TFCore
 		HR(m_pd3dDevice->CreateVertexShader(_pVSBlob->GetBufferPointer(), _pVSBlob->GetBufferSize(), NULL, &m_pVertexShader));
 
 		// Create the input layout
-		size_t _nNumElements = ARRAYSIZE(TFPositionNormalVertexLayout);
-		HR(m_pd3dDevice->CreateInputLayout(TFPositionNormalVertexLayout, _nNumElements, 
+		size_t _nNumElements = ARRAYSIZE(TFPositionNormalTextureLayout);
+		HR(m_pd3dDevice->CreateInputLayout(TFPositionNormalTextureLayout, _nNumElements, 
 			_pVSBlob->GetBufferPointer(), _pVSBlob->GetBufferSize(), &m_pInputLayout));
 
 		// Set the input layout
@@ -220,6 +222,11 @@ namespace TFCore
 
 		// Create the constant buffer with the device
 		HR(m_pd3dDevice->CreateBuffer(&bd, NULL, &m_pConstantBufferLight));
+
+		// TODO: D3DX stuff is deprecated, use another method for loading textures when you have time.
+
+		// Create the texture for this box
+		HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, L"..\\Textures\\WoodCrate01.dds", NULL, NULL, &m_pCrateTextureSRV, NULL));
 	}
 
 	ID3D11VertexShader* TFCube::GetVertexShader() const
@@ -266,14 +273,21 @@ namespace TFCore
 		m_pDeviceContext->UpdateSubresource(m_pConstantBufferLight, 0, NULL, &cbLights, 0, 0);
 	}
 
+	// TODO: The slot number argument that is specified when binding these resources corresponds to 
+	// the register number used in the shader. This is prone to shader errors and the HLSL reflection API should
+	// be used to try and get the name of resources in the shader instead.
 	void TFCube::ActivateShaders()
 	{
+		// Bind shaders
 		m_pDeviceContext->VSSetShader(GetVertexShader(), NULL, 0);
 		m_pDeviceContext->PSSetShader(GetPixelShader(), NULL, 0);
+		// Bind constant buffers to VS and PS
 		m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pConstantBufferWVP);
 		m_pDeviceContext->VSSetConstantBuffers(1, 1, &m_pConstantBufferLight);
 		m_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pConstantBufferLight);
 		m_pDeviceContext->PSSetConstantBuffers(0, 1, &m_pConstantBufferWVP);
+		// Bind texture
+		m_pDeviceContext->PSSetShaderResources(0, 1, &m_pCrateTextureSRV);
 
 		// Set the input layout
 		m_pDeviceContext->IASetInputLayout(m_pInputLayout);
@@ -284,7 +298,7 @@ namespace TFCore
 	void TFCube::Draw()
 	{
 		// Set vertex buffer
-		size_t stride = sizeof( TFPosNormVertex );
+		size_t stride = sizeof( TFPosNormTex );
 		size_t offset = 0;
 		m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
 		// Set index buffer

@@ -41,12 +41,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>$(ProjectName)</TargetName>
-    <IncludePath>$(DXSDK_DIR)\Include\;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)\Lib\x86\;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSDK_LibraryPath_x86);</LibraryPath>
+    <IncludePath>$(DXSDK_DIR)\Include\;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);C:\DirectXTex\DirectXTex</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)\Lib\x86\;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSDK_LibraryPath_x86);C:\DirectXTex\DirectXTex\$(Configuration)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(DXSDK_DIR)\Include\;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)\Lib\x86\;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSDK_LibraryPath_x86);</LibraryPath>
+    <IncludePath>$(DXSDK_DIR)\Include\;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);C:\DirectXTex\DirectXTex</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)\Lib\x86\;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSDK_LibraryPath_x86);C:\DirectXTex\DirectXTex\$(Configuration)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -64,7 +64,7 @@
     </Link>
     <Lib>
       <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
-      <AdditionalDependencies>d3d11.lib;dxerr.lib;d3dx11.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxerr.lib;d3dx11.lib;DirectXTex.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4221</AdditionalOptions>
     </Lib>
     <FxCompile>
@@ -90,7 +90,7 @@
     </Link>
     <Lib>
       <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
-      <AdditionalDependencies>d3d11.lib;dxerr.lib;d3dx11.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxerr.lib;d3dx11.lib;DirectXTex.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4221</AdditionalOptions>
     </Lib>
     <FxCompile>

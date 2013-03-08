@@ -85,24 +85,25 @@ namespace TFCore
 
 	private:
 
-		ID3D11Device*			 m_pd3dDevice;
-		ID3D11DeviceContext*	 m_pDeviceContext;
-		ID3D11Buffer*			 m_pVertexBuffer;
-		ID3D11Buffer*			 m_pIndexBuffer;
-		D3D11_INPUT_ELEMENT_DESC m_aVertexLayout[2];
-		ID3D11VertexShader*	     m_pVertexShader;
-		ID3D11PixelShader*		 m_pPixelShader;
-		ID3D11InputLayout*		 m_pInputLayout;
-		ID3D11Buffer*			 m_pConstantBufferWVP;
-		ID3D11Buffer*            m_pConstantBufferLight;
-		float					 m_fScale;
-		std::wstring             m_wsShaderPath;
-		const size_t			 VERTEX_COUNT;
-		const size_t			 INDEX_COUNT;
+		ID3D11Device*			  m_pd3dDevice;
+		ID3D11DeviceContext*	  m_pDeviceContext;
+		ID3D11Buffer*			  m_pVertexBuffer;
+		ID3D11Buffer*			  m_pIndexBuffer;
+		D3D11_INPUT_ELEMENT_DESC  m_aVertexLayout[2];
+		ID3D11VertexShader*	      m_pVertexShader;
+		ID3D11PixelShader*		  m_pPixelShader;
+		ID3D11ShaderResourceView* m_pCrateTextureSRV;
+		ID3D11InputLayout*		  m_pInputLayout;
+		ID3D11Buffer*			  m_pConstantBufferWVP;
+		ID3D11Buffer*             m_pConstantBufferLight;
+		float					  m_fScale;
+		std::wstring              m_wsShaderPath;
+		const size_t			  VERTEX_COUNT;
+		const size_t			  INDEX_COUNT;
 
 
-		TFDirectionalLight       m_dirLight;
-		TFMaterial               m_material;
+		TFDirectionalLight        m_dirLight;
+		TFMaterial                m_material;
 	};
 
 }
