@@ -19,6 +19,7 @@ public:
 
 private:
 	TFCore::TFCube* m_pCube1;
+	TFCore::TFCube* m_pCube2;
 	TFCore::TFFreeMotionCamera m_fmCamera;
 
 	XMMATRIX m_matView;

@@ -5,13 +5,17 @@ namespace TFCore
 {
 
 	TFFreeMotionCamera::TFFreeMotionCamera()
-		:m_vPosition(0.0f, 0.0f, -5.0f, 1.0f),
-		 m_vForward(0.0f, 0.0f, 1.0f, 0.0f),
+		:m_vPosition(0.0f, 3.5f, -10.0f, 1.0f),
+		 m_vForward(0.0f, -0.4f, 1.0f, 0.0f),
 		 m_vUp(0.0f, 1.0f, 0.0f, 0.0f),
 		 m_vSide(1.0f, 0.0f, 0.0f, 0.0f),
 		 CAMERA_ROTATION_BUFFER_YAW(500.0f),
 		 CAMERA_MOVEMENT_BUFFER(5.0f)
 	{
+		// normalize forward vector
+		XMVECTOR _vForward = XMLoadFloat4(&m_vForward);
+		XMVector4Normalize(_vForward);
+		XMStoreFloat4(&m_vForward, _vForward);
 	}
 
 

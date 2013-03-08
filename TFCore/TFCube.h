@@ -64,7 +64,8 @@ namespace TFCore
 		void Init(ID3D11Device* a_pDevice, 
 			ID3D11DeviceContext* a_pDeviceContext, 
 			float a_fScale, 
-			const std::wstring& a_sFilePath);
+			const std::wstring& a_sFilePathShader,
+			const std::wstring& a_sFilePathTexture);
 
 		void Draw();
 
@@ -98,6 +99,7 @@ namespace TFCore
 		ID3D11Buffer*             m_pConstantBufferLight;
 		float					  m_fScale;
 		std::wstring              m_wsShaderPath;
+		std::wstring              m_wsTexturePath;
 		const size_t			  VERTEX_COUNT;
 		const size_t			  INDEX_COUNT;
 

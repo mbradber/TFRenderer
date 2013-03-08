@@ -8,12 +8,14 @@ TFApplication::TFApplication()
 	:m_pCube1(NULL)
 {
 	m_pCube1 = new TFCube();
+	m_pCube2 = new TFCube();
 }
 
 TFApplication::~TFApplication()
 {
 	// Delete renderable objects
 	delete m_pCube1;
+	delete m_pCube2;
 }
 
 void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
@@ -21,7 +23,9 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	InitWindowsApp(hInstance, nCmdShow);
 	InitD3D();
 
-	m_pCube1->Init(m_pd3dDevice, m_pd3dImmDeviceContext, 1.0f, L"SimpleDirLight.hlsl");
+	m_pCube1->Init(m_pd3dDevice, m_pd3dImmDeviceContext, 1.0f, L"SimpleDirLight.hlsl", L"..\\Textures\\WoodCrate01.dds");
+	m_pCube2->Init(m_pd3dDevice, m_pd3dImmDeviceContext, 1.0f, L"SimpleDirLight.hlsl", L"..\\Textures\\WoodCrate02.dds");
+	
 
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();
@@ -68,6 +72,9 @@ void TFApplication::RenderScene()
 	//m_pd3dDevice->CreateRasterizerState(&rd, &_pRasterizerState);
 	//m_pd3dImmDeviceContext->RSSetState(_pRasterizerState);
 
+	// Set world matrix for first box
+	m_matWorld = XMMatrixTranslation(2.0f, 0.0f, 0.0f);
+
 	// Update the geometry with their respective transforms
 	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
 
@@ -75,6 +82,17 @@ void TFApplication::RenderScene()
 	m_pCube1->UpdateResources(_matWVP, m_matWorld, m_fmCamera.GetPosition());
 	m_pCube1->ActivateShaders();
 	m_pCube1->Draw();
+
+	// Set world matrix for second box
+	m_matWorld = XMMatrixTranslation(-2.0f, 0.0f, 0.0f);
+
+	// Update the geometry with their respective transforms
+	_matWVP = m_matWorld * m_matView * m_matProj;
+
+	// Update and activate the shaders, then draw the geometry
+	m_pCube2->UpdateResources(_matWVP, m_matWorld, m_fmCamera.GetPosition());
+	m_pCube2->ActivateShaders();
+	m_pCube2->Draw();
 
 	// Display the back buffer
 	m_pSwapChain->Present( 0, 0 );

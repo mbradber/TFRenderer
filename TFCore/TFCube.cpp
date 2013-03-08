@@ -54,12 +54,17 @@ namespace TFCore
 		m_wsShaderPath = a_sFilePath;
 	}
 
-	void TFCube::Init(ID3D11Device* a_pDevice, ID3D11DeviceContext* a_pDeviceContext, float a_fScale, const std::wstring& a_sFilePath)
+	void TFCube::Init(ID3D11Device* a_pDevice, 
+		ID3D11DeviceContext* a_pDeviceContext, 
+		float a_fScale, 
+		const std::wstring& a_sFilePathShader,
+		const std::wstring& a_sFilePathTexture)
 	{
 		m_pd3dDevice     = a_pDevice;
 		m_pDeviceContext = a_pDeviceContext;
 		m_fScale         = a_fScale;
-		m_wsShaderPath   = a_sFilePath;
+		m_wsShaderPath   = a_sFilePathShader;
+		m_wsTexturePath  = a_sFilePathTexture;
 
 		// static vertex data for cube geometry
 		TFPosNormTex vertices[] = 
@@ -226,7 +231,7 @@ namespace TFCore
 		// TODO: D3DX stuff is deprecated, use another method for loading textures when you have time.
 
 		// Create the texture for this box
-		HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, L"..\\Textures\\WoodCrate01.dds", NULL, NULL, &m_pCrateTextureSRV, NULL));
+		HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, m_wsTexturePath.c_str(), NULL, NULL, &m_pCrateTextureSRV, NULL));
 	}
 
 	ID3D11VertexShader* TFCube::GetVertexShader() const
