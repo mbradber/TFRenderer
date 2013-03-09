@@ -81,3 +81,18 @@ inline void TFErrorDescription(HRESULT hr)
      } else 
 		OutputDebugString(L"[Could not find a description for error.]");
 }
+
+inline void TFRenderWireframe(ID3D11Device* a_pDevice, ID3D11DeviceContext* a_pDeviceContext)
+{
+	// Set wireframe/no cull mode for debug
+	D3D11_RASTERIZER_DESC rd;
+	ZeroMemory(&rd, sizeof(D3D11_RASTERIZER_DESC));
+	rd.FillMode = D3D11_FILL_WIREFRAME;
+	rd.CullMode = D3D11_CULL_NONE;
+	rd.FrontCounterClockwise = false;
+	rd.DepthClipEnable = true;
+
+	ID3D11RasterizerState* _pRasterizerState;
+	a_pDevice->CreateRasterizerState(&rd, &_pRasterizerState);
+	a_pDeviceContext->RSSetState(_pRasterizerState);
+}

@@ -3,6 +3,7 @@
 #include "TFCore.h"
 #include "TFCube.h"
 #include "TFFreeMotionCamera.h"
+#include "TFShaderManager.h"
 
 class TFApplication: public TFCore::TFWinBase
 {
@@ -18,9 +19,11 @@ public:
 	void OnResize();
 
 private:
+	TFCore::TFCube* m_pGround1;
 	TFCore::TFCube* m_pCube1;
 	TFCore::TFCube* m_pCube2;
 	TFCore::TFFreeMotionCamera m_fmCamera;
+	TFCore::TFShaderManager m_shaderManager;
 
 	XMMATRIX m_matView;
 	XMMATRIX m_matProj;

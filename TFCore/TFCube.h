@@ -64,7 +64,9 @@ namespace TFCore
 		void Init(ID3D11Device* a_pDevice, 
 			ID3D11DeviceContext* a_pDeviceContext, 
 			float a_fScale, 
-			const std::wstring& a_sFilePathShader,
+			ID3D11VertexShader* a_pVertexShader,
+			ID3D11PixelShader* a_pPixelShader,
+			ID3D11InputLayout* a_pInputLayout,
 			const std::wstring& a_sFilePathTexture);
 
 		void Draw();
@@ -77,11 +79,9 @@ namespace TFCore
 		virtual ID3D11PixelShader*  GetPixelShader()  const;
 		virtual void UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const XMFLOAT3& a_vEyePos);
 		virtual void ActivateShaders();
-		void CompileShaderFromFile(const wchar_t* a_cbFileName, LPCSTR a_pEntryPoint, LPCSTR a_pShaderModel, ID3DBlob** a_ppBlobOut);
 
 	private:
 
-		virtual void GenerateShaders();
 		virtual void GenerateShaderResources();
 
 	private:

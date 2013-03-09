@@ -16,6 +16,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{67cc2fe5-5627-4b1d-9033-9cc7bc82ba84}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\SimpleLightTexture">
+      <UniqueIdentifier>{0b9998f1-b885-43c1-9682-ffb324e4d684}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TFDriver.cpp">
@@ -26,13 +29,19 @@
     <ClInclude Include="TFDriver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SimpleDirLightCommon.h">
+      <Filter>Shaders\SimpleLightTexture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="SimplePosCol.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="SimpleDirLight.hlsl">
-      <Filter>Shaders</Filter>
+    <FxCompile Include="SimpleDirLightPS.hlsl">
+      <Filter>Shaders\SimpleLightTexture</Filter>
+    </FxCompile>
+    <FxCompile Include="SimpleDirLightVS.hlsl">
+      <Filter>Shaders\SimpleLightTexture</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

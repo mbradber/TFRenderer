@@ -57,14 +57,18 @@ namespace TFCore
 	void TFCube::Init(ID3D11Device* a_pDevice, 
 		ID3D11DeviceContext* a_pDeviceContext, 
 		float a_fScale, 
-		const std::wstring& a_sFilePathShader,
+		ID3D11VertexShader* a_pVertexShader,
+		ID3D11PixelShader* a_pPixelShader,
+		ID3D11InputLayout* a_pInputLayout,
 		const std::wstring& a_sFilePathTexture)
 	{
 		m_pd3dDevice     = a_pDevice;
 		m_pDeviceContext = a_pDeviceContext;
 		m_fScale         = a_fScale;
-		m_wsShaderPath   = a_sFilePathShader;
 		m_wsTexturePath  = a_sFilePathTexture;
+		m_pVertexShader  = a_pVertexShader;
+		m_pPixelShader   = a_pPixelShader;
+		m_pInputLayout   = a_pInputLayout;
 
 		// static vertex data for cube geometry
 		TFPosNormTex vertices[] = 
@@ -134,71 +138,8 @@ namespace TFCore
 		InitData.pSysMem  = indices;
 		HR(m_pd3dDevice->CreateBuffer(&bd, &InitData, &m_pIndexBuffer));
 
-		// Generate Shaders
-		GenerateShaders();
 		// Generate resources that will be used with the shaders for this object
 		GenerateShaderResources();
-	}
-
-	// TODO: Should pass a D3D11_INPUT_ELEMENT_DESC* to this function so we don't have to copy/paste the 
-	// array twice everytime we change it, this will be the source of a bug in the future...
-
-	// TODO: Generate shaders from precompiled CSO, we are currently compiling them twice.
-	void TFCube::GenerateShaders()
-	{
-		// VERTEX SHADER
-
-		// Generate compiled object
-		ID3DBlob* _pVSBlob = NULL;
-		CompileShaderFromFile(m_wsShaderPath.c_str(), "VS", "vs_5_0", &_pVSBlob);
-
-		// Create vertex shader from compiled object
-		HR(m_pd3dDevice->CreateVertexShader(_pVSBlob->GetBufferPointer(), _pVSBlob->GetBufferSize(), NULL, &m_pVertexShader));
-
-		// Create the input layout
-		size_t _nNumElements = ARRAYSIZE(TFPositionNormalTextureLayout);
-		HR(m_pd3dDevice->CreateInputLayout(TFPositionNormalTextureLayout, _nNumElements, 
-			_pVSBlob->GetBufferPointer(), _pVSBlob->GetBufferSize(), &m_pInputLayout));
-
-		// Set the input layout
-		//m_pDeviceContext->IASetInputLayout(m_pInputLayout);
-
-		ReleaseCOM(_pVSBlob);
-
-		// PIXEL SHADER
-		ID3DBlob* _pPSBlob = NULL;
-		CompileShaderFromFile(m_wsShaderPath.c_str(), "PS", "ps_5_0", &_pPSBlob );
-
-		// Create the pixel shader
-		HR(m_pd3dDevice->CreatePixelShader( _pPSBlob->GetBufferPointer(), _pPSBlob->GetBufferSize(), NULL, &m_pPixelShader));
-
-		ReleaseCOM(_pPSBlob);
-	}
-
-	void TFCube::CompileShaderFromFile(const wchar_t* a_cbFileName, LPCSTR a_pEntryPoint, LPCSTR a_pShaderModel, ID3DBlob** a_ppBlobOut)
-	{
-		DWORD _dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
-
-#if defined(DEBUG) || defined(_DEBUG)
-		_dwShaderFlags |= D3DCOMPILE_DEBUG;
-#endif
-
-		ID3DBlob* _pErrorBlob = NULL;
-		HRESULT _hr = D3DX11CompileFromFile(a_cbFileName, NULL, NULL, a_pEntryPoint, a_pShaderModel, 
-			_dwShaderFlags, 0, NULL, a_ppBlobOut, &_pErrorBlob, NULL);
-
-		// Output debug info if compilation failed
-		if(FAILED(_hr))
-		{
-			if(_pErrorBlob != NULL)
-			{
-				OutputDebugStringA((char*)_pErrorBlob->GetBufferPointer());
-			}
-
-			HR(_hr);
-		}
-
-		ReleaseCOM(_pErrorBlob);
 	}
 
 	// TODO: Look into making this a more general function or moving it into a "Resource Manager". It is not 
