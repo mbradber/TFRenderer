@@ -25,8 +25,6 @@ namespace TFCore
 		 INDEX_COUNT(36),
 		 m_wsShaderPath(L"")
 	{
-		m_aVertexLayout[0] = TFPositionNormalTextureLayout[0];
-		m_aVertexLayout[1] = TFPositionNormalTextureLayout[1];
 	}
 
 	TFCube::~TFCube()
@@ -43,11 +41,6 @@ namespace TFCore
 	const wchar_t* const TFCube::GetShaderPath() const
 	{
 		return m_wsShaderPath.c_str();
-	}
-
-	const D3D11_INPUT_ELEMENT_DESC* const TFCube::GetInputLayout() const
-	{
-		return m_aVertexLayout;
 	}
 
 	void TFCube::SetShaderPath(const std::wstring& a_sFilePath)
@@ -76,14 +69,14 @@ namespace TFCore
 		// static vertex data for cube geometry
 		TFPosNormTex vertices[] = 
 		{
-			{ XMFLOAT3( -1.0f, 1.0f, -1.0f ), XMFLOAT3( -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT), XMFLOAT2(0.0f, 0.0f) },  // front, top-left         0
-			{ XMFLOAT3( 1.0f, 1.0f, -1.0f ),  XMFLOAT3(  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT), XMFLOAT2(1.0f, 0.0f) },  // front, top-right        1
-			{ XMFLOAT3( 1.0f, 1.0f, 1.0f ),   XMFLOAT3(  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT), XMFLOAT2(0.0f, 0.0f) },  // back, top-right         2
-			{ XMFLOAT3( -1.0f, 1.0f, 1.0f ),  XMFLOAT3( -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT), XMFLOAT2(1.0f, 0.0f) },  // back, top-left          3
-			{ XMFLOAT3( -1.0f, -1.0f, -1.0f ),XMFLOAT3( -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT), XMFLOAT2(0.0f, 1.0f) },  // front, bottom-left      4
-			{ XMFLOAT3( 1.0f, -1.0f, -1.0f ), XMFLOAT3(  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT), XMFLOAT2(1.0f, 1.0f) },  // front, bottom-right     5
-			{ XMFLOAT3( 1.0f, -1.0f, 1.0f ),  XMFLOAT3(  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT), XMFLOAT2(0.0f, 1.0f) },  // back, bottom-right      6
-			{ XMFLOAT3( -1.0f, -1.0f, 1.0f ), XMFLOAT3( -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT), XMFLOAT2(1.0f, 1.0f) },  // back, bottom-left       7
+			{ XMFLOAT3( -1.0f, 1.0f, -1.0f ), XMFLOAT3( -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT)},  // front, top-left         0
+			{ XMFLOAT3( 1.0f, 1.0f, -1.0f ),  XMFLOAT3(  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT)},  // front, top-right        1
+			{ XMFLOAT3( 1.0f, 1.0f, 1.0f ),   XMFLOAT3(  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT)},  // back, top-right         2
+			{ XMFLOAT3( -1.0f, 1.0f, 1.0f ),  XMFLOAT3( -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT)},  // back, top-left          3
+			{ XMFLOAT3( -1.0f, -1.0f, -1.0f ),XMFLOAT3( -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT)},  // front, bottom-left      4
+			{ XMFLOAT3( 1.0f, -1.0f, -1.0f ), XMFLOAT3(  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT)},  // front, bottom-right     5
+			{ XMFLOAT3( 1.0f, -1.0f, 1.0f ),  XMFLOAT3(  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT)},  // back, bottom-right      6
+			{ XMFLOAT3( -1.0f, -1.0f, 1.0f ), XMFLOAT3( -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT)},  // back, bottom-left       7
 		};
 
 
@@ -309,10 +302,24 @@ namespace TFCore
 	// only do it once per batch of renderable types
 	void TFCube::Draw()
 	{
-		// Set vertex buffer
-		size_t stride = sizeof( TFPosNormTex );
-		size_t offset = 0;
-		m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+		// Set vertex buffers
+		UINT _nStartSlot = 0;
+		UINT _nNumBuffers = 2;
+		ID3D11Buffer* _aBuffers[D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT];
+		UINT _aStrides[D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT];
+		UINT _aOffsets[D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT];
+
+		_aBuffers[0] = m_pVertexBuffer;
+		_aBuffers[1] = m_pVertexBufferTexCoords;
+
+		_aStrides[0] = sizeof(TFPosNormTex);
+		_aStrides[1] = sizeof(XMFLOAT2);
+
+		_aOffsets[0] = 0;
+		_aOffsets[1] = 0;
+
+		m_pDeviceContext->IASetVertexBuffers(_nStartSlot, _nNumBuffers, _aBuffers, _aStrides, _aOffsets);
+
 		// Set index buffer
 		m_pDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 		// Set primitive topology

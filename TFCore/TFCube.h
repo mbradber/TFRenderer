@@ -73,7 +73,6 @@ namespace TFCore
 
 		/*** TFIRenderable methods ***/
 		virtual const wchar_t* const GetShaderPath() const;
-		virtual const D3D11_INPUT_ELEMENT_DESC* const GetInputLayout() const;
 		virtual void SetShaderPath(const std::wstring& a_sFilePath);
 		virtual ID3D11VertexShader* GetVertexShader() const; 
 		virtual ID3D11PixelShader*  GetPixelShader()  const;
