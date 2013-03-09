@@ -13,6 +13,7 @@ namespace TFCore
 		:m_pd3dDevice(NULL),
 	     m_pDeviceContext(NULL),
 		 m_pVertexBuffer(NULL),
+		 m_pVertexBufferTexCoords(NULL),
 		 m_pIndexBuffer(NULL),
 		 m_pVertexShader(NULL),
 		 m_pPixelShader(NULL),
@@ -70,18 +71,21 @@ namespace TFCore
 		m_pPixelShader   = a_pPixelShader;
 		m_pInputLayout   = a_pInputLayout;
 
+
+
 		// static vertex data for cube geometry
 		TFPosNormTex vertices[] = 
 		{
-			{ XMFLOAT3( -1.0f, 1.0f, -1.0f ), XMFLOAT3( -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT), XMFLOAT2(0.0f, 0.0f) },  // front, top-left
-			{ XMFLOAT3( 1.0f, 1.0f, -1.0f ),  XMFLOAT3(  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT), XMFLOAT2(1.0f, 0.0f) },  // front, top-right
-			{ XMFLOAT3( 1.0f, 1.0f, 1.0f ),   XMFLOAT3(  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT), XMFLOAT2(0.0f, 0.0f) },  // back, top-right
-			{ XMFLOAT3( -1.0f, 1.0f, 1.0f ),  XMFLOAT3( -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT), XMFLOAT2(1.0f, 0.0f) },  // back, top-left
-			{ XMFLOAT3( -1.0f, -1.0f, -1.0f ),XMFLOAT3( -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT), XMFLOAT2(0.0f, 1.0f) },  // front, bottom-left
-			{ XMFLOAT3( 1.0f, -1.0f, -1.0f ), XMFLOAT3(  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT), XMFLOAT2(1.0f, 1.0f) },  // front, bottom-right
-			{ XMFLOAT3( 1.0f, -1.0f, 1.0f ),  XMFLOAT3(  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT), XMFLOAT2(0.0f, 1.0f) },  // back, bottom-right
-			{ XMFLOAT3( -1.0f, -1.0f, 1.0f ), XMFLOAT3( -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT), XMFLOAT2(1.0f, 1.0f) },  // back, bottom-left
+			{ XMFLOAT3( -1.0f, 1.0f, -1.0f ), XMFLOAT3( -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT), XMFLOAT2(0.0f, 0.0f) },  // front, top-left         0
+			{ XMFLOAT3( 1.0f, 1.0f, -1.0f ),  XMFLOAT3(  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT), XMFLOAT2(1.0f, 0.0f) },  // front, top-right        1
+			{ XMFLOAT3( 1.0f, 1.0f, 1.0f ),   XMFLOAT3(  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT), XMFLOAT2(0.0f, 0.0f) },  // back, top-right         2
+			{ XMFLOAT3( -1.0f, 1.0f, 1.0f ),  XMFLOAT3( -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT), XMFLOAT2(1.0f, 0.0f) },  // back, top-left          3
+			{ XMFLOAT3( -1.0f, -1.0f, -1.0f ),XMFLOAT3( -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT), XMFLOAT2(0.0f, 1.0f) },  // front, bottom-left      4
+			{ XMFLOAT3( 1.0f, -1.0f, -1.0f ), XMFLOAT3(  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT), XMFLOAT2(1.0f, 1.0f) },  // front, bottom-right     5
+			{ XMFLOAT3( 1.0f, -1.0f, 1.0f ),  XMFLOAT3(  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT), XMFLOAT2(0.0f, 1.0f) },  // back, bottom-right      6
+			{ XMFLOAT3( -1.0f, -1.0f, 1.0f ), XMFLOAT3( -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT), XMFLOAT2(1.0f, 1.0f) },  // back, bottom-left       7
 		};
+
 
 		// scale the geometry
 		for(size_t i = 0; i < VERTEX_COUNT; ++i)
@@ -106,6 +110,68 @@ namespace TFCore
 
 		// Create a buffer to hold this cube's vert data in video memory
 		HR(m_pd3dDevice->CreateBuffer(&bd, &InitData, &m_pVertexBuffer));
+
+		// Create data for vertex buffer containing texture coordinates
+		XMFLOAT2 _vertexTexCoords[] = 
+		{
+			XMFLOAT2(0.0f, 1.0f), // top face bottom tri
+			XMFLOAT2(1.0f, 0.0f),
+			XMFLOAT2(1.0f, 1.0f),
+
+			XMFLOAT2(0.0f, 0.0f), // top face top tri
+			XMFLOAT2(1.0f, 0.0f),
+			XMFLOAT2(0.0f, 1.0f),
+
+			XMFLOAT2(0.0f, 0.0f), // front face, bottom tri
+			XMFLOAT2(1.0f, 1.0f),
+			XMFLOAT2(0.0f, 1.0f),
+
+			XMFLOAT2(1.0f, 0.0f), // front face, top tri
+			XMFLOAT2(1.0f, 1.0f),
+			XMFLOAT2(0.0f, 0.0f),
+
+			XMFLOAT2(0.0f, 0.0f), // left face, bottom tri
+			XMFLOAT2(1.0f, 1.0f),
+			XMFLOAT2(0.0f, 1.0f),
+
+			XMFLOAT2(1.0f, 0.0f), // left face top tri
+			XMFLOAT2(1.0f, 1.0f),
+			XMFLOAT2(0.0f, 0.0f),
+
+			XMFLOAT2(0.0f, 0.0f), // right face, bottom tri
+			XMFLOAT2(1.0f, 1.0f),
+			XMFLOAT2(0.0f, 1.0f),
+
+			XMFLOAT2(1.0f, 0.0f), // right face, top tri
+			XMFLOAT2(1.0f, 1.0f),
+			XMFLOAT2(0.0f, 0.0f),
+
+			XMFLOAT2(0.0f, 0.0f), // back face, bottom tri
+			XMFLOAT2(1.0f, 1.0f),
+			XMFLOAT2(0.0f, 1.0f),
+
+			XMFLOAT2(1.0f, 0.0f), // back face, top tri
+			XMFLOAT2(1.0f, 1.0f),
+			XMFLOAT2(0.0f, 0.0f),
+
+			XMFLOAT2(1.0f, 1.0f), // bottom face, bottom tri
+			XMFLOAT2(0.0f, 0.0f),
+			XMFLOAT2(0.0f, 1.0f),
+
+			XMFLOAT2(1.0f, 0.0f), // bottom face, top tri
+			XMFLOAT2(0.0f, 0.0f),
+			XMFLOAT2(1.0f, 1.0f),
+		};
+
+		// describe this buffer of texture coordinates
+		ZeroMemory( &bd, sizeof(bd) );
+		bd.Usage          = D3D11_USAGE_DEFAULT;
+		bd.ByteWidth      = sizeof( XMFLOAT2 ) * INDEX_COUNT;
+		bd.BindFlags      = D3D11_BIND_VERTEX_BUFFER;
+		bd.CPUAccessFlags = 0; // No cpu access
+		bd.MiscFlags      = 0; // Unused
+		InitData.pSysMem  = _vertexTexCoords;
+		HR(m_pd3dDevice->CreateBuffer(&bd, &InitData, &m_pVertexBufferTexCoords));
 
 		// Create index buffer
 		WORD indices[] =
