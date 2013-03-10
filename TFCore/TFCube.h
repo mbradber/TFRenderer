@@ -2,50 +2,10 @@
 
 #include <d3d11.h>
 #include "TFIRenderable.h"
+#include "TFMaterial.h"
 
 namespace TFCore
 {
-	struct TFDirectionalLight
-	{
-		XMFLOAT4 Ambient;
-		XMFLOAT4 Diffuse;
-		XMFLOAT4 Specular;
-		XMFLOAT3 Direction;
-		float    _pad;
-
-		TFDirectionalLight()
-		{
-			Ambient   = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-			Diffuse   = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-			Specular  = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-			Direction = XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-		}
-	};
-
-	struct TFMaterial
-	{
-		XMFLOAT4 Ambient;
-		XMFLOAT4 Diffuse;
-		XMFLOAT4 Specular;
-
-		TFMaterial()
-		{
-			Ambient  = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-			Diffuse  = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			Specular = XMFLOAT4(0.6f, 0.6f, 0.6f, 16.0f);
-		}
-	};
-
-	// BUFFER OBJECTS
-
-	// Buffer for light object
-	struct TFBufferDirectionalLight
-	{
-		TFDirectionalLight DirLight;
-		XMFLOAT3 EyePos;
-		float    _pad;
-	};
-
 	// Layout of the buffer for world-view-projection matrix
 	struct TFBufferWVP
 	{
@@ -98,15 +58,12 @@ namespace TFCore
 		ID3D11InputLayout*		  m_pInputLayout;
 		ID3D11Buffer*			  m_pConstantBufferWVP;
 		ID3D11Buffer*             m_pConstantBufferLight;
+		TFMaterial                m_material;
 		float					  m_fScale;
 		std::wstring              m_wsShaderPath;
 		std::wstring              m_wsTexturePath;
 		const size_t			  VERTEX_COUNT;
 		const size_t			  INDEX_COUNT;
-
-
-		TFDirectionalLight        m_dirLight;
-		TFMaterial                m_material;
 	};
 
 }

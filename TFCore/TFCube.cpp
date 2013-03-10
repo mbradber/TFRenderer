@@ -25,6 +25,10 @@ namespace TFCore
 		 INDEX_COUNT(36),
 		 m_wsShaderPath(L"")
 	{
+		// Define material for cube
+		m_material.Ambient  = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		m_material.Diffuse  = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		m_material.Specular = XMFLOAT4(0.6f, 0.6f, 0.6f, 16.0f);
 	}
 
 	TFCube::~TFCube()
@@ -180,17 +184,6 @@ namespace TFCore
 		// Create the constant buffer with the device
 		HR(m_pd3dDevice->CreateBuffer(&bd, NULL, &m_pConstantBufferWVP));
 
-		// describe the cb for the directional light
-		ZeroMemory(&bd, sizeof(bd));
-		bd.Usage          = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth      = sizeof(TFBufferDirectionalLight);
-		bd.BindFlags      = D3D11_BIND_CONSTANT_BUFFER;
-		bd.CPUAccessFlags = 0;
-		bd.MiscFlags      = 0;
-
-		// Create the constant buffer with the device
-		HR(m_pd3dDevice->CreateBuffer(&bd, NULL, &m_pConstantBufferLight));
-
 		// TODO: D3DX stuff is deprecated, use another method for loading textures when you have time.
 
 		// Create the texture for this box
@@ -211,7 +204,6 @@ namespace TFCore
 	void TFCube::UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const XMMATRIX& a_matTex, const XMFLOAT3& a_vEyePos)
 	{
 		//UPDATE TRANSFORM RESOURCE
-
 		TFCore::TFBufferWVP cb;
 
 		// update world matrix
@@ -234,13 +226,6 @@ namespace TFCore
 		cb.material  = m_material;
 
 		m_pDeviceContext->UpdateSubresource(m_pConstantBufferWVP , 0, NULL, &cb, 0, 0);
-
-		// UPDATE LIGHT RESOURCE
-		TFBufferDirectionalLight cbLights;
-		cbLights.DirLight = m_dirLight;
-		cbLights.EyePos   = a_vEyePos;
-
-		m_pDeviceContext->UpdateSubresource(m_pConstantBufferLight, 0, NULL, &cbLights, 0, 0);
 	}
 
 	// TODO: The slot number argument that is specified when binding these resources corresponds to 
@@ -253,12 +238,9 @@ namespace TFCore
 		m_pDeviceContext->PSSetShader(GetPixelShader(), NULL, 0);
 		// Bind constant buffers to VS and PS
 		m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pConstantBufferWVP);
-		m_pDeviceContext->VSSetConstantBuffers(1, 1, &m_pConstantBufferLight);
-		m_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pConstantBufferLight);
 		m_pDeviceContext->PSSetConstantBuffers(0, 1, &m_pConstantBufferWVP);
 		// Bind texture
 		m_pDeviceContext->PSSetShaderResources(0, 1, &m_pCrateTextureSRV);
-
 		// Set the input layout
 		m_pDeviceContext->IASetInputLayout(m_pInputLayout);
 	}

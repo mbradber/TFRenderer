@@ -101,11 +101,13 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="TFLightManager.h" />
     <ClInclude Include="TFCore.h" />
     <ClInclude Include="TFCube.h" />
     <ClInclude Include="TFFreeMotionCamera.h" />
     <ClInclude Include="TFInput.h" />
     <ClInclude Include="TFIRenderable.h" />
+    <ClInclude Include="TFMaterial.h" />
     <ClInclude Include="TFMath.h" />
     <ClInclude Include="TFShaderManager.h" />
     <ClInclude Include="TFTimer.h" />
@@ -114,6 +116,7 @@
     <ClInclude Include="TFVertices.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="TFLightManager.cpp" />
     <ClCompile Include="TFCore.cpp" />
     <ClCompile Include="TFCube.cpp" />
     <ClCompile Include="TFFreeMotionCamera.cpp" />

@@ -29,6 +29,8 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	InitWindowsApp(hInstance, nCmdShow);
 	InitD3D();
 
+	m_lightManager.Init(m_pd3dDevice, m_pd3dImmDeviceContext);
+
 	m_shaderManager.Init(m_pd3dDevice);
 	m_shaderManager.SetActiveVertexShader(L"..\\Debug\\SimpleDirLightVS.cso", TFPositionNormalTextureLayout, 3);
 	m_shaderManager.SetActivePixelShader(L"..\\Debug\\SimpleDirLightPS.cso");
@@ -92,6 +94,9 @@ void TFApplication::UpdateScene(float a_fDelta)
 
 	// Grab view matrix from the camera
 	m_matView = m_fmCamera.GetView();
+
+	// Update the lights
+	m_lightManager.Update(a_fDelta, m_fmCamera.GetPosition());
 }
 
 void TFApplication::RenderScene()

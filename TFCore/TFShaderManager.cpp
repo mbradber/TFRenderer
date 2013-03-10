@@ -107,14 +107,14 @@ namespace TFCore
 	void TFShaderManager::BuildSamplerStates()
 	{
 		D3D11_SAMPLER_DESC _anisoSampler;
-		_anisoSampler.Filter		= D3D11_FILTER_ANISOTROPIC;
-		_anisoSampler.AddressU		= D3D11_TEXTURE_ADDRESS_WRAP;
-		_anisoSampler.AddressV		= D3D11_TEXTURE_ADDRESS_WRAP;
-		_anisoSampler.AddressW		= D3D11_TEXTURE_ADDRESS_WRAP;
-		_anisoSampler.MinLOD		= -FLT_MAX;
-		_anisoSampler.MaxLOD		= FLT_MAX;
-		_anisoSampler.MipLODBias    = 0;
-		_anisoSampler.MaxAnisotropy = 16;
+		_anisoSampler.Filter		 = D3D11_FILTER_ANISOTROPIC;
+		_anisoSampler.AddressU		 = D3D11_TEXTURE_ADDRESS_WRAP;
+		_anisoSampler.AddressV		 = D3D11_TEXTURE_ADDRESS_WRAP;
+		_anisoSampler.AddressW		 = D3D11_TEXTURE_ADDRESS_WRAP;
+		_anisoSampler.MinLOD		 = -FLT_MAX;
+		_anisoSampler.MaxLOD		 = FLT_MAX;
+		_anisoSampler.MipLODBias     = 0;
+		_anisoSampler.MaxAnisotropy  = 16;
 		_anisoSampler.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
 
 		HR(m_pd3dDevice->CreateSamplerState(&_anisoSampler, &m_pSamplerStateAniso));
