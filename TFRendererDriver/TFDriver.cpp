@@ -71,6 +71,8 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	m_matWorld = XMMatrixIdentity();
 	m_matProj  = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 0.01f, 100.0f);
 	m_matView  = XMMatrixLookAtLH(XMVectorSet(-5.0f, 0.0f, -5.0f, 1.0f), XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f), XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+
+
 }
 
 void TFApplication::OnResize()

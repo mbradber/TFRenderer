@@ -110,6 +110,7 @@
     <ClInclude Include="TFMaterial.h" />
     <ClInclude Include="TFMath.h" />
     <ClInclude Include="TFShaderManager.h" />
+    <ClInclude Include="TFTextManager.h" />
     <ClInclude Include="TFTimer.h" />
     <ClInclude Include="TFTypes.h" />
     <ClInclude Include="TFUtils.h" />
@@ -123,6 +124,7 @@
     <ClCompile Include="TFInput.cpp" />
     <ClCompile Include="TFIRenderable.cpp" />
     <ClCompile Include="TFShaderManager.cpp" />
+    <ClCompile Include="TFTextManager.cpp" />
     <ClCompile Include="TFTimer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
