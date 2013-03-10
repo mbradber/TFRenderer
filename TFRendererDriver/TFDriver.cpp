@@ -107,7 +107,7 @@ void TFApplication::RenderScene()
 	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
 
 	// Update and activate the shaders, then draw the geometry
-	m_pCube1->UpdateResources(_matWVP, m_matWorld, m_fmCamera.GetPosition());
+	m_pCube1->UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_pCube1->ActivateShaders();
 	m_pCube1->Draw();
 
@@ -118,7 +118,7 @@ void TFApplication::RenderScene()
 	_matWVP = m_matWorld * m_matView * m_matProj;
 
 	// Update and activate the shaders, then draw the geometry
-	m_pCube2->UpdateResources(_matWVP, m_matWorld, m_fmCamera.GetPosition());
+	m_pCube2->UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_pCube2->ActivateShaders();
 	m_pCube2->Draw();
 
@@ -128,11 +128,15 @@ void TFApplication::RenderScene()
 	m_matWorld *= XMMatrixScaling(10.0f, 1.0f, 14.0f);
 	m_matWorld *= XMMatrixTranslation(0.0f, -2.0f, 0.0f);
 
+	// Construct a transform for the ground's texture coordinates so the single 
+	// texture doesn't stretch across the whole thing.
+	XMMATRIX _matTexTransform = XMMatrixScaling(10.0f, 10.0f, 0.0f);
+
 	// Update the geometry with their respective transforms
 	_matWVP = m_matWorld * m_matView * m_matProj;
 
 	// Update and activate the shaders, then draw the geometry
-	m_pGround1->UpdateResources(_matWVP, m_matWorld, m_fmCamera.GetPosition());
+	m_pGround1->UpdateResources(_matWVP, m_matWorld, _matTexTransform, m_fmCamera.GetPosition());
 	m_pGround1->ActivateShaders();
 	m_pGround1->Draw();
 

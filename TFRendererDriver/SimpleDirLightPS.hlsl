@@ -12,8 +12,9 @@ float4 PS( VertexOut pin ) : SV_Target
 
 	float4 _lightVec     = float4(LightObj.Direction, 0.0f) * -1.0f;
 	float  _lambert      = max(0, dot(_lightVec, pin.NormW));
-	float4 _diffuseLight = _lambert * LightObj.Diffuse;
-	float4 _color        = _texColor * (LightObj.Ambient + _diffuseLight);
+	float4 _diffuseLight = _lambert * LightObj.Diffuse * MaterialObj.Diffuse;
+	float4 _ambientLight = LightObj.Ambient * MaterialObj.Ambient;
+	float4 _color        = _texColor * (_ambientLight + _diffuseLight);
 
 	return _color;
 }

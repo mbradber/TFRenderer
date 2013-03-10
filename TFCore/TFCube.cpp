@@ -208,7 +208,7 @@ namespace TFCore
 	}
 
 	// TODO: Address tedious type changing issue...
-	void TFCube::UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const XMFLOAT3& a_vEyePos)
+	void TFCube::UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const XMMATRIX& a_matTex, const XMFLOAT3& a_vEyePos)
 	{
 		//UPDATE TRANSFORM RESOURCE
 
@@ -227,6 +227,8 @@ namespace TFCore
 
 		// update wvp of buffer
 		cb.wvpMatrix = XMMatrixTranspose(a_matWVP);
+		// update the transform matrix for the texture coordinates
+		cb.texMatrix = a_matTex;
 
 		//update material of buffer
 		cb.material  = m_material;

@@ -15,7 +15,7 @@ namespace TFCore
 
 		TFDirectionalLight()
 		{
-			Ambient   = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+			Ambient   = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 			Diffuse   = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
 			Specular  = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 			Direction = XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
@@ -30,9 +30,9 @@ namespace TFCore
 
 		TFMaterial()
 		{
-			Ambient  = XMFLOAT4(0.48f, 0.77f, 0.46f, 1.0f);
-			Diffuse  = XMFLOAT4(0.48f, 0.77f, 0.46f, 1.0f);
-			Specular = XMFLOAT4(0.2f, 0.2f, 0.2f, 16.0f);
+			Ambient  = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+			Diffuse  = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+			Specular = XMFLOAT4(0.6f, 0.6f, 0.6f, 16.0f);
 		}
 	};
 
@@ -52,6 +52,7 @@ namespace TFCore
 		XMMATRIX   worldMatrix;
 		XMMATRIX   worldInvTransposeMatrix;
 		XMMATRIX   wvpMatrix;
+		XMMATRIX   texMatrix;
 		TFMaterial material;
 	};
 
@@ -76,7 +77,7 @@ namespace TFCore
 		virtual void SetShaderPath(const std::wstring& a_sFilePath);
 		virtual ID3D11VertexShader* GetVertexShader() const; 
 		virtual ID3D11PixelShader*  GetPixelShader()  const;
-		virtual void UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const XMFLOAT3& a_vEyePos);
+		virtual void UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const XMMATRIX& a_matTex, const XMFLOAT3& a_vEyePos);
 		virtual void ActivateShaders();
 
 	private:

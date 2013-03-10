@@ -8,7 +8,7 @@ VertexOut VS( VertexIn vin )
 	vout.PosH  = mul(float4(vin.PosL, 1.0f), WorldViewProjectionMatrix);
 	vout.PosW  = mul(float4(vin.PosL, 1.0f), WorldMatrix);
 	vout.NormW = mul(float4(vin.Normal, 0.0f), WorldInverseTransposeMatrix);
-	vout.TexC  = vin.TexC;
+	vout.TexC  = mul(float4(vin.TexC, 0.0f, 0.0f), TexTransform);
     
     return vout;
 }
