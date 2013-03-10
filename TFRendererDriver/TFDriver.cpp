@@ -33,6 +33,10 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	m_shaderManager.SetActiveVertexShader(L"..\\Debug\\SimpleDirLightVS.cso", TFPositionNormalTextureLayout, 3);
 	m_shaderManager.SetActivePixelShader(L"..\\Debug\\SimpleDirLightPS.cso");
 
+	// Bind the default sampler state to the PS
+	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState();
+	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler );
+
 	m_pGround1->Init(
 		m_pd3dDevice, 
 		m_pd3dImmDeviceContext, 
@@ -59,6 +63,7 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 		m_shaderManager.GetActivePixelShader(), 
 		m_shaderManager.GetActiveInputLayout(), 
 		L"..\\Textures\\WoodCrate02.dds");
+
 
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();

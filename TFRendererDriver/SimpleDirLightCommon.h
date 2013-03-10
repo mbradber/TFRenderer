@@ -34,16 +34,7 @@ cbuffer cbPerFrame : register(b1)
 	float3 EyePosition;
 }
 
-Texture2D DiffuseMap : register(t0);
 
-SamplerState samAnisotropic
-{
-	Filter=ANISOTROPIC;
-	MaxAnisotropy=4;
-
-	AddressU = WRAP;
-	AddressV = WRAP;
-};
 
 struct VertexIn
 {

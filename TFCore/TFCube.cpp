@@ -21,7 +21,7 @@ namespace TFCore
 		 m_pConstantBufferWVP(NULL),
 		 m_pConstantBufferLight(NULL),
 		 m_fScale(1.0f),
-		 VERTEX_COUNT(8),
+		 VERTEX_COUNT(24),
 		 INDEX_COUNT(36),
 		 m_wsShaderPath(L"")
 	{
@@ -65,20 +65,39 @@ namespace TFCore
 		m_pInputLayout   = a_pInputLayout;
 
 
-
-		// static vertex data for cube geometry
+		// Fill in the front face vertex data.
 		TFPosNormTex vertices[] = 
 		{
-			{ XMFLOAT3( -1.0f, 1.0f, -1.0f ), XMFLOAT3( -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT)},  // front, top-left         0
-			{ XMFLOAT3( 1.0f, 1.0f, -1.0f ),  XMFLOAT3(  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT)},  // front, top-right        1
-			{ XMFLOAT3( 1.0f, 1.0f, 1.0f ),   XMFLOAT3(  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT)},  // back, top-right         2
-			{ XMFLOAT3( -1.0f, 1.0f, 1.0f ),  XMFLOAT3( -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT)},  // back, top-left          3
-			{ XMFLOAT3( -1.0f, -1.0f, -1.0f ),XMFLOAT3( -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT)},  // front, bottom-left      4
-			{ XMFLOAT3( 1.0f, -1.0f, -1.0f ), XMFLOAT3(  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT)},  // front, bottom-right     5
-			{ XMFLOAT3( 1.0f, -1.0f, 1.0f ),  XMFLOAT3(  NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT)},  // back, bottom-right      6
-			{ XMFLOAT3( -1.0f, -1.0f, 1.0f ), XMFLOAT3( -NORMALIZED_COMPONENT, -NORMALIZED_COMPONENT,  NORMALIZED_COMPONENT)},  // back, bottom-left       7
-		};
+	        {XMFLOAT3(-1, -1, -1), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT2( 0.0f, 1.0f)},
+	        {XMFLOAT3(-1, +1, -1), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT2( 0.0f, 0.0f)},
+	        {XMFLOAT3(+1, +1, -1), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT2( 1.0f, 0.0f)},
+	        {XMFLOAT3(+1, -1, -1), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT2( 1.0f, 1.0f)},
 
+			{XMFLOAT3(-1, -1, +1), XMFLOAT3(0.0f, 0.0f, 1.0f),  XMFLOAT2( 1.0f, 1.0f)},
+	        {XMFLOAT3(+1, -1, +1), XMFLOAT3(0.0f, 0.0f, 1.0f),  XMFLOAT2( 0.0f, 1.0f)},
+	        {XMFLOAT3(+1, +1, +1), XMFLOAT3(0.0f, 0.0f, 1.0f),  XMFLOAT2( 0.0f, 0.0f)},
+	        {XMFLOAT3(-1, +1, +1), XMFLOAT3(0.0f, 0.0f, 1.0f),  XMFLOAT2( 1.0f, 0.0f)},
+
+			{XMFLOAT3(-1, +1, -1), XMFLOAT3(0.0f, 1.0f, 0.0f),  XMFLOAT2( 0.0f, 1.0f)},
+	        {XMFLOAT3(-1, +1, +1), XMFLOAT3(0.0f, 1.0f, 0.0f),  XMFLOAT2( 0.0f, 0.0f)},
+	        {XMFLOAT3(+1, +1, +1), XMFLOAT3(0.0f, 1.0f, 0.0f),  XMFLOAT2( 1.0f, 0.0f)},
+	        {XMFLOAT3(+1, +1, -1), XMFLOAT3(0.0f, 1.0f, 0.0f),  XMFLOAT2( 1.0f, 1.0f)},
+
+			{XMFLOAT3(-1, -1, -1), XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2( 1.0f, 1.0f)},
+	        {XMFLOAT3(+1, -1, -1), XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2( 0.0f, 1.0f)},
+	        {XMFLOAT3(+1, -1, +1), XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2( 0.0f, 0.0f)},
+	        {XMFLOAT3(-1, -1, +1), XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2( 1.0f, 0.0f)},
+
+			{XMFLOAT3(-1, -1, +1), XMFLOAT3(-1.0f, 0.0f, 0.0f), XMFLOAT2( 0.0f, 1.0f)},
+	        {XMFLOAT3(-1, +1, +1), XMFLOAT3(-1.0f, 0.0f, 0.0f), XMFLOAT2( 0.0f, 0.0f)},
+	        {XMFLOAT3(-1, +1, -1), XMFLOAT3(-1.0f, 0.0f, 0.0f), XMFLOAT2( 1.0f, 0.0f)},
+	        {XMFLOAT3(-1, -1, -1), XMFLOAT3(-1.0f, 0.0f, 0.0f), XMFLOAT2( 1.0f, 1.0f)},
+
+			{XMFLOAT3(+1, -1, -1), XMFLOAT3(1.0f, 0.0f, 0.0f),  XMFLOAT2(0.0f, 1.0f)},
+	        {XMFLOAT3(+1, +1, -1), XMFLOAT3(1.0f, 0.0f, 0.0f),  XMFLOAT2(0.0f, 0.0f)},
+	        {XMFLOAT3(+1, +1, +1), XMFLOAT3(1.0f, 0.0f, 0.0f),  XMFLOAT2(1.0f, 0.0f)},
+			{XMFLOAT3(+1, -1, +1), XMFLOAT3(1.0f, 0.0f, 0.0f),  XMFLOAT2(1.0f, 1.0f)},
+		};
 
 		// scale the geometry
 		for(size_t i = 0; i < VERTEX_COUNT; ++i)
@@ -104,88 +123,32 @@ namespace TFCore
 		// Create a buffer to hold this cube's vert data in video memory
 		HR(m_pd3dDevice->CreateBuffer(&bd, &InitData, &m_pVertexBuffer));
 
-		// Create data for vertex buffer containing texture coordinates
-		XMFLOAT2 _vertexTexCoords[] = 
-		{
-			XMFLOAT2(0.0f, 1.0f), // top face bottom tri
-			XMFLOAT2(1.0f, 0.0f),
-			XMFLOAT2(1.0f, 1.0f),
-
-			XMFLOAT2(0.0f, 0.0f), // top face top tri
-			XMFLOAT2(1.0f, 0.0f),
-			XMFLOAT2(0.0f, 1.0f),
-
-			XMFLOAT2(0.0f, 0.0f), // front face, bottom tri
-			XMFLOAT2(1.0f, 1.0f),
-			XMFLOAT2(0.0f, 1.0f),
-
-			XMFLOAT2(1.0f, 0.0f), // front face, top tri
-			XMFLOAT2(1.0f, 1.0f),
-			XMFLOAT2(0.0f, 0.0f),
-
-			XMFLOAT2(0.0f, 0.0f), // left face, bottom tri
-			XMFLOAT2(1.0f, 1.0f),
-			XMFLOAT2(0.0f, 1.0f),
-
-			XMFLOAT2(1.0f, 0.0f), // left face top tri
-			XMFLOAT2(1.0f, 1.0f),
-			XMFLOAT2(0.0f, 0.0f),
-
-			XMFLOAT2(0.0f, 0.0f), // right face, bottom tri
-			XMFLOAT2(1.0f, 1.0f),
-			XMFLOAT2(0.0f, 1.0f),
-
-			XMFLOAT2(1.0f, 0.0f), // right face, top tri
-			XMFLOAT2(1.0f, 1.0f),
-			XMFLOAT2(0.0f, 0.0f),
-
-			XMFLOAT2(0.0f, 0.0f), // back face, bottom tri
-			XMFLOAT2(1.0f, 1.0f),
-			XMFLOAT2(0.0f, 1.0f),
-
-			XMFLOAT2(1.0f, 0.0f), // back face, top tri
-			XMFLOAT2(1.0f, 1.0f),
-			XMFLOAT2(0.0f, 0.0f),
-
-			XMFLOAT2(1.0f, 1.0f), // bottom face, bottom tri
-			XMFLOAT2(0.0f, 0.0f),
-			XMFLOAT2(0.0f, 1.0f),
-
-			XMFLOAT2(1.0f, 0.0f), // bottom face, top tri
-			XMFLOAT2(0.0f, 0.0f),
-			XMFLOAT2(1.0f, 1.0f),
-		};
-
-		// describe this buffer of texture coordinates
-		ZeroMemory( &bd, sizeof(bd) );
-		bd.Usage          = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth      = sizeof( XMFLOAT2 ) * INDEX_COUNT;
-		bd.BindFlags      = D3D11_BIND_VERTEX_BUFFER;
-		bd.CPUAccessFlags = 0; // No cpu access
-		bd.MiscFlags      = 0; // Unused
-		InitData.pSysMem  = _vertexTexCoords;
-		HR(m_pd3dDevice->CreateBuffer(&bd, &InitData, &m_pVertexBufferTexCoords));
-
 		// Create index buffer
 		WORD indices[] =
 		{
-			3,1,0,
-			2,1,3,
+			// front face
+			0,1,2,
+			0,2,3,
 
-			0,5,4,
-			1,5,0,
+			// back face
+			4,5,6,
+			4,6,7,
 
-			3,4,7,
-			0,4,3,
+			// top face
+			8,9,10,
+			8,10,11,
 
-			1,6,5,
-			2,6,1,
+			// bottom face
+			12,13,14,
+			12,14,15,
 
-			2,7,6,
-			3,7,2,
+			// left face
+			16,17,18,
+			16,18,19,
 
-			6,4,5,
-			7,4,6,
+			// right face
+			20,21,22,
+			20,22,23
 		};
 
 		// describe this index buffer
@@ -303,22 +266,10 @@ namespace TFCore
 	void TFCube::Draw()
 	{
 		// Set vertex buffers
-		UINT _nStartSlot = 0;
-		UINT _nNumBuffers = 2;
-		ID3D11Buffer* _aBuffers[D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT];
-		UINT _aStrides[D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT];
-		UINT _aOffsets[D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT];
+		UINT _nStride = sizeof(TFPosNormTex);
+		UINT _nOffset = 0;
 
-		_aBuffers[0] = m_pVertexBuffer;
-		_aBuffers[1] = m_pVertexBufferTexCoords;
-
-		_aStrides[0] = sizeof(TFPosNormTex);
-		_aStrides[1] = sizeof(XMFLOAT2);
-
-		_aOffsets[0] = 0;
-		_aOffsets[1] = 0;
-
-		m_pDeviceContext->IASetVertexBuffers(_nStartSlot, _nNumBuffers, _aBuffers, _aStrides, _aOffsets);
+		m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &_nStride, &_nOffset);
 
 		// Set index buffer
 		m_pDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);

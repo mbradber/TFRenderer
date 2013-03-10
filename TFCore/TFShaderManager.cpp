@@ -12,7 +12,8 @@ namespace TFCore
 		:m_pd3dDevice(NULL),
 		 m_pActiveVertexShader(NULL),
 		 m_pActivePixelShader(NULL),
-		 m_pActiveInputLayout(NULL)
+		 m_pActiveInputLayout(NULL),
+		 m_pSamplerStateAniso(NULL)
 	{
 	}
 
@@ -99,6 +100,28 @@ namespace TFCore
 
 		// Free buffer
 		delete[] _cbBuffer;
+
+		BuildSamplerStates();
+	}
+
+	void TFShaderManager::BuildSamplerStates()
+	{
+		D3D11_SAMPLER_DESC _anisoSampler;
+		_anisoSampler.Filter   = D3D11_FILTER_ANISOTROPIC;
+		//_anisoSampler.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT; 
+		_anisoSampler.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+		_anisoSampler.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+		_anisoSampler.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+		_anisoSampler.MipLODBias = 0;
+		_anisoSampler.MaxAnisotropy = 4;
+		_anisoSampler.ComparisonFunc = D3D11_COMPARISON_NEVER;
+
+		HR(m_pd3dDevice->CreateSamplerState(&_anisoSampler, &m_pSamplerStateAniso));
+	}
+
+	ID3D11SamplerState* TFShaderManager::GetSamplerState() const
+	{
+		return m_pSamplerStateAniso;
 	}
 
 	ID3D11VertexShader* TFShaderManager::GetActiveVertexShader() const

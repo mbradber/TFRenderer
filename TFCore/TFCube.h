@@ -16,7 +16,7 @@ namespace TFCore
 		TFDirectionalLight()
 		{
 			Ambient   = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-			Diffuse   = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+			Diffuse   = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
 			Specular  = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 			Direction = XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
 		}

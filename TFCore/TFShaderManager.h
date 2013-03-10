@@ -19,12 +19,17 @@ namespace TFCore
 		ID3D11VertexShader* GetActiveVertexShader() const;
 		ID3D11PixelShader*  GetActivePixelShader() const;
 		ID3D11InputLayout*  GetActiveInputLayout() const;
+		ID3D11SamplerState* GetSamplerState() const;
 
 	private:
+
+		void BuildSamplerStates();
+
 		ID3D11Device*	    m_pd3dDevice;
 		ID3D11VertexShader* m_pActiveVertexShader;
 		ID3D11PixelShader*  m_pActivePixelShader;
 		ID3D11InputLayout*  m_pActiveInputLayout;
+		ID3D11SamplerState* m_pSamplerStateAniso;
 	};
 
 }
