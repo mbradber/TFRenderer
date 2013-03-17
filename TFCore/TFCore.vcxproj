@@ -109,6 +109,7 @@
     <ClInclude Include="TFIRenderable.h" />
     <ClInclude Include="TFMaterial.h" />
     <ClInclude Include="TFMath.h" />
+    <ClInclude Include="TFModel.h" />
     <ClInclude Include="TFShaderManager.h" />
     <ClInclude Include="TFTextManager.h" />
     <ClInclude Include="TFTimer.h" />
@@ -123,6 +124,7 @@
     <ClCompile Include="TFFreeMotionCamera.cpp" />
     <ClCompile Include="TFInput.cpp" />
     <ClCompile Include="TFIRenderable.cpp" />
+    <ClCompile Include="TFModel.cpp" />
     <ClCompile Include="TFShaderManager.cpp" />
     <ClCompile Include="TFTextManager.cpp" />
     <ClCompile Include="TFTimer.cpp" />

@@ -49,9 +49,7 @@ namespace TFCore
 		ID3D11Device*			  m_pd3dDevice;
 		ID3D11DeviceContext*	  m_pDeviceContext;
 		ID3D11Buffer*			  m_pVertexBuffer;
-		ID3D11Buffer*             m_pVertexBufferTexCoords;
 		ID3D11Buffer*			  m_pIndexBuffer;
-		D3D11_INPUT_ELEMENT_DESC  m_aVertexLayout[2];
 		ID3D11VertexShader*	      m_pVertexShader;
 		ID3D11PixelShader*		  m_pPixelShader;
 		ID3D11ShaderResourceView* m_pCrateTextureSRV;
