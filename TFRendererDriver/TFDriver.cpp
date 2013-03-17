@@ -109,6 +109,7 @@ void TFApplication::RenderScene()
 
 	// Set world matrix for first box
 	m_matWorld = XMMatrixTranslation(2.0f, 0.0f, 0.0f);
+	m_matWorld = XMMatrixIdentity();
 
 	// Update the geometry with their respective transforms
 	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
@@ -120,6 +121,7 @@ void TFApplication::RenderScene()
 
 	// Set world matrix for second box
 	m_matWorld = XMMatrixTranslation(-2.0f, 0.0f, 0.0f);
+	m_matWorld = XMMatrixIdentity();
 
 	// Update the geometry with their respective transforms
 	_matWVP = m_matWorld * m_matView * m_matProj;
@@ -133,7 +135,7 @@ void TFApplication::RenderScene()
 
 	m_matWorld = XMMatrixRotationX(XM_PIDIV2);
 	m_matWorld *= XMMatrixScaling(10.0f, 1.0f, 14.0f);
-	m_matWorld *= XMMatrixTranslation(0.0f, -2.0f, 0.0f);
+	m_matWorld *= XMMatrixTranslation(0.0f, -3.5f, 0.0f);
 
 	// Construct a transform for the ground's texture coordinates so the single 
 	// texture doesn't stretch across the whole thing.

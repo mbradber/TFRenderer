@@ -3,6 +3,9 @@
 #include "TFUtils.h"
 #include <string>
 #include <d3dcompiler.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #define NORMALIZED_COMPONENT 0.57735026918962576450914878050196f
 
@@ -68,40 +71,100 @@ namespace TFCore
 		m_pPixelShader   = a_pPixelShader;
 		m_pInputLayout   = a_pInputLayout;
 
+		// array to fill for vertex buffer
+		TFPosNormTex vertices[24];
 
-		// Fill in the front face vertex data.
-		TFPosNormTex vertices[] = 
+
+		// Asset importing
+		Assimp::Importer importer;
+
+		const aiScene* scene = importer.ReadFile("..\\Models\\SimpleCube.obj",
+			aiProcess_CalcTangentSpace       | 
+			aiProcess_Triangulate            |
+			aiProcess_JoinIdenticalVertices  |
+			aiProcess_SortByPType            |
+			//aiProcess_GenUVCoords            |
+			//aiProcess_TransformUVCoords |
+			//aiProcess_FlipWindingOrder       |
+			aiProcess_FlipUVs           
+			);
+
+		TF_ASSERT(scene != NULL, FILE_NAME, LINE_NO);
+
+		size_t _nNumMeshes = scene->mNumMeshes;
+		size_t _nNumTextuers = scene->mNumTextures;
+
+		aiNode* _root = scene->mRootNode;
+
+		for(size_t i = 0; i < _root->mNumChildren; ++i)
 		{
-	        {XMFLOAT3(-1, -1, -1), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT2( 0.0f, 1.0f)},
-	        {XMFLOAT3(-1, +1, -1), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT2( 0.0f, 0.0f)},
-	        {XMFLOAT3(+1, +1, -1), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT2( 1.0f, 0.0f)},
-	        {XMFLOAT3(+1, -1, -1), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT2( 1.0f, 1.0f)},
+			// If any children have any meshes
+			if(_root->mChildren[i]->mNumMeshes > 0)
+			{
+				// for each mesh...
+				for(size_t j = 0; j < _root->mChildren[i]->mNumMeshes; ++j)
+				{
+					UINT _meshIndex = _root->mChildren[i]->mMeshes[j];
+					aiMesh* _mesh = scene->mMeshes[_meshIndex];
 
-			{XMFLOAT3(-1, -1, +1), XMFLOAT3(0.0f, 0.0f, 1.0f),  XMFLOAT2( 1.0f, 1.0f)},
-	        {XMFLOAT3(+1, -1, +1), XMFLOAT3(0.0f, 0.0f, 1.0f),  XMFLOAT2( 0.0f, 1.0f)},
-	        {XMFLOAT3(+1, +1, +1), XMFLOAT3(0.0f, 0.0f, 1.0f),  XMFLOAT2( 0.0f, 0.0f)},
-	        {XMFLOAT3(-1, +1, +1), XMFLOAT3(0.0f, 0.0f, 1.0f),  XMFLOAT2( 1.0f, 0.0f)},
+					// fill vertex buffer data...
 
-			{XMFLOAT3(-1, +1, -1), XMFLOAT3(0.0f, 1.0f, 0.0f),  XMFLOAT2( 0.0f, 1.0f)},
-	        {XMFLOAT3(-1, +1, +1), XMFLOAT3(0.0f, 1.0f, 0.0f),  XMFLOAT2( 0.0f, 0.0f)},
-	        {XMFLOAT3(+1, +1, +1), XMFLOAT3(0.0f, 1.0f, 0.0f),  XMFLOAT2( 1.0f, 0.0f)},
-	        {XMFLOAT3(+1, +1, -1), XMFLOAT3(0.0f, 1.0f, 0.0f),  XMFLOAT2( 1.0f, 1.0f)},
+					for(size_t k = 0; k < _mesh->mNumVertices; ++k)
+					{
+						// copy position data from mesh
+						vertices[k].Pos.x = _mesh->mVertices[k].x;
+						vertices[k].Pos.y = _mesh->mVertices[k].y;
+						vertices[k].Pos.z = _mesh->mVertices[k].z;
 
-			{XMFLOAT3(-1, -1, -1), XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2( 1.0f, 1.0f)},
-	        {XMFLOAT3(+1, -1, -1), XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2( 0.0f, 1.0f)},
-	        {XMFLOAT3(+1, -1, +1), XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2( 0.0f, 0.0f)},
-	        {XMFLOAT3(-1, -1, +1), XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2( 1.0f, 0.0f)},
+						// copy normal data from mesh
+						vertices[k].Norm.x = _mesh->mNormals[k].x;
+						vertices[k].Norm.y = _mesh->mNormals[k].y;
+						vertices[k].Norm.z = _mesh->mNormals[k].z;
 
-			{XMFLOAT3(-1, -1, +1), XMFLOAT3(-1.0f, 0.0f, 0.0f), XMFLOAT2( 0.0f, 1.0f)},
-	        {XMFLOAT3(-1, +1, +1), XMFLOAT3(-1.0f, 0.0f, 0.0f), XMFLOAT2( 0.0f, 0.0f)},
-	        {XMFLOAT3(-1, +1, -1), XMFLOAT3(-1.0f, 0.0f, 0.0f), XMFLOAT2( 1.0f, 0.0f)},
-	        {XMFLOAT3(-1, -1, -1), XMFLOAT3(-1.0f, 0.0f, 0.0f), XMFLOAT2( 1.0f, 1.0f)},
+						// copy texture coordinate data from mesh
+						vertices[k].TexC.x = _mesh->mTextureCoords[0][k].x;
+						vertices[k].TexC.y = _mesh->mTextureCoords[0][k].y;
+					}
+				}
 
-			{XMFLOAT3(+1, -1, -1), XMFLOAT3(1.0f, 0.0f, 0.0f),  XMFLOAT2(0.0f, 1.0f)},
-	        {XMFLOAT3(+1, +1, -1), XMFLOAT3(1.0f, 0.0f, 0.0f),  XMFLOAT2(0.0f, 0.0f)},
-	        {XMFLOAT3(+1, +1, +1), XMFLOAT3(1.0f, 0.0f, 0.0f),  XMFLOAT2(1.0f, 0.0f)},
-			{XMFLOAT3(+1, -1, +1), XMFLOAT3(1.0f, 0.0f, 0.0f),  XMFLOAT2(1.0f, 1.0f)},
-		};
+			}
+		}
+
+		
+
+		//// Fill in the front face vertex data.
+		//TFPosNormTex vertices[] = 
+		//{
+	 //       {XMFLOAT3(-1, -1, -1), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT2( 0.0f, 1.0f)},
+	 //       {XMFLOAT3(-1, +1, -1), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT2( 0.0f, 0.0f)},
+	 //       {XMFLOAT3(+1, +1, -1), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT2( 1.0f, 0.0f)},
+	 //       {XMFLOAT3(+1, -1, -1), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT2( 1.0f, 1.0f)},
+
+		//	{XMFLOAT3(-1, -1, +1), XMFLOAT3(0.0f, 0.0f, 1.0f),  XMFLOAT2( 1.0f, 1.0f)},
+	 //       {XMFLOAT3(+1, -1, +1), XMFLOAT3(0.0f, 0.0f, 1.0f),  XMFLOAT2( 0.0f, 1.0f)},
+	 //       {XMFLOAT3(+1, +1, +1), XMFLOAT3(0.0f, 0.0f, 1.0f),  XMFLOAT2( 0.0f, 0.0f)},
+	 //       {XMFLOAT3(-1, +1, +1), XMFLOAT3(0.0f, 0.0f, 1.0f),  XMFLOAT2( 1.0f, 0.0f)},
+
+		//	{XMFLOAT3(-1, +1, -1), XMFLOAT3(0.0f, 1.0f, 0.0f),  XMFLOAT2( 0.0f, 1.0f)},
+	 //       {XMFLOAT3(-1, +1, +1), XMFLOAT3(0.0f, 1.0f, 0.0f),  XMFLOAT2( 0.0f, 0.0f)},
+	 //       {XMFLOAT3(+1, +1, +1), XMFLOAT3(0.0f, 1.0f, 0.0f),  XMFLOAT2( 1.0f, 0.0f)},
+	 //       {XMFLOAT3(+1, +1, -1), XMFLOAT3(0.0f, 1.0f, 0.0f),  XMFLOAT2( 1.0f, 1.0f)},
+
+		//	{XMFLOAT3(-1, -1, -1), XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2( 1.0f, 1.0f)},
+	 //       {XMFLOAT3(+1, -1, -1), XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2( 0.0f, 1.0f)},
+	 //       {XMFLOAT3(+1, -1, +1), XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2( 0.0f, 0.0f)},
+	 //       {XMFLOAT3(-1, -1, +1), XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2( 1.0f, 0.0f)},
+
+		//	{XMFLOAT3(-1, -1, +1), XMFLOAT3(-1.0f, 0.0f, 0.0f), XMFLOAT2( 0.0f, 1.0f)},
+	 //       {XMFLOAT3(-1, +1, +1), XMFLOAT3(-1.0f, 0.0f, 0.0f), XMFLOAT2( 0.0f, 0.0f)},
+	 //       {XMFLOAT3(-1, +1, -1), XMFLOAT3(-1.0f, 0.0f, 0.0f), XMFLOAT2( 1.0f, 0.0f)},
+	 //       {XMFLOAT3(-1, -1, -1), XMFLOAT3(-1.0f, 0.0f, 0.0f), XMFLOAT2( 1.0f, 1.0f)},
+
+		//	{XMFLOAT3(+1, -1, -1), XMFLOAT3(1.0f, 0.0f, 0.0f),  XMFLOAT2(0.0f, 1.0f)},
+	 //       {XMFLOAT3(+1, +1, -1), XMFLOAT3(1.0f, 0.0f, 0.0f),  XMFLOAT2(0.0f, 0.0f)},
+	 //       {XMFLOAT3(+1, +1, +1), XMFLOAT3(1.0f, 0.0f, 0.0f),  XMFLOAT2(1.0f, 0.0f)},
+		//	{XMFLOAT3(+1, -1, +1), XMFLOAT3(1.0f, 0.0f, 0.0f),  XMFLOAT2(1.0f, 1.0f)},
+		//};
 
 		// scale the geometry
 		for(size_t i = 0; i < VERTEX_COUNT; ++i)
