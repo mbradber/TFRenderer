@@ -56,7 +56,7 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 		m_shaderManager.GetActiveVertexShader(),
 		m_shaderManager.GetActivePixelShader(), 
 		m_shaderManager.GetActiveInputLayout(), 
-		"..\\Models\\tree1_3ds\\Tree1.3ds");
+		"..\\Models\\tree1\\Tree1.3ds");
 
 	m_zard1.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
