@@ -31,7 +31,7 @@ namespace TFCore
 			ID3D11VertexShader* a_pVertexShader,
 			ID3D11PixelShader* a_pPixelShader,
 			ID3D11InputLayout* a_pInputLayout,
-			const std::wstring& a_sFilePathTexture);
+			const std::string& a_sAssetPath);
 
 		ID3D11VertexShader* GetVertexShader() const; 
 		ID3D11PixelShader*  GetPixelShader()  const;
@@ -67,7 +67,7 @@ namespace TFCore
 		size_t                    m_nIndexCount;
 		TFMaterial                m_material;
 		std::wstring              m_wsShaderPath;
-		std::wstring              m_wsTexturePath;
+		std::string               m_sAssetPath;
 		ID3D11VertexShader*	      m_pVertexShader;
 		ID3D11PixelShader*		  m_pPixelShader;
 		ID3D11ShaderResourceView* m_pTextureSRV;

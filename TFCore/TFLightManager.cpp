@@ -36,6 +36,11 @@ namespace TFCore
 
 		// Create the constant buffer with the device
 		HR(m_pDevice->CreateBuffer(&bd, NULL, &m_pCBDirectionalLight));
+
+		m_pDeviceContext->UpdateSubresource(m_pCBDirectionalLight, 0, NULL, &m_directionaLight1Buffer, 0, 0);
+
+		// Bind the constant buffer containing the light info to the shaders it will be used in
+		m_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pCBDirectionalLight);
 	}
 
 	void TFLightManager::Update(float a_fDeltaTime, const XMFLOAT3& a_vEyePos)

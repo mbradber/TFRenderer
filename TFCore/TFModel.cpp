@@ -29,12 +29,12 @@ namespace TFCore
 		ID3D11VertexShader* a_pVertexShader,
 		ID3D11PixelShader* a_pPixelShader,
 		ID3D11InputLayout* a_pInputLayout,
-		const std::wstring& a_sFilePathTexture)
+		const std::string& a_sAssetPath)
 	{
 		m_pd3dDevice     = a_pDevice;
 		m_pDeviceContext = a_pDeviceContext;
 		m_fScale         = a_fScale;
-		m_wsTexturePath  = a_sFilePathTexture;
+		m_sAssetPath    = a_sAssetPath;
 		m_pVertexShader  = a_pVertexShader;
 		m_pPixelShader   = a_pPixelShader;
 		m_pInputLayout   = a_pInputLayout;
@@ -45,14 +45,17 @@ namespace TFCore
 		// remove point and line primitives
 		importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE|aiPrimitiveType_POINT);
 
-		const aiScene* scene = importer.ReadFile("..\\Models\\tree1_3ds\\Tree1.3ds",
+		const aiScene* scene = importer.ReadFile(
+			//"..\\Models\\tree1_3ds\\Tree1.3ds",
+			m_sAssetPath,
 			aiProcess_CalcTangentSpace       | 
 			aiProcess_Triangulate            |
 			aiProcess_JoinIdenticalVertices  |
 			aiProcess_SortByPType            |
 			aiProcess_MakeLeftHanded         |
+			aiProcess_GenSmoothNormals       |
 			//aiProcess_GenUVCoords            |
-			//aiProcess_TransformUVCoords |
+			//aiProcess_TransformUVCoords      |
 			aiProcess_FlipWindingOrder       |
 			aiProcess_FlipUVs           
 			);
@@ -141,14 +144,12 @@ namespace TFCore
 		}
 	}
 
-	/*** THIS WILL ONLY WORK FOR SCENES WITH ONE MESH RIGHT NOW!!, NEED TO PASS START INDEX FOR VERTS AND INDICES **/
 	void TFModel::ProcessNode(const aiScene* const a_pScene, aiNode* a_pNode, TFPosNormTex*& a_pVertices, UINT*& a_pIndices, size_t* a_pVertexOffset, size_t* a_pIndexOffset)
 	{
 		// grab the number of meshes for this node
 		size_t _nNumMeshes = a_pNode->mNumMeshes;
 
 		for(size_t i = 0; i < _nNumMeshes; ++i)
-//		for(int i = _nNumMeshes - 1; i >= 0; --i)
 		{
 			aiMesh* _mesh   = a_pScene->mMeshes[a_pNode->mMeshes[i]];
 
@@ -201,7 +202,6 @@ namespace TFCore
 		{
 			// recursively process each child node of this node
 			for(size_t i = 0; i < a_pNode->mNumChildren; ++i)
-			//for(int i = a_pNode->mNumChildren - 1; i >= 0; --i)
 			{
 				ProcessNode(a_pScene, a_pNode->mChildren[i], a_pVertices, a_pIndices, a_pVertexOffset, a_pIndexOffset);
 			}
@@ -227,7 +227,7 @@ namespace TFCore
 		// TODO: D3DX stuff is deprecated, use another method for loading textures when you have time.
 
 		// Create the texture for this model
-		HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, m_wsTexturePath.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
+		HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, L"..\\Textures\\WoodCrate01.dds", NULL, NULL, &m_pTextureSRV, NULL));
 	}
 
 	ID3D11VertexShader* TFModel::GetVertexShader() const
