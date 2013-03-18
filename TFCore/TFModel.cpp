@@ -45,7 +45,7 @@ namespace TFCore
 		// remove point and line primitives
 		importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE|aiPrimitiveType_POINT);
 
-		const aiScene* scene = importer.ReadFile("..\\Models\\SimpleCube.obj",
+		const aiScene* scene = importer.ReadFile("..\\Models\\tree1_3ds\\Tree1.3ds",
 			aiProcess_CalcTangentSpace       | 
 			aiProcess_Triangulate            |
 			aiProcess_JoinIdenticalVertices  |
@@ -72,7 +72,9 @@ namespace TFCore
 		UINT*        _pIndices  = new UINT[m_nIndexCount];
 
 		// Traverse the scene nodes and parse vertex and index data
-		ProcessNode(scene, _root, _pVertices, _pIndices);
+		size_t _nVertexOffset = 0;
+		size_t _nIndexOffset  = 0;
+		ProcessNode(scene, _root, _pVertices, _pIndices, &_nVertexOffset, &_nIndexOffset);
 
 		// describe the vertex buffer
 		D3D11_BUFFER_DESC bd;
@@ -140,13 +142,13 @@ namespace TFCore
 	}
 
 	/*** THIS WILL ONLY WORK FOR SCENES WITH ONE MESH RIGHT NOW!!, NEED TO PASS START INDEX FOR VERTS AND INDICES **/
-	void TFModel::ProcessNode(const aiScene* const a_pScene, aiNode* a_pNode, TFPosNormTex*& a_pVertices, UINT*& a_pIndices)
+	void TFModel::ProcessNode(const aiScene* const a_pScene, aiNode* a_pNode, TFPosNormTex*& a_pVertices, UINT*& a_pIndices, size_t* a_pVertexOffset, size_t* a_pIndexOffset)
 	{
 		// grab the number of meshes for this node
 		size_t _nNumMeshes = a_pNode->mNumMeshes;
-		size_t index = 0;
 
 		for(size_t i = 0; i < _nNumMeshes; ++i)
+//		for(int i = _nNumMeshes - 1; i >= 0; --i)
 		{
 			aiMesh* _mesh   = a_pScene->mMeshes[a_pNode->mMeshes[i]];
 
@@ -155,34 +157,39 @@ namespace TFCore
 
 			for(size_t j = 0; j < _mesh->mNumVertices; ++j)
 			{
+				size_t _nVertexIndex = j + *a_pVertexOffset;
+
 				// Copy vertex data
-				a_pVertices[j].Pos.x = _mesh->mVertices[j].x;
-				a_pVertices[j].Pos.y = _mesh->mVertices[j].y;
-				a_pVertices[j].Pos.z = _mesh->mVertices[j].z;
+				a_pVertices[_nVertexIndex].Pos.x = _mesh->mVertices[j].x;
+				a_pVertices[_nVertexIndex].Pos.y = _mesh->mVertices[j].y;
+				a_pVertices[_nVertexIndex].Pos.z = _mesh->mVertices[j].z;
 
-				a_pVertices[j].Norm.x = _mesh->mNormals[j].x;
-				a_pVertices[j].Norm.y = _mesh->mNormals[j].y;
-				a_pVertices[j].Norm.z = _mesh->mNormals[j].z;
+				a_pVertices[_nVertexIndex].Norm.x = _mesh->mNormals[j].x;
+				a_pVertices[_nVertexIndex].Norm.y = _mesh->mNormals[j].y;
+				a_pVertices[_nVertexIndex].Norm.z = _mesh->mNormals[j].z;
 
-				// copy texture coordinate data from mesh
-				a_pVertices[j].TexC.x = 0; //_mesh->mTextureCoords[0][k].x;
-				a_pVertices[j].TexC.y = 0; //_mesh->mTextureCoords[0][k].y;
+				// copy text from mesh
+				a_pVertices[_nVertexIndex].TexC.x = 0; //_mesh->mTextureCoords[0][k].x;
+				a_pVertices[_nVertexIndex].TexC.y = 0; //_mesh->mTextureCoords[0][k].y;
 			}
 
 			// copy index data
 			for(size_t j = 0; j < _mesh->mNumFaces; ++j)
 			{
-				aiFace _face = _mesh->mFaces[j];
+				aiFace _face         = _mesh->mFaces[j];
+				size_t _nNumIndices  = _face.mNumIndices;
+				size_t _nIndexOffset = (j * 3) + *a_pIndexOffset;
 
-				size_t _nNumIndices = _face.mNumIndices;
-
-				//a_pIndices[3 * j + 0] = _face.mIndices[0];
-				//a_pIndices[3 * j + 1] = _face.mIndices[1];
-				//a_pIndices[3 * j + 2] = _face.mIndices[2];
-				a_pIndices[index++] = _face.mIndices[0];
-				a_pIndices[index++] = _face.mIndices[1];
-				a_pIndices[index++] = _face.mIndices[2];
+				a_pIndices[_nIndexOffset + 0] = _face.mIndices[0] + *a_pVertexOffset;
+				a_pIndices[_nIndexOffset + 1] = _face.mIndices[1] + *a_pVertexOffset;
+				a_pIndices[_nIndexOffset + 2] = _face.mIndices[2] + *a_pVertexOffset;
 			}
+
+			// Update the vertex offset for the next mesh
+			*a_pVertexOffset += _mesh->mNumVertices;
+
+			// Update the index offset for next mesh
+			*a_pIndexOffset += (_mesh->mNumFaces * 3);
 		}
 
 		// return if this node has no children
@@ -194,8 +201,9 @@ namespace TFCore
 		{
 			// recursively process each child node of this node
 			for(size_t i = 0; i < a_pNode->mNumChildren; ++i)
+			//for(int i = a_pNode->mNumChildren - 1; i >= 0; --i)
 			{
-				ProcessNode(a_pScene, a_pNode->mChildren[i], a_pVertices, a_pIndices);
+				ProcessNode(a_pScene, a_pNode->mChildren[i], a_pVertices, a_pIndices, a_pVertexOffset, a_pIndexOffset);
 			}
 		}
 	}

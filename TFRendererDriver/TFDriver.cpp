@@ -124,7 +124,7 @@ void TFApplication::RenderScene()
 	// Update and activate the shaders, then draw the geometry
 	m_pCube1->UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_pCube1->ActivateShaders();
-	m_pCube1->Draw();
+	//m_pCube1->Draw();
 
 	// Set world matrix for second box
 	m_matWorld = XMMatrixTranslation(-2.0f, 0.0f, 0.0f);
@@ -135,7 +135,7 @@ void TFApplication::RenderScene()
 	// Update and activate the shaders, then draw the geometry
 	m_pCube2->UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_pCube2->ActivateShaders();
-	m_pCube2->Draw();
+	//m_pCube2->Draw();
 
 	// set world matrix for model
 	m_matWorld = XMMatrixIdentity();
@@ -160,7 +160,7 @@ void TFApplication::RenderScene()
 	// Update and activate the shaders, then draw the geometry
 	m_pGround1->UpdateResources(_matWVP, m_matWorld, _matTexTransform, m_fmCamera.GetPosition());
 	m_pGround1->ActivateShaders();
-	m_pGround1->Draw();
+	//m_pGround1->Draw();
 
 	// Display the back buffer
 	m_pSwapChain->Present( 0, 0 );
