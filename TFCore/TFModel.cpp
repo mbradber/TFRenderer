@@ -50,9 +50,10 @@ namespace TFCore
 			aiProcess_Triangulate            |
 			aiProcess_JoinIdenticalVertices  |
 			aiProcess_SortByPType            |
+			aiProcess_MakeLeftHanded         |
 			//aiProcess_GenUVCoords            |
 			//aiProcess_TransformUVCoords |
-			//aiProcess_FlipWindingOrder       |
+			aiProcess_FlipWindingOrder       |
 			aiProcess_FlipUVs           
 			);
 
@@ -98,6 +99,11 @@ namespace TFCore
 		InitData.pSysMem  = _pIndices;
 		HR(m_pd3dDevice->CreateBuffer(&bd, &InitData, &m_pIndexBuffer));
 
+
+		delete [] _pVertices;
+		delete [] _pIndices;
+
+
 		GenerateShaderResources();
 	}
 
@@ -138,6 +144,7 @@ namespace TFCore
 	{
 		// grab the number of meshes for this node
 		size_t _nNumMeshes = a_pNode->mNumMeshes;
+		size_t index = 0;
 
 		for(size_t i = 0; i < _nNumMeshes; ++i)
 		{
@@ -169,9 +176,12 @@ namespace TFCore
 
 				size_t _nNumIndices = _face.mNumIndices;
 
-				a_pIndices[3 * j + 0] = _face.mIndices[0];
-				a_pIndices[3 * j + 1] = _face.mIndices[1];
-				a_pIndices[3 * j + 2] = _face.mIndices[2];
+				//a_pIndices[3 * j + 0] = _face.mIndices[0];
+				//a_pIndices[3 * j + 1] = _face.mIndices[1];
+				//a_pIndices[3 * j + 2] = _face.mIndices[2];
+				a_pIndices[index++] = _face.mIndices[0];
+				a_pIndices[index++] = _face.mIndices[1];
+				a_pIndices[index++] = _face.mIndices[2];
 			}
 		}
 
@@ -278,7 +288,7 @@ namespace TFCore
 		m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &_nStride, &_nOffset);
 
 		// Set index buffer
-		m_pDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+		m_pDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 		// Set primitive topology
 		m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		// Draw self

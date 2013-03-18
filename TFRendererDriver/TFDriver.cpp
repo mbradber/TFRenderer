@@ -30,7 +30,7 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	InitWindowsApp(hInstance, nCmdShow);
 	InitD3D();
 
-	TFModel model;
+	
 
 	m_lightManager.Init(m_pd3dDevice, m_pd3dImmDeviceContext);
 
@@ -43,7 +43,7 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler );
 
 
-	model.Init(m_pd3dDevice, m_pd3dImmDeviceContext, 1.0f, m_shaderManager.GetActiveVertexShader(),
+	m_model.Init(m_pd3dDevice, m_pd3dImmDeviceContext, 1.0f, m_shaderManager.GetActiveVertexShader(),
 		m_shaderManager.GetActivePixelShader(), m_shaderManager.GetActiveInputLayout(), L"..\\Textures\\WoodCrate01.dds");
 
 
@@ -136,6 +136,13 @@ void TFApplication::RenderScene()
 	m_pCube2->UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_pCube2->ActivateShaders();
 	m_pCube2->Draw();
+
+	// set world matrix for model
+	m_matWorld = XMMatrixIdentity();
+	_matWVP = m_matWorld * m_matView * m_matProj;
+	m_model.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_model.ActivateShaders();
+	m_model.Draw();
 
 	// Set world matrix for ground
 

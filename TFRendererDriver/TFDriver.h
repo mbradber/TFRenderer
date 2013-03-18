@@ -5,6 +5,7 @@
 #include "TFFreeMotionCamera.h"
 #include "TFShaderManager.h"
 #include "TFLightManager.h"
+#include "TFModel.h"
 
 class TFApplication: public TFCore::TFWinBase
 {
@@ -26,6 +27,7 @@ private:
 	TFCore::TFFreeMotionCamera m_fmCamera;
 	TFCore::TFLightManager m_lightManager;
 	TFCore::TFShaderManager m_shaderManager;
+	TFCore::TFModel m_model;
 
 	XMMATRIX m_matView;
 	XMMATRIX m_matProj;
