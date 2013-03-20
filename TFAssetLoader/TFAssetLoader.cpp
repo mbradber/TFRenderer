@@ -31,7 +31,7 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	m_shaderManager.SetActivePixelShader(L"..\\Debug\\SimpleDirLightPS.cso");
 
 	// Bind the default sampler state to the PS
-	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState();
+	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(0);
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler );
 
 	m_spider.Init(m_pd3dDevice, 
@@ -132,12 +132,15 @@ void TFApplication::RenderScene()
 	m_tree1.Draw();
 
 	// Set the world matrix for the fourth model
-	m_matWorld = XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), -1.047);
+	m_matWorld = XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), -1.047f);
 	m_matWorld = m_matWorld * XMMatrixTranslation(-7.0f, 2.5f, 2.0f);
 	_matWVP = m_matWorld * m_matView * m_matProj;
 	m_zard1.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_zard1.ActivateShaders();
 	m_zard1.Draw();
+
+	// restore default states
+	m_pd3dImmDeviceContext->RSSetState(0);
 
 	// Display the back buffer
 	m_pSwapChain->Present( 0, 0 );

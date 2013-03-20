@@ -37,9 +37,11 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	m_shaderManager.Init(m_pd3dDevice);
 	m_shaderManager.SetActiveVertexShader(L"..\\Debug\\SimpleDirLightVS.cso", TFPositionNormalTextureLayout, 3);
 	m_shaderManager.SetActivePixelShader(L"..\\Debug\\SimpleDirLightPS.cso");
+	m_shaderManager.AddVertexShader(L"..\\Debug\\SkyVS.cso", TFSimplePositionLayout, 1);
+	m_shaderManager.AddPixelShader(L"..\\Debug\\SkyPS.cso");
 
 	// Bind the default sampler state to the PS
-	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState();
+	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(0);
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler );
 
 
@@ -72,6 +74,30 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 		m_shaderManager.GetActivePixelShader(), 
 		m_shaderManager.GetActiveInputLayout(), 
 		L"..\\Textures\\WoodCrate02.dds");
+
+	// cube map stuff (move somewhere else later)
+
+	m_ellipsoid.Init(m_pd3dDevice, 
+		m_pd3dImmDeviceContext, 
+		1.0f, 
+		m_shaderManager.GetActiveVertexShader(),
+		m_shaderManager.GetActivePixelShader(), 
+		m_shaderManager.GetActiveInputLayout(), 
+		"..\\Models\\SimpleSphere.obj");
+
+	HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, L"..\\Textures\\snowcube1024.dds", 0, 0, &m_cubeMapSRV, 0));
+
+	// describe the cb for the WVP matrix
+	D3D11_BUFFER_DESC bd;
+	ZeroMemory(&bd, sizeof(bd));
+	bd.Usage          = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth      = sizeof(XMMATRIX);
+	bd.BindFlags      = D3D11_BIND_CONSTANT_BUFFER;
+	bd.CPUAccessFlags = 0;
+	bd.MiscFlags      = 0;
+
+	// Create the constant buffer with the device
+	HR(m_pd3dDevice->CreateBuffer(&bd, NULL, &m_pEllipsoidCB));
 
 
 	// Set up initial matrices for WVP
@@ -160,6 +186,43 @@ void TFApplication::RenderScene()
 	m_pGround1->UpdateResources(_matWVP, m_matWorld, _matTexTransform, m_fmCamera.GetPosition());
 	m_pGround1->ActivateShaders();
 	m_pGround1->Draw();
+
+	// Set world matrix for first model
+	m_matWorld = XMMatrixIdentity();
+	m_matWorld = m_matWorld * XMMatrixScaling(100.0f, 100.0f, 100.0f);
+
+	// update render state and depth/stencil state for ellipsoid
+	TFRenderNoCull(m_pd3dDevice, m_pd3dImmDeviceContext);
+	TFSetDepthLessEqual(m_pd3dDevice, m_pd3dImmDeviceContext);
+
+	// set sampler state for cube map
+	ID3D11SamplerState* _trilinearSampler = m_shaderManager.GetSamplerState(1);
+	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_trilinearSampler );
+
+	// Update the geometry with their respective transforms
+	_matWVP = m_matWorld * m_matView * m_matProj;
+
+	//m_ellipsoid.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
+	//m_ellipsoid.ActivateShaders();
+
+	XMMATRIX _matEllipseWVP = XMMatrixTranspose(_matWVP);
+	m_pd3dImmDeviceContext->UpdateSubresource(m_pEllipsoidCB, 0, NULL, &_matEllipseWVP, 0, 0);
+
+	m_pd3dImmDeviceContext->VSSetShader(m_shaderManager.GetSkyVS(), NULL, 0);
+	m_pd3dImmDeviceContext->PSSetShader(m_shaderManager.GetSkyPS(), NULL, 0); 
+
+	m_pd3dImmDeviceContext->VSSetConstantBuffers(0, 1, &m_pEllipsoidCB);
+	m_pd3dImmDeviceContext->PSSetShaderResources(0, 1, &m_cubeMapSRV);
+	m_pd3dImmDeviceContext->IASetInputLayout(m_shaderManager.GetSimplePosInputLayout());
+
+	m_ellipsoid.Draw();
+
+	// restore default states
+	m_pd3dImmDeviceContext->RSSetState(0);
+	m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
+
+	ID3D11SamplerState* _anisoSampler = m_shaderManager.GetSamplerState(0);
+	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_anisoSampler );
 
 	// Display the back buffer
 	m_pSwapChain->Present( 0, 0 );

@@ -32,4 +32,9 @@ private:
 	XMMATRIX m_matView;
 	XMMATRIX m_matProj;
 	XMMATRIX m_matWorld;
+
+	ID3D11ShaderResourceView* m_cubeMapSRV;
+	TFCore::TFModel m_ellipsoid;
+	ID3D11Buffer* m_pEllipsoidCB;
+
 };

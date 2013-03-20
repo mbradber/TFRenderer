@@ -19,6 +19,9 @@
     <Filter Include="Shaders\SimpleLightTexture">
       <UniqueIdentifier>{0b9998f1-b885-43c1-9682-ffb324e4d684}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Sky">
+      <UniqueIdentifier>{22894ee0-bb36-49f6-a6ba-a14ba5f0c9fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TFDriver.cpp">
@@ -32,6 +35,9 @@
     <ClInclude Include="SimpleDirLightCommon.h">
       <Filter>Shaders\SimpleLightTexture</Filter>
     </ClInclude>
+    <ClInclude Include="SkyCommon.h">
+      <Filter>Shaders\Sky</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="SimplePosCol.hlsl">
@@ -42,6 +48,12 @@
     </FxCompile>
     <FxCompile Include="SimpleDirLightVS.hlsl">
       <Filter>Shaders\SimpleLightTexture</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyVS.hlsl">
+      <Filter>Shaders\Sky</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyPS.hlsl">
+      <Filter>Shaders\Sky</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

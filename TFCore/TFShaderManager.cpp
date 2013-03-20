@@ -13,7 +13,8 @@ namespace TFCore
 		 m_pActiveVertexShader(NULL),
 		 m_pActivePixelShader(NULL),
 		 m_pActiveInputLayout(NULL),
-		 m_pSamplerStateAniso(NULL)
+		 m_pSamplerStateAniso(NULL),
+		 m_pSamplerStateTriLinear(NULL)
 	{
 	}
 
@@ -104,6 +105,80 @@ namespace TFCore
 		BuildSamplerStates();
 	}
 
+	void TFShaderManager::AddVertexShader(const std::wstring& a_sFilePathShader, const D3D11_INPUT_ELEMENT_DESC* a_inputLayout, size_t a_nComponents)
+	{
+		// Open compiled shader file and read it...
+		ULONG _nFileSize = 0;
+		ifstream _reader(a_sFilePathShader.c_str(), ios::in | ios::binary | ios::ate);
+		UCHAR* _cbBuffer;
+
+		if(_reader.is_open())
+		{
+			_nFileSize = static_cast<ULONG>(_reader.tellg());
+			_cbBuffer  = new UCHAR[_nFileSize];
+		}
+		else
+		{
+			// File could not be opened
+			TF_ASSERT(false, FILE_NAME, LINE_NO);
+		}
+
+		// Load the file into memory
+		_reader.seekg(0, ios::beg); // return the get pointer to beginning of file
+		_reader.read(reinterpret_cast<char*>(_cbBuffer), _nFileSize);
+
+		if(_reader.is_open())
+		{
+			_reader.close();
+		}
+
+		TF_ASSERT(m_pd3dDevice != NULL, FILE_NAME, LINE_NO);
+
+		// Create vertex shader from compiled object
+		HR(m_pd3dDevice->CreateVertexShader(_cbBuffer, _nFileSize, NULL, &m_pSkyVertexShader));	
+
+		// Create input layout from shader object
+		HR(m_pd3dDevice->CreateInputLayout(a_inputLayout, a_nComponents, _cbBuffer, _nFileSize, &m_pSimplePosInputLayout));
+
+		// Free buffer
+		delete[] _cbBuffer;
+	}
+
+	void TFShaderManager::AddPixelShader(const std::wstring& a_sFilePathShader)
+	{
+		// Open compiled shader file and read it...
+		ULONG _nFileSize = 0;
+		ifstream _reader(a_sFilePathShader.c_str(), ios::in | ios::binary | ios::ate);
+		UCHAR* _cbBuffer;
+
+		if(_reader.is_open())
+		{
+			_nFileSize = static_cast<ULONG>(_reader.tellg());
+			_cbBuffer  = new UCHAR[_nFileSize];
+		}
+		else
+		{
+			// File could not be opened
+			TF_ASSERT(false, FILE_NAME, LINE_NO);
+		}
+
+		// Load the file into memory
+		_reader.seekg(0, ios::beg); // return the get pointer to beginning of file
+		_reader.read(reinterpret_cast<char*>(_cbBuffer), _nFileSize);
+
+		if(_reader.is_open())
+		{
+			_reader.close();
+		}
+
+		TF_ASSERT(m_pd3dDevice != NULL, FILE_NAME, LINE_NO);
+		// Create pixel shader
+		HR(m_pd3dDevice->CreatePixelShader(_cbBuffer, _nFileSize, NULL, &m_pSkyPixelShader));
+
+		// Free buffer
+		delete[] _cbBuffer;
+	}
+
 	void TFShaderManager::BuildSamplerStates()
 	{
 		D3D11_SAMPLER_DESC _anisoSampler;
@@ -118,11 +193,27 @@ namespace TFCore
 		_anisoSampler.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
 
 		HR(m_pd3dDevice->CreateSamplerState(&_anisoSampler, &m_pSamplerStateAniso));
+
+		D3D11_SAMPLER_DESC _triLinearSampler;
+		_triLinearSampler.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		_triLinearSampler.AddressU       = D3D11_TEXTURE_ADDRESS_WRAP;
+		_triLinearSampler.AddressV       = D3D11_TEXTURE_ADDRESS_WRAP;
+		_triLinearSampler.AddressW       = D3D11_TEXTURE_ADDRESS_WRAP;
+		_triLinearSampler.MinLOD		 = -FLT_MAX;
+		_triLinearSampler.MaxLOD		 = FLT_MAX;
+		_triLinearSampler.MipLODBias     = 0;
+		_triLinearSampler.MaxAnisotropy  = 16;
+		_triLinearSampler.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+		HR(m_pd3dDevice->CreateSamplerState(&_anisoSampler, &m_pSamplerStateTriLinear));
 	}
 
-	ID3D11SamplerState* TFShaderManager::GetSamplerState() const
+	ID3D11SamplerState* TFShaderManager::GetSamplerState(size_t a_nSamplerIndex) const
 	{
-		return m_pSamplerStateAniso;
+		if(a_nSamplerIndex == 0)
+			return m_pSamplerStateAniso;
+
+		else
+			return m_pSamplerStateTriLinear;
 	}
 
 	ID3D11VertexShader* TFShaderManager::GetActiveVertexShader() const

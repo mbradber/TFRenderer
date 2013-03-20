@@ -28,4 +28,4 @@ cbuffer cbPerObject : register(b0)
 	float4x4 WorldViewProjectionMatrix;
 	float4x4 TexTransform;
 	Material MaterialObj;
-}
+};
