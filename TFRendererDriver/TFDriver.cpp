@@ -30,19 +30,28 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	InitWindowsApp(hInstance, nCmdShow);
 	InitD3D();
 
-	
-
 	m_lightManager.Init(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	m_shaderManager.Init(m_pd3dDevice);
-	m_shaderManager.SetActiveVertexShader(L"..\\Debug\\SimpleDirLightVS.cso", TFPositionNormalTextureLayout, 3);
-	m_shaderManager.SetActivePixelShader(L"..\\Debug\\SimpleDirLightPS.cso");
-	m_shaderManager.AddVertexShader(L"..\\Debug\\SkyVS.cso", TFSimplePositionLayout, 1);
-	m_shaderManager.AddPixelShader(L"..\\Debug\\SkyPS.cso");
+
+	m_shaderManager.AddVertexShader(L"SimpleDirLight", L"..\\Debug\\SimpleDirLightVS.cso", TFPositionNormalTextureLayout, 3);
+	m_shaderManager.AddPixelShader(L"SimpleDirLight", L"..\\Debug\\SimpleDirLightPS.cso");
+
+	m_shaderManager.AddVertexShader(L"Sky", L"..\\Debug\\SkyVS.cso", TFSimplePositionLayout, 1);
+	m_shaderManager.AddPixelShader(L"Sky", L"..\\Debug\\SkyPS.cso");
 
 	// Bind the default sampler state to the PS
-	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(0);
-	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler );
+	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
+	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler);
+
+
+	ID3D11VertexShader* _pSimpleDirVS = m_shaderManager.GetVertexShaderByName(L"SimpleDirLight");
+	ID3D11PixelShader*  _pSimpleDirPS = m_shaderManager.GetPixelShaderByName(L"SimpleDirLight");
+	ID3D11InputLayout*  _pSimpleDirInputLayout = m_shaderManager.GetInputLayoutByName(L"SimpleDirLight");
+
+	ID3D11VertexShader* _pSkyVS = m_shaderManager.GetVertexShaderByName(L"Sky");
+	ID3D11PixelShader*  _pSkyPS = m_shaderManager.GetPixelShaderByName(L"Sky");
+	ID3D11InputLayout*  _pSkyInputLayout = m_shaderManager.GetInputLayoutByName(L"Sky");
 
 
 	//m_model.Init(m_pd3dDevice, m_pd3dImmDeviceContext, 1.0f, m_shaderManager.GetActiveVertexShader(),
@@ -52,27 +61,27 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 		m_pd3dDevice, 
 		m_pd3dImmDeviceContext, 
 		1.0f, 
-		m_shaderManager.GetActiveVertexShader(), 
-		m_shaderManager.GetActivePixelShader(), 
-		m_shaderManager.GetActiveInputLayout(), 
+		_pSimpleDirVS,
+		_pSimpleDirPS,
+		_pSimpleDirInputLayout,
 		L"..\\Textures\\grass.dds");
 
 	m_pCube1->Init(
 		m_pd3dDevice, 
 		m_pd3dImmDeviceContext, 
 		1.0f, 
-		m_shaderManager.GetActiveVertexShader(), 
-		m_shaderManager.GetActivePixelShader(), 
-		m_shaderManager.GetActiveInputLayout(), 
+		_pSimpleDirVS,
+		_pSimpleDirPS,
+		_pSimpleDirInputLayout,
 		L"..\\Textures\\WoodCrate01.dds");
 
 	m_pCube2->Init(
 		m_pd3dDevice, 
 		m_pd3dImmDeviceContext, 
 		1.0f, 
-		m_shaderManager.GetActiveVertexShader(), 
-		m_shaderManager.GetActivePixelShader(), 
-		m_shaderManager.GetActiveInputLayout(), 
+		_pSimpleDirVS,
+		_pSimpleDirPS,
+		_pSimpleDirInputLayout,
 		L"..\\Textures\\WoodCrate02.dds");
 
 	// cube map stuff (move somewhere else later)
@@ -80,9 +89,9 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	m_ellipsoid.Init(m_pd3dDevice, 
 		m_pd3dImmDeviceContext, 
 		1.0f, 
-		m_shaderManager.GetActiveVertexShader(),
-		m_shaderManager.GetActivePixelShader(), 
-		m_shaderManager.GetActiveInputLayout(), 
+		_pSkyVS,
+		_pSkyPS,
+		_pSkyInputLayout,
 		"..\\Models\\SimpleSphere.obj");
 
 	HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, L"..\\Textures\\snowcube1024.dds", 0, 0, &m_cubeMapSRV, 0));
@@ -196,7 +205,7 @@ void TFApplication::RenderScene()
 	TFSetDepthLessEqual(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	// set sampler state for cube map
-	ID3D11SamplerState* _trilinearSampler = m_shaderManager.GetSamplerState(1);
+	ID3D11SamplerState* _trilinearSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_TRILINEAR);
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_trilinearSampler );
 
 	// Update the geometry with their respective transforms
@@ -208,12 +217,12 @@ void TFApplication::RenderScene()
 	XMMATRIX _matEllipseWVP = XMMatrixTranspose(_matWVP);
 	m_pd3dImmDeviceContext->UpdateSubresource(m_pEllipsoidCB, 0, NULL, &_matEllipseWVP, 0, 0);
 
-	m_pd3dImmDeviceContext->VSSetShader(m_shaderManager.GetSkyVS(), NULL, 0);
-	m_pd3dImmDeviceContext->PSSetShader(m_shaderManager.GetSkyPS(), NULL, 0); 
+	m_pd3dImmDeviceContext->VSSetShader(m_ellipsoid.GetVertexShader(), NULL, 0);
+	m_pd3dImmDeviceContext->PSSetShader(m_ellipsoid.GetPixelShader(), NULL, 0); 
 
 	m_pd3dImmDeviceContext->VSSetConstantBuffers(0, 1, &m_pEllipsoidCB);
 	m_pd3dImmDeviceContext->PSSetShaderResources(0, 1, &m_cubeMapSRV);
-	m_pd3dImmDeviceContext->IASetInputLayout(m_shaderManager.GetSimplePosInputLayout());
+	m_pd3dImmDeviceContext->IASetInputLayout(m_ellipsoid.GetInputLayout());
 
 	m_ellipsoid.Draw();
 
@@ -221,7 +230,7 @@ void TFApplication::RenderScene()
 	m_pd3dImmDeviceContext->RSSetState(0);
 	m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
 
-	ID3D11SamplerState* _anisoSampler = m_shaderManager.GetSamplerState(0);
+	ID3D11SamplerState* _anisoSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_anisoSampler );
 
 	// Display the back buffer

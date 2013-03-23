@@ -22,48 +22,51 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	InitWindowsApp(hInstance, nCmdShow);
 	InitD3D();
 
-	
-
 	m_lightManager.Init(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	m_shaderManager.Init(m_pd3dDevice);
-	m_shaderManager.SetActiveVertexShader(L"..\\Debug\\SimpleDirLightVS.cso", TFPositionNormalTextureLayout, 3);
-	m_shaderManager.SetActivePixelShader(L"..\\Debug\\SimpleDirLightPS.cso");
+
+	m_shaderManager.AddVertexShader(L"SimpleDirLight", L"..\\Debug\\SimpleDirLightVS.cso", TFPositionNormalTextureLayout, 3);
+	m_shaderManager.AddPixelShader(L"SimpleDirLight", L"..\\Debug\\SimpleDirLightPS.cso");
 
 	// Bind the default sampler state to the PS
-	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(0);
+	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler );
 
-	m_spider.Init(m_pd3dDevice, 
+	ID3D11VertexShader* _pSimpleDirVS = m_shaderManager.GetVertexShaderByName(L"SimpleDirLight");
+	ID3D11PixelShader*  _pSimpleDirPS = m_shaderManager.GetPixelShaderByName(L"SimpleDirLight");
+	ID3D11InputLayout*  _pInputLayout = m_shaderManager.GetInputLayoutByName(L"SimpleDirLight");
+
+	m_spider.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
 		1.0f, 
-		m_shaderManager.GetActiveVertexShader(),
-		m_shaderManager.GetActivePixelShader(), 
-		m_shaderManager.GetActiveInputLayout(), 
+		_pSimpleDirVS,
+		_pSimpleDirPS,
+		_pInputLayout,
 		"..\\Models\\spider.irrmesh");
 
 	m_terrain.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
 		1.0f, 
-		m_shaderManager.GetActiveVertexShader(),
-		m_shaderManager.GetActivePixelShader(), 
-		m_shaderManager.GetActiveInputLayout(), 
+		_pSimpleDirVS,
+		_pSimpleDirPS,
+		_pInputLayout,
 		"..\\Models\\Simplecube.obj");
 
 	m_tree1.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
 		1.0f, 
-		m_shaderManager.GetActiveVertexShader(),
-		m_shaderManager.GetActivePixelShader(), 
-		m_shaderManager.GetActiveInputLayout(), 
+		_pSimpleDirVS,
+		_pSimpleDirPS,
+		_pInputLayout,
 		"..\\Models\\tree1\\Tree1.3ds");
 
 	m_zard1.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
 		1.0f, 
-		m_shaderManager.GetActiveVertexShader(),
-		m_shaderManager.GetActivePixelShader(), 
-		m_shaderManager.GetActiveInputLayout(), 
+		_pSimpleDirVS,
+		_pSimpleDirPS,
+		_pInputLayout,
 		"..\\Models\\zard.obj");
 
 	// Set up initial matrices for WVP
@@ -141,6 +144,7 @@ void TFApplication::RenderScene()
 
 	// restore default states
 	m_pd3dImmDeviceContext->RSSetState(0);
+	m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
 
 	// Display the back buffer
 	m_pSwapChain->Present( 0, 0 );

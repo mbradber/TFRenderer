@@ -35,6 +35,7 @@ namespace TFCore
 
 		ID3D11VertexShader* GetVertexShader() const; 
 		ID3D11PixelShader*  GetPixelShader()  const;
+		ID3D11InputLayout*  GetInputLayout() const;
 
 		void Draw();
 		void ActivateShaders();

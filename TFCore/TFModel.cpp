@@ -31,6 +31,9 @@ namespace TFCore
 		ID3D11InputLayout* a_pInputLayout,
 		const std::string& a_sAssetPath)
 	{
+		TF_ASSERT(a_pDevice != NULL && a_pDeviceContext != NULL && a_pVertexShader != NULL && a_pPixelShader != NULL,
+			FILE_NAME, LINE_NO);
+
 		m_pd3dDevice     = a_pDevice;
 		m_pDeviceContext = a_pDeviceContext;
 		m_fScale         = a_fScale;
@@ -54,8 +57,8 @@ namespace TFCore
 			aiProcess_SortByPType            |
 			aiProcess_MakeLeftHanded         |
 			aiProcess_GenSmoothNormals       |
-			//aiProcess_GenUVCoords            |
-			//aiProcess_TransformUVCoords      |
+			aiProcess_GenUVCoords            |
+			aiProcess_TransformUVCoords      |
 			aiProcess_FlipWindingOrder       |
 			aiProcess_FlipUVs           
 			);
@@ -238,6 +241,11 @@ namespace TFCore
 	ID3D11PixelShader*  TFModel::GetPixelShader() const
 	{
 		return m_pPixelShader;
+	}
+
+	ID3D11InputLayout* TFModel::GetInputLayout() const
+	{
+		return m_pInputLayout;
 	}
 
 	// TODO: Address tedious type changing issue...

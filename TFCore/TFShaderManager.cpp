@@ -27,6 +27,8 @@ namespace TFCore
 	void TFShaderManager::Init(ID3D11Device* a_pDevice)
 	{
 		m_pd3dDevice = a_pDevice;
+
+		BuildSamplerStates();
 	}
 
 	void TFShaderManager::SetActiveVertexShader(const std::wstring& a_sFilePathShader, const D3D11_INPUT_ELEMENT_DESC* a_inputLayout, size_t a_nComponents)
@@ -105,12 +107,14 @@ namespace TFCore
 		BuildSamplerStates();
 	}
 
-	void TFShaderManager::AddVertexShader(const std::wstring& a_sFilePathShader, const D3D11_INPUT_ELEMENT_DESC* a_inputLayout, size_t a_nComponents)
+	void TFShaderManager::AddVertexShader(const std::wstring& a_sName, const std::wstring& a_sFilePathShader, const D3D11_INPUT_ELEMENT_DESC* a_inputLayout, size_t a_nComponents)
 	{
 		// Open compiled shader file and read it...
 		ULONG _nFileSize = 0;
 		ifstream _reader(a_sFilePathShader.c_str(), ios::in | ios::binary | ios::ate);
 		UCHAR* _cbBuffer;
+		ID3D11VertexShader* _pVertexShader;
+		ID3D11InputLayout*  _pInputLayout;
 
 		if(_reader.is_open())
 		{
@@ -135,21 +139,27 @@ namespace TFCore
 		TF_ASSERT(m_pd3dDevice != NULL, FILE_NAME, LINE_NO);
 
 		// Create vertex shader from compiled object
-		HR(m_pd3dDevice->CreateVertexShader(_cbBuffer, _nFileSize, NULL, &m_pSkyVertexShader));	
+		HR(m_pd3dDevice->CreateVertexShader(_cbBuffer, _nFileSize, NULL, &_pVertexShader));	
 
 		// Create input layout from shader object
-		HR(m_pd3dDevice->CreateInputLayout(a_inputLayout, a_nComponents, _cbBuffer, _nFileSize, &m_pSimplePosInputLayout));
+		HR(m_pd3dDevice->CreateInputLayout(a_inputLayout, a_nComponents, _cbBuffer, _nFileSize, &_pInputLayout));
+
+		// Insert generated vertex shader into vertex shader map
+		m_mapVertexShaders.insert(std::pair<std::wstring, ID3D11VertexShader*>(a_sName, _pVertexShader));
+		// Insert generated input layout into input layout map
+		m_mapInputLayouts.insert(std::pair<std::wstring, ID3D11InputLayout*>(a_sName, _pInputLayout));
 
 		// Free buffer
 		delete[] _cbBuffer;
 	}
 
-	void TFShaderManager::AddPixelShader(const std::wstring& a_sFilePathShader)
+	void TFShaderManager::AddPixelShader(const std::wstring& a_sName, const std::wstring& a_sFilePathShader)
 	{
 		// Open compiled shader file and read it...
 		ULONG _nFileSize = 0;
 		ifstream _reader(a_sFilePathShader.c_str(), ios::in | ios::binary | ios::ate);
 		UCHAR* _cbBuffer;
+		ID3D11PixelShader* _pPixelShader;
 
 		if(_reader.is_open())
 		{
@@ -173,14 +183,34 @@ namespace TFCore
 
 		TF_ASSERT(m_pd3dDevice != NULL, FILE_NAME, LINE_NO);
 		// Create pixel shader
-		HR(m_pd3dDevice->CreatePixelShader(_cbBuffer, _nFileSize, NULL, &m_pSkyPixelShader));
+		HR(m_pd3dDevice->CreatePixelShader(_cbBuffer, _nFileSize, NULL, &_pPixelShader));
+
+		// insert generated pixel shader into map
+		m_mapPixelShaders.insert(std::pair<std::wstring, ID3D11PixelShader*>(a_sName, _pPixelShader));
 
 		// Free buffer
 		delete[] _cbBuffer;
 	}
 
+	ID3D11VertexShader* TFShaderManager::GetVertexShaderByName(const std::wstring& a_sName)
+	{
+		return m_mapVertexShaders.find(a_sName)->second;
+	}
+
+	ID3D11PixelShader*  TFShaderManager::GetPixelShaderByName(const std::wstring& a_sName)
+	{
+		return m_mapPixelShaders.find(a_sName)->second;
+	}
+
+	ID3D11InputLayout*  TFShaderManager::GetInputLayoutByName(const std::wstring& a_sName)
+	{
+		return m_mapInputLayouts.find(a_sName)->second;
+	}
+
 	void TFShaderManager::BuildSamplerStates()
 	{
+		ID3D11SamplerState* _pSamplerState = NULL;
+
 		D3D11_SAMPLER_DESC _anisoSampler;
 		_anisoSampler.Filter		 = D3D11_FILTER_ANISOTROPIC;
 		_anisoSampler.AddressU		 = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -192,7 +222,8 @@ namespace TFCore
 		_anisoSampler.MaxAnisotropy  = 16;
 		_anisoSampler.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
 
-		HR(m_pd3dDevice->CreateSamplerState(&_anisoSampler, &m_pSamplerStateAniso));
+		HR(m_pd3dDevice->CreateSamplerState(&_anisoSampler, &_pSamplerState));
+		m_vSamplers.push_back(_pSamplerState);
 
 		D3D11_SAMPLER_DESC _triLinearSampler;
 		_triLinearSampler.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -204,16 +235,15 @@ namespace TFCore
 		_triLinearSampler.MipLODBias     = 0;
 		_triLinearSampler.MaxAnisotropy  = 16;
 		_triLinearSampler.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
-		HR(m_pd3dDevice->CreateSamplerState(&_anisoSampler, &m_pSamplerStateTriLinear));
+
+		HR(m_pd3dDevice->CreateSamplerState(&_anisoSampler, &_pSamplerState));
+		m_vSamplers.push_back(_pSamplerState);
 	}
 
-	ID3D11SamplerState* TFShaderManager::GetSamplerState(size_t a_nSamplerIndex) const
+	ID3D11SamplerState* TFShaderManager::GetSamplerState(TFSamplerIndex a_nSamplerIndex) const
 	{
-		if(a_nSamplerIndex == 0)
-			return m_pSamplerStateAniso;
-
-		else
-			return m_pSamplerStateTriLinear;
+		// subtract one to account for the 'none' slot
+		return m_vSamplers[a_nSamplerIndex - 1];
 	}
 
 	ID3D11VertexShader* TFShaderManager::GetActiveVertexShader() const
