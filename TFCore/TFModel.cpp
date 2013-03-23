@@ -49,7 +49,6 @@ namespace TFCore
 		importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE|aiPrimitiveType_POINT);
 
 		const aiScene* scene = importer.ReadFile(
-			//"..\\Models\\tree1_3ds\\Tree1.3ds",
 			m_sAssetPath,
 			aiProcess_CalcTangentSpace       | 
 			aiProcess_Triangulate            |
@@ -173,8 +172,8 @@ namespace TFCore
 				a_pVertices[_nVertexIndex].Norm.z = _mesh->mNormals[j].z;
 
 				// copy text from mesh
-				a_pVertices[_nVertexIndex].TexC.x = 0; //_mesh->mTextureCoords[0][k].x;
-				a_pVertices[_nVertexIndex].TexC.y = 0; //_mesh->mTextureCoords[0][k].y;
+				a_pVertices[_nVertexIndex].TexC.x = _mesh->mTextureCoords[0][j].x;
+				a_pVertices[_nVertexIndex].TexC.y = _mesh->mTextureCoords[0][j].y;
 			}
 
 			// copy index data
@@ -189,6 +188,27 @@ namespace TFCore
 				a_pIndices[_nIndexOffset + 2] = _face.mIndices[2] + *a_pVertexOffset;
 			}
 
+			// Check this mesh for materials
+			aiMaterial* _pMaterial = a_pScene->mMaterials[_mesh->mMaterialIndex];
+			size_t _nNumDiffuseTextures = _pMaterial->GetTextureCount(aiTextureType_DIFFUSE);
+
+			aiString _sTexturePath;
+
+			for(size_t i = 0; i < _nNumDiffuseTextures; ++i)
+			{
+				aiReturn _textureFound = _pMaterial->GetTexture(aiTextureType_DIFFUSE, i, &_sTexturePath);
+
+				if(_textureFound == AI_SUCCESS)
+				{
+					break;
+				}
+			}
+
+			// Convert texture path to widestring
+			std::string _sTexturePathAsString = _sTexturePath.C_Str();
+			m_wsTexturePath = L"..\\Textures\\";
+			m_wsTexturePath.append(std::wstring(_sTexturePathAsString.begin(), _sTexturePathAsString.end()));
+			
 			// Update the vertex offset for the next mesh
 			*a_pVertexOffset += _mesh->mNumVertices;
 
@@ -230,7 +250,9 @@ namespace TFCore
 		// TODO: D3DX stuff is deprecated, use another method for loading textures when you have time.
 
 		// Create the texture for this model
-		HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, L"..\\Textures\\WoodCrate01.dds", NULL, NULL, &m_pTextureSRV, NULL));
+		HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, m_wsTexturePath.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
+		//HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, , NULL, NULL, &m_pTextureSRV, NULL));
+		
 	}
 
 	ID3D11VertexShader* TFModel::GetVertexShader() const

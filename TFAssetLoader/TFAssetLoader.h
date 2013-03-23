@@ -29,6 +29,7 @@ private:
 	TFCore::TFModel m_tree1;
 	TFCore::TFModel m_dwarf1;
 	TFCore::TFModel m_zard1;
+	TFCore::TFModel m_simpleCube;
 
 	XMMATRIX m_matView;
 	XMMATRIX m_matProj;

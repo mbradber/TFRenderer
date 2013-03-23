@@ -37,37 +37,45 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	ID3D11PixelShader*  _pSimpleDirPS = m_shaderManager.GetPixelShaderByName(L"SimpleDirLight");
 	ID3D11InputLayout*  _pInputLayout = m_shaderManager.GetInputLayoutByName(L"SimpleDirLight");
 
-	m_spider.Init(m_pd3dDevice,
+	m_simpleCube.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
 		1.0f, 
 		_pSimpleDirVS,
 		_pSimpleDirPS,
 		_pInputLayout,
-		"..\\Models\\spider.irrmesh");
+		"..\\Models\\cube_with_diffuse_texture.3ds");
 
-	m_terrain.Init(m_pd3dDevice,
-		m_pd3dImmDeviceContext, 
-		1.0f, 
-		_pSimpleDirVS,
-		_pSimpleDirPS,
-		_pInputLayout,
-		"..\\Models\\Simplecube.obj");
+	//m_spider.Init(m_pd3dDevice,
+	//	m_pd3dImmDeviceContext, 
+	//	1.0f, 
+	//	_pSimpleDirVS,
+	//	_pSimpleDirPS,
+	//	_pInputLayout,
+	//	"..\\Models\\spider.irrmesh");
 
-	m_tree1.Init(m_pd3dDevice,
-		m_pd3dImmDeviceContext, 
-		1.0f, 
-		_pSimpleDirVS,
-		_pSimpleDirPS,
-		_pInputLayout,
-		"..\\Models\\tree1\\Tree1.3ds");
+	//m_terrain.Init(m_pd3dDevice,
+	//	m_pd3dImmDeviceContext, 
+	//	1.0f, 
+	//	_pSimpleDirVS,
+	//	_pSimpleDirPS,
+	//	_pInputLayout,
+	//	"..\\Models\\Simplecube.obj");
 
-	m_zard1.Init(m_pd3dDevice,
-		m_pd3dImmDeviceContext, 
-		1.0f, 
-		_pSimpleDirVS,
-		_pSimpleDirPS,
-		_pInputLayout,
-		"..\\Models\\zard.obj");
+	//m_tree1.Init(m_pd3dDevice,
+	//	m_pd3dImmDeviceContext, 
+	//	1.0f, 
+	//	_pSimpleDirVS,
+	//	_pSimpleDirPS,
+	//	_pInputLayout,
+	//	"..\\Models\\tree1\\Tree1.3ds");
+
+	//m_zard1.Init(m_pd3dDevice,
+	//	m_pd3dImmDeviceContext, 
+	//	1.0f, 
+	//	_pSimpleDirVS,
+	//	_pSimpleDirPS,
+	//	_pInputLayout,
+	//	"..\\Models\\zard.obj");
 
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();
@@ -98,53 +106,63 @@ void TFApplication::UpdateScene(float a_fDelta)
 	m_matView = m_fmCamera.GetView();
 
 	// Update the lights
-	//m_lightManager.Update(a_fDelta, m_fmCamera.GetPosition());
+	m_lightManager.Update(a_fDelta, m_fmCamera.GetPosition());
 }
 
 void TFApplication::RenderScene()
 {
 	TFCore::TFWinBase::RenderScene();
 
-	//TFRenderWireframe(m_pd3dDevice, m_pd3dImmDeviceContext);
-
-	// Set world matrix for first model
-	m_matWorld = XMMatrixScaling(0.03f, 0.03f, 0.03f);
-	m_matWorld = m_matWorld * XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), XM_PIDIV2);
-	m_matWorld = m_matWorld * XMMatrixTranslation(4.0f, 1.4f, 0.0f);
-
-	// Update the geometry with their respective transforms
-	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
-
-	m_spider.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
-	m_spider.ActivateShaders();
-	m_spider.Draw();
-
-	// Set world matrix for second model
-	m_matWorld = XMMatrixTranslation(0.0f, -2.0f, 0.0f);
-	m_matWorld = m_matWorld * XMMatrixScaling(10.0f, 1.0f, 10.0f);
-	_matWVP = m_matWorld * m_matView * m_matProj;
-	m_terrain.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
-	m_terrain.ActivateShaders();
-	m_terrain.Draw();
-
-	// Set the world matrix for the third model
-	m_matWorld = XMMatrixRotationAxis(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), XM_PIDIV2);
-	_matWVP = m_matWorld * m_matView * m_matProj;
-	m_tree1.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
-	m_tree1.ActivateShaders();
-	m_tree1.Draw();
-
-	// Set the world matrix for the fourth model
-	m_matWorld = XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), -1.047f);
-	m_matWorld = m_matWorld * XMMatrixTranslation(-7.0f, 2.5f, 2.0f);
-	_matWVP = m_matWorld * m_matView * m_matProj;
-	m_zard1.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
-	m_zard1.ActivateShaders();
-	m_zard1.Draw();
-
 	// restore default states
 	m_pd3dImmDeviceContext->RSSetState(0);
 	m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
+
+	//TFRenderWireframe(m_pd3dDevice, m_pd3dImmDeviceContext);
+
+	//simple cube model
+	m_matWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
+
+	m_simpleCube.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_simpleCube.ActivateShaders();
+	m_simpleCube.Draw();
+
+	//// Set world matrix for first model
+	//m_matWorld = XMMatrixScaling(0.03f, 0.03f, 0.03f);
+	//m_matWorld = m_matWorld * XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), XM_PIDIV2);
+	//m_matWorld = m_matWorld * XMMatrixTranslation(4.0f, 1.4f, 0.0f);
+
+	//// Update the geometry with their respective transforms
+	//XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
+
+	//m_spider.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
+	//m_spider.ActivateShaders();
+	//m_spider.Draw();
+
+	//// Set world matrix for second model
+	//m_matWorld = XMMatrixTranslation(0.0f, -2.0f, 0.0f);
+	//m_matWorld = m_matWorld * XMMatrixScaling(10.0f, 1.0f, 10.0f);
+	//_matWVP = m_matWorld * m_matView * m_matProj;
+	//m_terrain.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
+	//m_terrain.ActivateShaders();
+	//m_terrain.Draw();
+
+	//// Set the world matrix for the third model
+	//m_matWorld = XMMatrixRotationAxis(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), XM_PIDIV2);
+	//_matWVP = m_matWorld * m_matView * m_matProj;
+	//m_tree1.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
+	//m_tree1.ActivateShaders();
+	//m_tree1.Draw();
+
+	//// Set the world matrix for the fourth model
+	//m_matWorld = XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), -1.047f);
+	//m_matWorld = m_matWorld * XMMatrixTranslation(-7.0f, 2.5f, 2.0f);
+	//_matWVP = m_matWorld * m_matView * m_matProj;
+	//m_zard1.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
+	//m_zard1.ActivateShaders();
+	//m_zard1.Draw();
+
+
 
 	// Display the back buffer
 	m_pSwapChain->Present( 0, 0 );

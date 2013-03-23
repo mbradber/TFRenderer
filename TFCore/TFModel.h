@@ -72,6 +72,7 @@ namespace TFCore
 		ID3D11VertexShader*	      m_pVertexShader;
 		ID3D11PixelShader*		  m_pPixelShader;
 		ID3D11ShaderResourceView* m_pTextureSRV;
+		std::wstring               m_wsTexturePath;
 	};
 
 }
