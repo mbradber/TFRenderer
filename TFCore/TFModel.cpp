@@ -2,6 +2,7 @@
 #include "TFUtils.h"
 #include "TFVertices.h"
 #include <vector>
+#include <assimp\vector3.h>
 
 
 namespace TFCore
@@ -79,6 +80,7 @@ namespace TFCore
 		// Traverse the scene nodes and parse vertex and index data
 		size_t _nVertexOffset = 0;
 		size_t _nIndexOffset  = 0;
+		aiMatrix4x4 _matAccumulation;
 		ProcessNode(scene, _root, _pVertices, _pIndices, &_nVertexOffset, &_nIndexOffset);
 
 		// describe the vertex buffer
@@ -146,7 +148,12 @@ namespace TFCore
 		}
 	}
 
-	void TFModel::ProcessNode(const aiScene* const a_pScene, aiNode* a_pNode, TFPosNormTex*& a_pVertices, UINT*& a_pIndices, size_t* a_pVertexOffset, size_t* a_pIndexOffset)
+	void TFModel::ProcessNode(const aiScene* const a_pScene, 
+		aiNode* a_pNode, 
+		TFPosNormTex*& a_pVertices, 
+		UINT*& a_pIndices, 
+		size_t* a_pVertexOffset, 
+		size_t* a_pIndexOffset)
 	{
 		// grab the number of meshes for this node
 		size_t _nNumMeshes = a_pNode->mNumMeshes;
@@ -208,6 +215,20 @@ namespace TFCore
 			std::string _sTexturePathAsString = _sTexturePath.C_Str();
 			m_wsTexturePath = L"..\\Textures\\";
 			m_wsTexturePath.append(std::wstring(_sTexturePathAsString.begin(), _sTexturePathAsString.end()));
+
+			// Build mesh data
+			TFMesh _tfMesh;
+			_tfMesh.TexturePath = m_wsTexturePath;
+			_tfMesh.StartIndex  = *a_pIndexOffset;
+			_tfMesh.NumIndices  = _mesh->mNumFaces * 3;
+			
+			// Create Shader resource view from texture path and store it
+			HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, m_wsTexturePath.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
+			m_vMeshTextures.push_back(m_pTextureSRV);
+			_tfMesh.TextureIndex = m_vMeshTextures.size() - 1;
+
+			// Save mesh data
+			m_meshes.push_back(_tfMesh);
 			
 			// Update the vertex offset for the next mesh
 			*a_pVertexOffset += _mesh->mNumVertices;
@@ -250,7 +271,7 @@ namespace TFCore
 		// TODO: D3DX stuff is deprecated, use another method for loading textures when you have time.
 
 		// Create the texture for this model
-		HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, m_wsTexturePath.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
+		//HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, m_wsTexturePath.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
 		//HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, , NULL, NULL, &m_pTextureSRV, NULL));
 		
 	}
@@ -310,7 +331,7 @@ namespace TFCore
 		m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pCBPerObject);
 		m_pDeviceContext->PSSetConstantBuffers(0, 1, &m_pCBPerObject);
 		// Bind texture
-		m_pDeviceContext->PSSetShaderResources(0, 1, &m_pTextureSRV);
+		//m_pDeviceContext->PSSetShaderResources(0, 1, &m_pTextureSRV);
 		// Set the input layout
 		m_pDeviceContext->IASetInputLayout(m_pInputLayout);
 	}
@@ -329,8 +350,22 @@ namespace TFCore
 		m_pDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 		// Set primitive topology
 		m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		// Draw self
-		m_pDeviceContext->DrawIndexed(m_nIndexCount, 0, 0);
+
+		// draw each mesh of the model
+		for(std::vector<TFMesh>::iterator _itr = m_meshes.begin();
+			_itr != m_meshes.end(); 
+			++_itr)
+		{
+			// Bind texture
+			m_pDeviceContext->PSSetShaderResources(0, 1, &m_vMeshTextures[_itr->TextureIndex]);
+
+			// Draw the indices of this mesh
+			m_pDeviceContext->DrawIndexed(_itr->NumIndices, _itr->StartIndex, 0);
+		}
+
+
+		//// Draw self
+		//m_pDeviceContext->DrawIndexed(m_nIndexCount, 0, 0);
 	}
 
 }

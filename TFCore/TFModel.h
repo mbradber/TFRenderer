@@ -3,6 +3,7 @@
 #include "TFMaterial.h"
 #include "TFVertices.h"
 #include <string>
+#include <vector>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -42,6 +43,16 @@ namespace TFCore
 		void UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const XMMATRIX& a_matTex, const XMFLOAT3& a_vEyePos);
 
 	private:
+
+		struct TFMesh
+		{
+			size_t StartIndex;
+			size_t NumIndices;
+			size_t TextureIndex;
+			std::wstring TexturePath;
+		};
+
+	private:
 			void SurveyNode(const aiScene* const a_pScene, 
 				aiNode* a_pNode, 
 				size_t* a_pNumVerts, 
@@ -72,7 +83,9 @@ namespace TFCore
 		ID3D11VertexShader*	      m_pVertexShader;
 		ID3D11PixelShader*		  m_pPixelShader;
 		ID3D11ShaderResourceView* m_pTextureSRV;
-		std::wstring               m_wsTexturePath;
+		std::wstring              m_wsTexturePath;
+		std::vector<TFMesh>       m_meshes;
+		std::vector<ID3D11ShaderResourceView*> m_vMeshTextures;
 	};
 
 }

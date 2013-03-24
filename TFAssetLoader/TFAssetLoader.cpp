@@ -43,7 +43,9 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 		_pSimpleDirVS,
 		_pSimpleDirPS,
 		_pInputLayout,
-		"..\\Models\\cube_with_diffuse_texture.3ds");
+		//"..\\Models\\cube_with_diffuse_texture.3ds");
+		//"..\\Models\\spider.irrmesh");
+		"..\\Models\\tree1\\Tree1.3ds");
 
 	//m_spider.Init(m_pd3dDevice,
 	//	m_pd3dImmDeviceContext, 
@@ -120,7 +122,8 @@ void TFApplication::RenderScene()
 	//TFRenderWireframe(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	//simple cube model
-	m_matWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	//m_matWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	m_matWorld = XMMatrixIdentity();
 	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
 
 	m_simpleCube.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
