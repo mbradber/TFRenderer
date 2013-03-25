@@ -32,11 +32,11 @@
     <ClInclude Include="TFDriver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SimpleDirLightCommon.h">
-      <Filter>Shaders\SimpleLightTexture</Filter>
-    </ClInclude>
     <ClInclude Include="SkyCommon.h">
       <Filter>Shaders\Sky</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleDirLightCommon.hlsli">
+      <Filter>Shaders\SimpleLightTexture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

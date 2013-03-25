@@ -69,7 +69,7 @@ namespace TFCore
 
 			void ProcessNode(const aiScene* const a_pScene, 
 				aiNode* a_pNode, 
-				TFPosNormTex*& a_pVertices, 
+				TFPosNormTexTan*& a_pVertices, 
 				UINT*& a_pIndices, 
 				size_t* a_pVertexOffset, 
 				size_t* a_pIndexOffset);

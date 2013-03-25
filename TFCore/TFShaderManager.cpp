@@ -107,7 +107,10 @@ namespace TFCore
 		BuildSamplerStates();
 	}
 
-	void TFShaderManager::AddVertexShader(const std::wstring& a_sName, const std::wstring& a_sFilePathShader, const D3D11_INPUT_ELEMENT_DESC* a_inputLayout, size_t a_nComponents)
+	void TFShaderManager::AddVertexShader(const std::wstring& a_sName, 
+		const std::wstring& a_sFilePathShader, 
+		const D3D11_INPUT_ELEMENT_DESC* a_inputLayout, 
+		size_t a_nComponents)
 	{
 		// Open compiled shader file and read it...
 		ULONG _nFileSize = 0;

@@ -1,11 +1,18 @@
 
+struct Material
+{
+	float4 Ambient;
+	float4 Diffuse;
+	float4 Specular;
+};
 
 struct VertexOut
 {
-	float3 PosH  : SV_POSITION;
+	float4 PosH  : SV_POSITION;
 	float3 PosW  : POSITION;
 	float3 NormW : NORMAL;
 	float2 TexC  : TEXCOORD;
+	float3 TanW  : TANGENT;
 };
 
 cbuffer cbPerObject : register(b0)

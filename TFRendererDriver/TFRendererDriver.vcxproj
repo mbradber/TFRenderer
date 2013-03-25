@@ -89,7 +89,7 @@
     <ClCompile Include="TFDriver.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SimpleDirLightCommon.h" />
+    <ClInclude Include="SimpleDirLightCommon.hlsli" />
     <ClInclude Include="SkyCommon.h" />
     <ClInclude Include="TFDriver.h" />
   </ItemGroup>

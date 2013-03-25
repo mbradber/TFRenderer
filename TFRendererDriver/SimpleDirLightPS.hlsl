@@ -1,4 +1,4 @@
-#include "SimpleDirLightCommon.h"
+#include "SimpleDirLightCommon.hlsli"
 
 Texture2D DiffuseMap : register(t0);
 SamplerState samAnisotropic : register(s0);

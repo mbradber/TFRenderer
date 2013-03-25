@@ -43,6 +43,8 @@ namespace TFCore
 		m_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pCBDirectionalLight);
 	}
 
+	// TODO: Should probably move the updating of the light away from here, its kind of weird that
+	// this file is externally assuming the constant buffer for the light will be at slot 1
 	void TFLightManager::Update(float a_fDeltaTime, const XMFLOAT3& a_vEyePos)
 	{
 		// Rotate the light over time

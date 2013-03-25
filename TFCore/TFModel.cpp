@@ -38,7 +38,7 @@ namespace TFCore
 		m_pd3dDevice     = a_pDevice;
 		m_pDeviceContext = a_pDeviceContext;
 		m_fScale         = a_fScale;
-		m_sAssetPath    = a_sAssetPath;
+		m_sAssetPath     = a_sAssetPath;
 		m_pVertexShader  = a_pVertexShader;
 		m_pPixelShader   = a_pPixelShader;
 		m_pInputLayout   = a_pInputLayout;
@@ -67,14 +67,13 @@ namespace TFCore
 
 
 		size_t _nNumMeshes = scene->mNumMeshes;
-		//size_t _nNumTextuers = scene->mNumTextures;
 
 		aiNode* _root = scene->mRootNode;
 
 		SurveyNode(scene, _root, &m_nVertexCount, &m_nIndexCount); 
 
 		// Allocate data buffers
-		TFPosNormTex* _pVertices = new TFPosNormTex[m_nVertexCount];
+		TFPosNormTexTan* _pVertices = new TFPosNormTexTan[m_nVertexCount];
 		UINT*        _pIndices  = new UINT[m_nIndexCount];
 
 		// Traverse the scene nodes and parse vertex and index data
@@ -87,7 +86,7 @@ namespace TFCore
 		D3D11_BUFFER_DESC bd;
 		ZeroMemory( &bd, sizeof(bd) );
 		bd.Usage          = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth      = sizeof( TFPosNormTex ) * m_nVertexCount;
+		bd.ByteWidth      = sizeof( TFPosNormTexTan ) * m_nVertexCount;
 		bd.BindFlags      = D3D11_BIND_VERTEX_BUFFER;
 		bd.CPUAccessFlags = 0; // No cpu access
 		bd.MiscFlags      = 0; // Unused
@@ -150,7 +149,7 @@ namespace TFCore
 
 	void TFModel::ProcessNode(const aiScene* const a_pScene, 
 		aiNode* a_pNode, 
-		TFPosNormTex*& a_pVertices, 
+		TFPosNormTexTan*& a_pVertices, 
 		UINT*& a_pIndices, 
 		size_t* a_pVertexOffset, 
 		size_t* a_pIndexOffset)
@@ -367,7 +366,7 @@ namespace TFCore
 	void TFModel::Draw()
 	{
 		// Set vertex buffers
-		UINT _nStride = sizeof(TFPosNormTex);
+		UINT _nStride = sizeof(TFPosNormTexTan);
 		UINT _nOffset = 0;
 
 		m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &_nStride, &_nOffset);

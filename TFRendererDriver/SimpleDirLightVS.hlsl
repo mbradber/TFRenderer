@@ -1,4 +1,4 @@
-#include "SimpleDirLightCommon.h"
+#include "SimpleDirLightCommon.hlsli"
 
 VertexOut VS( VertexIn vin )
 {
