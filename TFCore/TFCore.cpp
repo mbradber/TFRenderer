@@ -2,6 +2,7 @@
 #include "TFCore.h"
 #include "TFUtils.h"
 #include "TFInput.h"
+#include <sstream>
 
 namespace TFCore
 {
@@ -353,6 +354,9 @@ namespace TFCore
 
 	void TFWinBase::UpdateScene(float a_fDelta)
 	{
+		std::stringstream _ss;
+		_ss << "TreeFrog Engine 1.0" << "    " << "MPF:" << a_fDelta * 1000.0f;
+		SetWindowTextA(m_hMainWnd, _ss.str().c_str());
 
 	}
 
@@ -362,6 +366,8 @@ namespace TFCore
 		float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
 		m_pd3dImmDeviceContext->ClearRenderTargetView( m_pRenderTargetView, ClearColor );
 		m_pd3dImmDeviceContext->ClearDepthStencilView( m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+
 	}
 
 }

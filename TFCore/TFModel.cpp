@@ -196,36 +196,62 @@ namespace TFCore
 			}
 
 			// Check this mesh for materials
-			aiMaterial* _pMaterial = a_pScene->mMaterials[_mesh->mMaterialIndex];
+			aiMaterial* _pMaterial      = a_pScene->mMaterials[_mesh->mMaterialIndex];
 			size_t _nNumDiffuseTextures = _pMaterial->GetTextureCount(aiTextureType_DIFFUSE);
+			size_t _nNumBumpTextures    = _pMaterial->GetTextureCount(aiTextureType_HEIGHT);
 
-			aiString _sTexturePath;
+			aiString _sTexturePathColor;
+			aiString _sTexturePathNormal;
+			aiReturn _textureFoundColor;
+			aiReturn _textureFoundNormal;
 
+			// find diffuse map texture
 			for(size_t i = 0; i < _nNumDiffuseTextures; ++i)
 			{
-				aiReturn _textureFound = _pMaterial->GetTexture(aiTextureType_DIFFUSE, i, &_sTexturePath);
+				_textureFoundColor = _pMaterial->GetTexture(aiTextureType_DIFFUSE, i, &_sTexturePathColor);
 
-				if(_textureFound == AI_SUCCESS)
+				if(_textureFoundColor == AI_SUCCESS)
+				{
+					break;
+				}
+			}
+
+			// find normal map texture
+			for(size_t i = 0; i < _nNumBumpTextures; ++i)
+			{
+				_textureFoundNormal = _pMaterial->GetTexture(aiTextureType_HEIGHT, i, &_sTexturePathNormal);
+
+				if(_textureFoundNormal == AI_SUCCESS)
 				{
 					break;
 				}
 			}
 
 			// Convert texture path to widestring
-			std::string _sTexturePathAsString = _sTexturePath.C_Str();
-			m_wsTexturePath = L"..\\Textures\\";
-			m_wsTexturePath.append(std::wstring(_sTexturePathAsString.begin(), _sTexturePathAsString.end()));
+			std::string _sTexturePathColorAsString = _sTexturePathColor.C_Str();
+			std::string _sTexturePathNormalAsString = _sTexturePathNormal.C_Str();
+			std::wstring _wsTexturePathColor  = L"..\\Textures\\";
+			std::wstring _wsTexturePathNormal = L"..\\Textures\\";
+
+			_wsTexturePathColor.append(std::wstring(_sTexturePathColorAsString.begin(), _sTexturePathColorAsString.end()));
+			_wsTexturePathNormal.append(std::wstring(_sTexturePathNormalAsString.begin(), _sTexturePathNormalAsString.end()));
 
 			// Build mesh data
 			TFMesh _tfMesh;
-			_tfMesh.TexturePath = m_wsTexturePath;
-			_tfMesh.StartIndex  = *a_pIndexOffset;
-			_tfMesh.NumIndices  = _mesh->mNumFaces * 3;
+			_tfMesh.TexturePathColor  = _wsTexturePathColor;
+			_tfMesh.TexturePathNormal = _wsTexturePathNormal;
+			_tfMesh.StartIndex        = *a_pIndexOffset;
+			_tfMesh.NumIndices        = _mesh->mNumFaces * 3;
 			
 			// Create Shader resource view from texture path and store it
-			HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, m_wsTexturePath.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
-			m_vMeshTextures.push_back(m_pTextureSRV);
-			_tfMesh.TextureIndex = m_vMeshTextures.size() - 1;
+			HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _wsTexturePathColor.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
+			m_vMeshTexturesColor.push_back(m_pTextureSRV);
+
+			HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _wsTexturePathNormal.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
+			m_vMeshTexturesNormals.push_back(m_pTextureSRV);
+
+			_tfMesh.TextureIndexColor = m_vMeshTexturesColor.size() - 1;
+			_tfMesh.TextureIndexNormal = m_vMeshTexturesNormals.size() - 1;
 
 			// Save mesh data
 			m_meshes.push_back(_tfMesh);
@@ -356,16 +382,19 @@ namespace TFCore
 			_itr != m_meshes.end(); 
 			++_itr)
 		{
-			// Bind texture
-			m_pDeviceContext->PSSetShaderResources(0, 1, &m_vMeshTextures[_itr->TextureIndex]);
+			// Bind texture for diffuse map and normal map if they exist for this mesh
+			if(_itr->TextureIndexColor != UINT_MAX)
+			{
+				m_pDeviceContext->PSSetShaderResources(0, 1, &m_vMeshTexturesColor[_itr->TextureIndexColor]);
+			}
+			if(_itr->TextureIndexNormal != UINT_MAX)
+			{
+				m_pDeviceContext->PSSetShaderResources(1, 1, &m_vMeshTexturesNormals[_itr->TextureIndexNormal]);
+			}
 
 			// Draw the indices of this mesh
 			m_pDeviceContext->DrawIndexed(_itr->NumIndices, _itr->StartIndex, 0);
 		}
-
-
-		//// Draw self
-		//m_pDeviceContext->DrawIndexed(m_nIndexCount, 0, 0);
 	}
 
 }

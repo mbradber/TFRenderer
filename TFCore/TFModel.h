@@ -48,8 +48,17 @@ namespace TFCore
 		{
 			size_t StartIndex;
 			size_t NumIndices;
-			size_t TextureIndex;
-			std::wstring TexturePath;
+			size_t TextureIndexColor;
+			size_t TextureIndexNormal;
+			std::wstring TexturePathColor;
+			std::wstring TexturePathNormal;
+
+			TFMesh():
+				TextureIndexColor(UINT_MAX),
+				TextureIndexNormal(UINT_MAX),
+				StartIndex(0),
+				NumIndices(0)
+			{}
 		};
 
 	private:
@@ -85,7 +94,8 @@ namespace TFCore
 		ID3D11ShaderResourceView* m_pTextureSRV;
 		std::wstring              m_wsTexturePath;
 		std::vector<TFMesh>       m_meshes;
-		std::vector<ID3D11ShaderResourceView*> m_vMeshTextures;
+		std::vector<ID3D11ShaderResourceView*> m_vMeshTexturesColor;
+		std::vector<ID3D11ShaderResourceView*> m_vMeshTexturesNormals;
 	};
 
 }

@@ -26,26 +26,33 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 
 	m_shaderManager.Init(m_pd3dDevice);
 
-	m_shaderManager.AddVertexShader(L"SimpleDirLight", L"..\\Debug\\SimpleDirLightVS.cso", TFPositionNormalTextureLayout, 3);
-	m_shaderManager.AddPixelShader(L"SimpleDirLight", L"..\\Debug\\SimpleDirLightPS.cso");
+	//m_shaderManager.AddVertexShader(L"SimpleDirLight", L"..\\Debug\\SimpleDirLightVS.cso", TFPositionNormalTextureLayout, 3);
+	//m_shaderManager.AddPixelShader(L"SimpleDirLight", L"..\\Debug\\SimpleDirLightPS.cso");
+	m_shaderManager.AddVertexShader(L"NormalMapping", L"..\\Debug\\NormalMapVS.cso", TFPosNormTexTanLayout, 4);
+	m_shaderManager.AddPixelShader(L"NormalMapping", L"..\\Debug\\NormalMapPS.cso");
 
 	// Bind the default sampler state to the PS
+	// TODO: You probably don't need to be using high aniso sampling for normal maps...
 	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler );
 
-	ID3D11VertexShader* _pSimpleDirVS = m_shaderManager.GetVertexShaderByName(L"SimpleDirLight");
-	ID3D11PixelShader*  _pSimpleDirPS = m_shaderManager.GetPixelShaderByName(L"SimpleDirLight");
-	ID3D11InputLayout*  _pInputLayout = m_shaderManager.GetInputLayoutByName(L"SimpleDirLight");
+	//ID3D11VertexShader* _pSimpleDirVS = m_shaderManager.GetVertexShaderByName(L"SimpleDirLight");
+	//ID3D11PixelShader*  _pSimpleDirPS = m_shaderManager.GetPixelShaderByName(L"SimpleDirLight");
+	//ID3D11InputLayout*  _pInputLayout = m_shaderManager.GetInputLayoutByName(L"SimpleDirLight");
+
+	ID3D11VertexShader* _pNormalMapVS = m_shaderManager.GetVertexShaderByName(L"NormalMapping");
+	ID3D11PixelShader*  _pNormalMapPS = m_shaderManager.GetPixelShaderByName(L"NormalMapping");
+	ID3D11InputLayout*  _pInputLayout = m_shaderManager.GetInputLayoutByName(L"NormalMapping");
 
 	m_simpleCube.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
 		1.0f, 
-		_pSimpleDirVS,
-		_pSimpleDirPS,
+		_pNormalMapVS,
+		_pNormalMapPS,
 		_pInputLayout,
-		//"..\\Models\\cube_with_diffuse_texture.3ds");
+		"..\\Models\\NormalCube.obj");
 		//"..\\Models\\spider.irrmesh");
-		"..\\Models\\tree1\\Tree1.3ds");
+		//"..\\Models\\tree1\\Tree1.3ds");
 
 	//m_spider.Init(m_pd3dDevice,
 	//	m_pd3dImmDeviceContext, 
@@ -118,13 +125,13 @@ void TFApplication::RenderScene()
 	// restore default states
 	m_pd3dImmDeviceContext->RSSetState(0);
 	m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
+	XMMATRIX _matWVP = XMMatrixIdentity();
 
 	//TFRenderWireframe(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	//simple cube model
 	//m_matWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
-	m_matWorld = XMMatrixIdentity();
-	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
+	_matWVP = m_matWorld * m_matView * m_matProj;
 
 	m_simpleCube.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_simpleCube.ActivateShaders();
@@ -150,7 +157,7 @@ void TFApplication::RenderScene()
 	//m_terrain.ActivateShaders();
 	//m_terrain.Draw();
 
-	//// Set the world matrix for the third model
+	// Set the world matrix for the third model
 	//m_matWorld = XMMatrixRotationAxis(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), XM_PIDIV2);
 	//_matWVP = m_matWorld * m_matView * m_matProj;
 	//m_tree1.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
