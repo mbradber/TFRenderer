@@ -177,9 +177,17 @@ namespace TFCore
 				a_pVertices[_nVertexIndex].Norm.y = _mesh->mNormals[j].y;
 				a_pVertices[_nVertexIndex].Norm.z = _mesh->mNormals[j].z;
 
-				// copy text from mesh
+				// copy text coords from mesh
 				a_pVertices[_nVertexIndex].TexC.x = _mesh->mTextureCoords[0][j].x;
 				a_pVertices[_nVertexIndex].TexC.y = _mesh->mTextureCoords[0][j].y;
+
+				// copy tangent data from mesh
+				if(_mesh->HasTangentsAndBitangents())
+				{
+					a_pVertices[_nVertexIndex].TanU.x = _mesh->mTangents[j].x;
+					a_pVertices[_nVertexIndex].TanU.y = _mesh->mTangents[j].y;
+					a_pVertices[_nVertexIndex].TanU.y = _mesh->mTangents[j].z;
+				}
 			}
 
 			// copy index data
@@ -228,6 +236,7 @@ namespace TFCore
 
 			// Convert texture path to widestring
 			std::string _sTexturePathColorAsString = _sTexturePathColor.C_Str();
+			//std::string _sTexturePathColorAsString = "dwarf2.jpg";
 			std::string _sTexturePathNormalAsString = _sTexturePathNormal.C_Str();
 			std::wstring _wsTexturePathColor  = L"..\\Textures\\";
 			std::wstring _wsTexturePathNormal = L"..\\Textures\\";
@@ -243,14 +252,22 @@ namespace TFCore
 			_tfMesh.NumIndices        = _mesh->mNumFaces * 3;
 			
 			// Create Shader resource view from texture path and store it
-			HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _wsTexturePathColor.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
-			m_vMeshTexturesColor.push_back(m_pTextureSRV);
 
-			HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _wsTexturePathNormal.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
-			m_vMeshTexturesNormals.push_back(m_pTextureSRV);
+			if(_wsTexturePathColor != L"..\\Textures\\")
+			{
+				HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _wsTexturePathColor.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
+				m_vMeshTexturesColor.push_back(m_pTextureSRV);
 
-			_tfMesh.TextureIndexColor = m_vMeshTexturesColor.size() - 1;
-			_tfMesh.TextureIndexNormal = m_vMeshTexturesNormals.size() - 1;
+				_tfMesh.TextureIndexColor = m_vMeshTexturesColor.size() - 1;
+			}
+
+			if(_wsTexturePathNormal != L"..\\Textures\\")
+			{
+				HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _wsTexturePathNormal.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
+				m_vMeshTexturesNormals.push_back(m_pTextureSRV);
+
+				_tfMesh.TextureIndexNormal = m_vMeshTexturesNormals.size() - 1;
+			}
 
 			// Save mesh data
 			m_meshes.push_back(_tfMesh);

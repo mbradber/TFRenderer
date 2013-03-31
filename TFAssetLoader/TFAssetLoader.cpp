@@ -50,7 +50,10 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 		_pNormalMapVS,
 		_pNormalMapPS,
 		_pInputLayout,
-		"..\\Models\\NormalCube.obj");
+		"..\\Models\\Crate_Fragile.obj");
+		//"..\\Models\\mesh.3ds");
+		//"..\\Models\\d3dCube.obj");
+		//"..\\Models\\NormalCube.obj");
 		//"..\\Models\\spider.irrmesh");
 		//"..\\Models\\tree1\\Tree1.3ds");
 
