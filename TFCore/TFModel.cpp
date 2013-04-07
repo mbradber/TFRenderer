@@ -354,7 +354,7 @@ namespace TFCore
 	}
 
 	// TODO: Address tedious type changing issue...
-	void TFModel::UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const XMMATRIX& a_matTex, const XMFLOAT3& a_vEyePos)
+	void TFModel::UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const XMMATRIX& a_matLightWVPT, const XMMATRIX& a_matTex, const XMFLOAT3& a_vEyePos)
 	{
 		//UPDATE TRANSFORM RESOURCE
 		TFCore::TFBufferPerObject cb;
@@ -374,6 +374,9 @@ namespace TFCore
 		cb.wvpMatrix = XMMatrixTranspose(a_matWVP);
 		// update the transform matrix for the texture coordinates
 		cb.texMatrix = a_matTex;
+
+		// update matrix to transform from object to projective texture coords
+		cb.lightVPT = a_matLightWVPT;
 
 		//update material of buffer
 		cb.material  = m_material;
@@ -406,12 +409,20 @@ namespace TFCore
 
 	void TFModel::ActivateShadowShaders()
 	{
+		TF_ASSERT(m_pVertexShaderShadows != nullptr, FILE_NAME, LINE_NO);
+
 		m_pDeviceContext->VSSetShader(m_pVertexShaderShadows, NULL, 0);
 		m_pDeviceContext->PSSetShader(NULL, NULL, 0);
 		
 		m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pCBPerObject_Shadow);
 
-		// input layout should remain same...
+		//set the input layout
+		m_pDeviceContext->IASetInputLayout(m_pInputLayoutShadows);
+	}
+
+	void TFModel::SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap, size_t a_nIndex)
+	{
+		m_pDeviceContext->PSSetShaderResources(a_nIndex, 1, &a_pShadowMap);
 	}
 
 	// TODO: Its inefficient to be setting all these states per draw call, should 

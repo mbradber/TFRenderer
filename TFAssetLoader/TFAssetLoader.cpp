@@ -136,7 +136,7 @@ void TFApplication::RenderScene()
 	//m_matWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
 	_matWVP = m_matWorld * m_matView * m_matProj;
 
-	m_simpleCube.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_simpleCube.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_matWorld * m_lightManager.GetVPT(), m_fmCamera.GetPosition());
 	m_simpleCube.ActivateShaders();
 	m_simpleCube.Draw();
 

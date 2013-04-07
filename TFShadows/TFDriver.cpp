@@ -34,6 +34,9 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	m_shaderManager.AddVertexShader(L"RenderDepth", L"..\\Debug\\RenderDepthVS.cso", TFPosNormTexTanLayout, 4);
 	m_shaderManager.AddPixelShader(L"RenderDepth", L"..\\Debug\\RenderDepthPS.cso");
 
+	m_shaderManager.AddVertexShader(L"Shadows", L"..\\Debug\\ShadowsVS.cso", TFPosNormTexTanLayout, 4);
+	m_shaderManager.AddPixelShader(L"Shadows", L"..\\Debug\\ShadowsPS.cso");
+
 	// Bind the default sampler state to the PS
 	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler);
@@ -47,6 +50,10 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	ID3D11PixelShader*  _pRenderDepthPS          = m_shaderManager.GetPixelShaderByName(L"RenderDepth");
 	ID3D11InputLayout*  _pRenderDepthInputLayout = m_shaderManager.GetInputLayoutByName(L"RenderDepth");
 
+	ID3D11VertexShader* _pShadowsVS              = m_shaderManager.GetVertexShaderByName(L"Shadows");
+	ID3D11PixelShader*  _pShadowsPS              = m_shaderManager.GetPixelShaderByName( L"Shadows");
+	ID3D11InputLayout*  _pShadowsInputLayout     = m_shaderManager.GetInputLayoutByName( L"Shadows");
+
 
 	// Init shadow map
 	m_pShadowMap = new TFRendering::TFShadowMap(m_pd3dDevice, m_pd3dImmDeviceContext, 2048, 2048);
@@ -55,18 +62,15 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	//m_model.Init(m_pd3dDevice, m_pd3dImmDeviceContext, 1.0f, m_shaderManager.GetActiveVertexShader(),
 	//	m_shaderManager.GetActivePixelShader(), m_shaderManager.GetActiveInputLayout(), "..\\Models\\tree1_3ds\\Tree1.3ds");
 
-
-
-	// cube map stuff (move somewhere else later)
-
 	m_box1.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
 		1.0f, 
-		_pNormalMapVS,
-		_pNormalMapPS,
-		_pNormalMapInputLayout,
+		_pShadowsVS,
+		_pShadowsPS,
+		_pShadowsInputLayout,
 		"..\\Models\\Crate_Fragile.obj");
 
+	// add support for shadows on box 1
 	m_box1.AddShadowShaders(_pRenderDepthVS,
 		_pRenderDepthPS,
 		_pRenderDepthInputLayout);
@@ -74,10 +78,15 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	m_box2.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
 		1.0f, 
-		_pNormalMapVS,
-		_pNormalMapPS,
-		_pNormalMapInputLayout,
+		_pShadowsVS,
+		_pShadowsPS,
+		_pShadowsInputLayout,
 		"..\\Models\\Crate_Fragile.obj");
+
+	// add support for shadows on box 2
+	m_box2.AddShadowShaders(_pRenderDepthVS,
+		_pRenderDepthPS,
+		_pRenderDepthInputLayout);
 
 
 	// Set up initial matrices for WVP
@@ -124,15 +133,25 @@ void TFApplication::RenderToShadowMap()
 	// and set the depth draws to shadow map depth stencil view
 	m_pShadowMap->SetRenderState();
 
-	// Set world matrix for first box
+	// Update the geometry of box 1
 	m_matWorld = XMMatrixScaling(0.2f, 0.2f, 0.2f);
-
-	// Update the geometry with their respective transforms
+	
 	XMMATRIX _matWVP = m_matWorld * m_lightManager.GetView() * m_lightManager.GetProjection();
 
+	// draw box 1
 	m_box1.UpdateShadowResources(_matWVP);
 	m_box1.ActivateShadowShaders();
 	m_box1.Draw();
+
+	// update geometry of box 2 (ground)
+	m_matWorld = XMMatrixScaling(2.0f, 0.2f, 2.0f);
+	m_matWorld *= XMMatrixTranslation(0.0f, -7.9f, 0.0f);
+	_matWVP = m_matWorld * m_lightManager.GetView() * m_lightManager.GetProjection();
+
+	// draw box 2
+	m_box2.UpdateShadowResources(_matWVP);
+	m_box2.ActivateShadowShaders();
+	m_box2.Draw();
 
 	// restore default render states
 	m_pd3dImmDeviceContext->RSSetState(0);
@@ -157,8 +176,10 @@ void TFApplication::RenderScene()
 	// Update the geometry with their respective transforms
 	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
 
-	m_box1.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_box1.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_matWorld * m_lightManager.GetVPT(), m_fmCamera.GetPosition());
 	m_box1.ActivateShaders();
+	// bind the shadow map to an input slot of the pixel shader
+	m_box1.SetShadowMap(m_pShadowMap->GetDepthMapSRV(), 2);
 	m_box1.Draw();
 
 	// update geometry of box 2 (ground)
@@ -166,15 +187,16 @@ void TFApplication::RenderScene()
 	m_matWorld *= XMMatrixTranslation(0.0f, -7.9f, 0.0f);
 	_matWVP = m_matWorld * m_matView * m_matProj;
 
-	m_box2.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_box2.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_matWorld * m_lightManager.GetVPT(), m_fmCamera.GetPosition());
 	m_box2.ActivateShaders();
+	m_box2.SetShadowMap(m_pShadowMap->GetDepthMapSRV(), 2);
 	m_box2.Draw();
 
 	// restore default states
 	m_pd3dImmDeviceContext->RSSetState(0);
 	m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
 
-	// Display the back buffer
+	// Display the back buffer (vsync intervals)
 	m_pSwapChain->Present( 1, 0 );
 }
 
