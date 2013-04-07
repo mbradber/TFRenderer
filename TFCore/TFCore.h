@@ -18,6 +18,7 @@ namespace TFCore
 		virtual void    Run();
 		virtual void    UpdateScene(float a_fDelta);
 		virtual void    RenderScene();
+		void            ResetRenderTarget();
 
 	protected:
 		ID3D11Device*           m_pd3dDevice;

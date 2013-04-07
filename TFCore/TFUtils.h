@@ -79,7 +79,7 @@ inline void TFErrorDescription(HRESULT hr)
 		 OutputDebugString(szErrMsg);
          LocalFree(szErrMsg); 
      } else 
-		OutputDebugString(L"[Could not find a description for error.]");
+		OutputDebugStringA("[Could not find a description for error.]");
 }
 
 inline void TFRenderWireframe(ID3D11Device* a_pDevice, ID3D11DeviceContext* a_pDeviceContext)
@@ -106,6 +106,19 @@ inline void TFRenderNoCull(ID3D11Device* a_pDevice, ID3D11DeviceContext* a_pDevi
 	rd.CullMode = D3D11_CULL_NONE;
 	rd.FrontCounterClockwise = false;
 	rd.DepthClipEnable = true;
+
+	ID3D11RasterizerState* _pRasterizerState;
+	a_pDevice->CreateRasterizerState(&rd, &_pRasterizerState);
+	a_pDeviceContext->RSSetState(_pRasterizerState);
+}
+
+inline void TFDepthBiasRender(ID3D11Device* a_pDevice, ID3D11DeviceContext* a_pDeviceContext)
+{
+	D3D11_RASTERIZER_DESC rd;
+	ZeroMemory(&rd, sizeof(D3D11_RASTERIZER_DESC));
+	rd.DepthBias = 100000;
+	rd.DepthBiasClamp = 0.0f;
+	rd.SlopeScaledDepthBias = 1.0f;
 
 	ID3D11RasterizerState* _pRasterizerState;
 	a_pDevice->CreateRasterizerState(&rd, &_pRasterizerState);

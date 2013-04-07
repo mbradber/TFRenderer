@@ -325,15 +325,19 @@ namespace TFCore
 		m_pd3dImmDeviceContext->RSSetViewports(1, &m_screenViewport);
 	}
 
+	void TFWinBase::ResetRenderTarget()
+	{
+		// reset render state to original
+		m_pd3dImmDeviceContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_pDepthStencilView);
+		m_pd3dImmDeviceContext->RSSetViewports(1, &m_screenViewport);
+	}
+
 	void TFWinBase::Run()
 	{
 		MSG msg = {0};
 
 		while(msg.message != WM_QUIT)
 		{
-			m_timer.UpdateTimer();
-			float _fElapsedTime = m_timer.GetElapsedTime();
-
 			if(PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 			{
 				TranslateMessage(&msg);
@@ -346,6 +350,9 @@ namespace TFCore
 			}
 			else
 			{
+				m_timer.UpdateTimer();
+				float _fElapsedTime = m_timer.GetElapsedTime();
+
 				UpdateScene(_fElapsedTime);
 				RenderScene();
 			}

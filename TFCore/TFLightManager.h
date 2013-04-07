@@ -28,6 +28,9 @@ namespace TFCore
 		};
 
 		TFDirectionalLight& GetActiveDirectionalLight() const;
+		XMMATRIX GetView();
+		XMMATRIX GetProjection();
+		XMMATRIX GetVPT();
 
 	private:
 

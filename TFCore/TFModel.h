@@ -1,5 +1,6 @@
 #pragma once
 
+#include <d3d11.h>
 #include "TFMaterial.h"
 #include "TFVertices.h"
 #include <string>
@@ -40,7 +41,12 @@ namespace TFCore
 
 		void Draw();
 		void ActivateShaders();
+		void AddShadowShaders(ID3D11VertexShader* a_pVertexShader,
+			ID3D11PixelShader* a_pPixelShader,
+			ID3D11InputLayout* a_pInputLayout);
+		void ActivateShadowShaders();
 		void UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const XMMATRIX& a_matTex, const XMFLOAT3& a_vEyePos);
+		void UpdateShadowResources(const XMMATRIX& a_matWVP);
 
 	private:
 
@@ -82,7 +88,9 @@ namespace TFCore
 		ID3D11Buffer*			  m_pVertexBuffer;
 		ID3D11Buffer*			  m_pIndexBuffer;
 		ID3D11InputLayout*		  m_pInputLayout;
+		ID3D11InputLayout*		  m_pInputLayoutShadows;
 		ID3D11Buffer*			  m_pCBPerObject;
+		ID3D11Buffer*             m_pCBPerObject_Shadow;
 		float					  m_fScale;
 		size_t                    m_nVertexCount;
 		size_t                    m_nIndexCount;
@@ -91,6 +99,8 @@ namespace TFCore
 		std::string               m_sAssetPath;
 		ID3D11VertexShader*	      m_pVertexShader;
 		ID3D11PixelShader*		  m_pPixelShader;
+		ID3D11VertexShader*	      m_pVertexShaderShadows;
+		ID3D11PixelShader*		  m_pPixelShaderShadows;
 		ID3D11ShaderResourceView* m_pTextureSRV;
 		std::wstring              m_wsTexturePath;
 		std::vector<TFMesh>       m_meshes;

@@ -111,6 +111,7 @@
     <ClInclude Include="TFMath.h" />
     <ClInclude Include="TFModel.h" />
     <ClInclude Include="TFShaderManager.h" />
+    <ClInclude Include="TFShadowMap.h" />
     <ClInclude Include="TFTextManager.h" />
     <ClInclude Include="TFTimer.h" />
     <ClInclude Include="TFTypes.h" />
@@ -126,6 +127,7 @@
     <ClCompile Include="TFIRenderable.cpp" />
     <ClCompile Include="TFModel.cpp" />
     <ClCompile Include="TFShaderManager.cpp" />
+    <ClCompile Include="TFShadowMap.cpp" />
     <ClCompile Include="TFTextManager.cpp" />
     <ClCompile Include="TFTimer.cpp" />
   </ItemGroup>

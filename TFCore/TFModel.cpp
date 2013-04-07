@@ -7,7 +7,7 @@
 
 namespace TFCore
 {
-
+	//TODO: initialize members when they become more stable
 	TFModel::TFModel()
 		:m_nVertexCount(0),
 		 m_nIndexCount(0)
@@ -258,7 +258,7 @@ namespace TFCore
 				HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _wsTexturePathColor.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
 				m_vMeshTexturesColor.push_back(m_pTextureSRV);
 
-				_tfMesh.TextureIndexColor = m_vMeshTexturesColor.size() - 1;
+				_tfMesh.TextureIndexColor = m_vMeshTexturesColor.size() - 1; 
 			}
 
 			if(_wsTexturePathNormal != L"..\\Textures\\")
@@ -294,6 +294,15 @@ namespace TFCore
 		}
 	}
 
+	void TFModel::AddShadowShaders(ID3D11VertexShader* a_pVertexShader,
+		ID3D11PixelShader* a_pPixelShader,
+		ID3D11InputLayout* a_pInputLayout)
+	{
+		m_pVertexShaderShadows = a_pVertexShader;
+		m_pPixelShaderShadows  = a_pPixelShader;
+		m_pInputLayoutShadows  = a_pInputLayout;
+	}
+
 	// TODO: Look into making this a more general function or moving it into a "Resource Manager". It is not 
 	// good practice to have to replace the type everytime we want to use a new vertex type.
 	void TFModel::GenerateShaderResources()
@@ -309,6 +318,17 @@ namespace TFCore
 
 		// Create the constant buffer with the device
 		HR(m_pd3dDevice->CreateBuffer(&bd, NULL, &m_pCBPerObject));
+
+		// describe the cb for the WVP matrix for shadow mapping
+		ZeroMemory(&bd, sizeof(bd));
+		bd.Usage          = D3D11_USAGE_DEFAULT;
+		bd.ByteWidth      = sizeof(XMMATRIX);
+		bd.BindFlags      = D3D11_BIND_CONSTANT_BUFFER;
+		bd.CPUAccessFlags = 0;
+		bd.MiscFlags      = 0;
+
+		// Create the constant buffer with the device
+		HR(m_pd3dDevice->CreateBuffer(&bd, NULL, &m_pCBPerObject_Shadow));		
 
 		// TODO: D3DX stuff is deprecated, use another method for loading textures when you have time.
 
@@ -361,6 +381,12 @@ namespace TFCore
 		m_pDeviceContext->UpdateSubresource(m_pCBPerObject , 0, NULL, &cb, 0, 0);
 	}
 
+	void TFModel::UpdateShadowResources(const XMMATRIX& a_matWVP)
+	{
+		XMMATRIX _matWVP = XMMatrixTranspose(a_matWVP);
+		m_pDeviceContext->UpdateSubresource(m_pCBPerObject_Shadow, 0, NULL, &_matWVP, 0, 0);
+	}
+
 	// TODO: The slot number argument that is specified when binding these resources corresponds to 
 	// the register number used in the shader. This is prone to shader errors and the HLSL reflection API should
 	// be used to try and get the name of resources in the shader instead.
@@ -376,6 +402,16 @@ namespace TFCore
 		//m_pDeviceContext->PSSetShaderResources(0, 1, &m_pTextureSRV);
 		// Set the input layout
 		m_pDeviceContext->IASetInputLayout(m_pInputLayout);
+	}
+
+	void TFModel::ActivateShadowShaders()
+	{
+		m_pDeviceContext->VSSetShader(m_pVertexShaderShadows, NULL, 0);
+		m_pDeviceContext->PSSetShader(NULL, NULL, 0);
+		
+		m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pCBPerObject_Shadow);
+
+		// input layout should remain same...
 	}
 
 	// TODO: Its inefficient to be setting all these states per draw call, should 

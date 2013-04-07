@@ -23,13 +23,12 @@ public:
 	void RenderToShadowMap();
 
 private:
-	TFCore::TFCube* m_pGround1;
-	TFCore::TFCube* m_pCube1;
-	TFCore::TFCube* m_pCube2;
+
 	TFCore::TFFreeMotionCamera m_fmCamera;
 	TFCore::TFLightManager m_lightManager;
 	TFCore::TFShaderManager m_shaderManager;
-	TFCore::TFModel m_model;
+	TFCore::TFModel m_box1;
+	TFCore::TFModel m_box2;
 
 	XMMATRIX m_matView;
 	XMMATRIX m_matProj;
@@ -37,9 +36,6 @@ private:
 
 	XMMATRIX m_matLightView;
 
-	ID3D11ShaderResourceView* m_cubeMapSRV;
-	TFCore::TFModel m_ellipsoid;
-	ID3D11Buffer* m_pEllipsoidCB;
 	TFRendering::TFShadowMap* m_pShadowMap;
 
 };

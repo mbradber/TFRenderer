@@ -5,6 +5,7 @@
 #include "TFUtils.h"
 #include "TFModel.h"
 
+
 using namespace TFCore;
 
 TFApplication::TFApplication()
@@ -20,6 +21,7 @@ TFApplication::TFApplication()
 TFApplication::~TFApplication()
 {
 	// Delete renderable objects
+	delete m_pShadowMap;
 	delete m_pCube1;
 	delete m_pCube2;
 	delete m_pGround1;
@@ -37,6 +39,9 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	m_shaderManager.AddVertexShader(L"SimpleDirLight", L"..\\Debug\\SimpleDirLightVS.cso", TFPositionNormalTextureLayout, 3);
 	m_shaderManager.AddPixelShader(L"SimpleDirLight", L"..\\Debug\\SimpleDirLightPS.cso");
 
+	m_shaderManager.AddVertexShader(L"Shadows", L"..\\Debug\\ShadowsVS.cso", TFPosNormTexTanLayout, 4);
+	m_shaderManager.AddPixelShader(L"Shadwos", L"..\\Debug\\ShadowsPS.cso");
+
 	m_shaderManager.AddVertexShader(L"Sky", L"..\\Debug\\SkyVS.cso", TFSimplePositionLayout, 1);
 	m_shaderManager.AddPixelShader(L"Sky", L"..\\Debug\\SkyPS.cso");
 
@@ -52,6 +57,9 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	ID3D11VertexShader* _pSkyVS = m_shaderManager.GetVertexShaderByName(L"Sky");
 	ID3D11PixelShader*  _pSkyPS = m_shaderManager.GetPixelShaderByName(L"Sky");
 	ID3D11InputLayout*  _pSkyInputLayout = m_shaderManager.GetInputLayoutByName(L"Sky");
+
+	// Init shadow map
+	m_pShadowMap = new TFRendering::TFShadowMap(m_pd3dDevice, m_pd3dImmDeviceContext, 2048, 2048);
 
 
 	//m_model.Init(m_pd3dDevice, m_pd3dImmDeviceContext, 1.0f, m_shaderManager.GetActiveVertexShader(),
@@ -114,7 +122,8 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	m_matProj  = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 0.01f, 100.0f);
 	m_matView  = XMMatrixLookAtLH(XMVectorSet(-5.0f, 0.0f, -5.0f, 1.0f), XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f), XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 
-
+	// light source view matrix
+	m_matLightView = XMMatrixIdentity();
 }
 
 void TFApplication::OnResize()
@@ -143,9 +152,50 @@ void TFApplication::UpdateScene(float a_fDelta)
 	m_lightManager.Update(a_fDelta, m_fmCamera.GetPosition());
 }
 
+void TFApplication::RenderToShadowMap()
+{
+	//// Set the render state for depth bias rendering into shadow map
+	TFDepthBiasRender(m_pd3dDevice, m_pd3dImmDeviceContext);
+
+	// Set world matrix for first box
+	m_matWorld = XMMatrixTranslation(2.0f, 0.0f, 0.0f);
+
+	// Update the geometry with their respective transforms
+	XMMATRIX _matWVP = m_matWorld * m_lightManager.GetView() * m_lightManager.GetProjection();
+
+	//m_pCube1
+
+	//XMMATRIX _lightVPT = m_lightManager.GetVPT();
+	//XMMATRIX _matWVPT = m_matWorld * _lightVPT;
+
+	//// update consant 
+	//ID3D11Buffer* _pPerObjectCB;
+	//// describe the cb for the WVP matrix
+	//D3D11_BUFFER_DESC bd;
+	//ZeroMemory(&bd, sizeof(bd));
+	//bd.Usage          = D3D11_USAGE_DEFAULT;
+	//bd.ByteWidth      = sizeof(TFBufferPerObject);
+	//bd.BindFlags      = D3D11_BIND_CONSTANT_BUFFER;
+	//bd.CPUAccessFlags = 0;
+	//bd.MiscFlags      = 0;
+
+	//// Create the constant buffer with the device
+	//HR(m_pd3dDevice->CreateBuffer(&bd, NULL, &_pPerObjectCB));
+
+
+
+
+
+	//// restore default states
+	//m_pd3dImmDeviceContext->RSSetState(0);
+	//m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
+}
+
 void TFApplication::RenderScene()
 {
 	TFCore::TFWinBase::RenderScene();
+
+	RenderToShadowMap();
 
 	//TFRenderWireframe(m_pd3dDevice, m_pd3dImmDeviceContext);
 

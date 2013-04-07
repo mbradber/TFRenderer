@@ -22,6 +22,9 @@
     <Filter Include="Shaders\Sky">
       <UniqueIdentifier>{22894ee0-bb36-49f6-a6ba-a14ba5f0c9fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Shadows">
+      <UniqueIdentifier>{4607b2c1-dc06-4c04-8b86-7e850b0ca2ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TFDriver.cpp">
@@ -55,5 +58,16 @@
     <FxCompile Include="SkyPS.hlsl">
       <Filter>Shaders\Sky</Filter>
     </FxCompile>
+    <FxCompile Include="RenderDepthPS.hlsl">
+      <Filter>Shaders\Shadows</Filter>
+    </FxCompile>
+    <FxCompile Include="RenderDepthVS.hlsl">
+      <Filter>Shaders\Shadows</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="RenderDepthCommon.hlsli">
+      <Filter>Shaders\Shadows</Filter>
+    </None>
   </ItemGroup>
 </Project>

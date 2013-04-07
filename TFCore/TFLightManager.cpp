@@ -75,4 +75,40 @@ namespace TFCore
 	{
 	}
 
+	// TODO: Do a more formal calculation of the estimated position of the primary light source (using a scene
+	// bounding sphere instead of some arbitrary number
+
+	// TODO: Look into the "At" vector calculation, the Luna book says it should be the center of the scene, not the
+	// position + forward vector
+	XMMATRIX TFLightManager::GetView()
+	{
+		XMVECTOR _vDir = XMVectorSet(m_directionalLight1.Direction.x, m_directionalLight1.Direction.y, m_directionalLight1.Direction.z, 0.0f);
+		XMVector4Normalize(_vDir);
+		XMVECTOR _vPos = _vDir * -100;
+		XMVECTOR _vAt  = _vPos + _vDir;
+		XMVECTOR _vUp  = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+		return XMMatrixLookAtLH(_vPos, _vAt, _vUp);
+	}
+
+	// TODO: Do a more formal calculation of the dimensions of this orthographic viewing volume
+	// TODO: Don't query this every frame
+	XMMATRIX TFLightManager::GetProjection()
+	{
+		return XMMatrixOrthographicOffCenterLH(-100, 100, -100, 100, 0.01f, 100.0f);
+	}
+
+	XMMATRIX TFLightManager::GetVPT()
+	{
+		// Transform NDC space to texture space (Taken from Luna DX 11 book).
+		XMMATRIX T( 
+			0.5f, 0.0f, 0.0f, 0.0f,
+			0.0f, -0.5f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.5f, 0.5f, 0.0f, 1.0f);
+
+
+		return GetView() * GetProjection() * T;
+	}
+
 }
