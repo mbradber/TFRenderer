@@ -239,7 +239,7 @@ namespace TFCore
 		_triLinearSampler.MaxAnisotropy  = 16;
 		_triLinearSampler.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
 
-		HR(m_pd3dDevice->CreateSamplerState(&_anisoSampler, &_pSamplerState));
+		HR(m_pd3dDevice->CreateSamplerState(&_triLinearSampler, &_pSamplerState));
 		m_vSamplers.push_back(_pSamplerState);
 	}
 

@@ -364,7 +364,6 @@ namespace TFCore
 		std::stringstream _ss;
 		_ss << "TreeFrog Engine 1.0" << "    " << "MPF:" << a_fDelta * 1000.0f;
 		SetWindowTextA(m_hMainWnd, _ss.str().c_str());
-
 	}
 
 	void TFWinBase::RenderScene()

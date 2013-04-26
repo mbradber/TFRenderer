@@ -46,6 +46,7 @@ namespace TFCore
 			ID3D11PixelShader* a_pPixelShader,
 			ID3D11InputLayout* a_pInputLayout);
 		void SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap, size_t a_nIndex);
+		void UnloadShadowMap(size_t a_nIndex);
 		void ActivateShadowShaders();
 		void UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const XMMATRIX& a_matLightWVPT, const XMMATRIX& a_matTex, const XMFLOAT3& a_vEyePos);
 		void UpdateShadowResources(const XMMATRIX& a_matWVP);

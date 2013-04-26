@@ -20,6 +20,7 @@ Texture2D    DiffuseMap     : register(t0);
 Texture2D    NormalMap      : register(t1);
 Texture2D    ShadowMap      : register(t2);
 SamplerState samAnisotropic : register(s0);
+SamplerState samLinear      : register(s1);
 
 SamplerComparisonState samShadow
 {
@@ -32,12 +33,12 @@ SamplerComparisonState samShadow
     ComparisonFunc = LESS;
 };
 
-SamplerState samLinear
-{
-	Filter = MIN_MAG_MIP_LINEAR;
-	AddressU = WRAP;
-	AddressV = WRAP;
-};
+//SamplerState samLinear
+//{
+//	Filter = MIN_MAG_MIP_LINEAR;
+//	AddressU = WRAP;
+//	AddressV = WRAP;
+//};
 
 float4 main( VertexOut pin ) : SV_TARGET
 {

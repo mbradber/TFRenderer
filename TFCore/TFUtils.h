@@ -120,6 +120,10 @@ inline void TFDepthBiasRender(ID3D11Device* a_pDevice, ID3D11DeviceContext* a_pD
 	rd.DepthBiasClamp = 0.0f;
 	rd.SlopeScaledDepthBias = 1.0f;
 
+	//set fill and cull mode
+	rd.FillMode = D3D11_FILL_SOLID;
+	rd.CullMode = D3D11_CULL_BACK;
+
 	ID3D11RasterizerState* _pRasterizerState;
 	a_pDevice->CreateRasterizerState(&rd, &_pRasterizerState);
 	a_pDeviceContext->RSSetState(_pRasterizerState);

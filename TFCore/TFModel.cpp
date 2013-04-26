@@ -425,6 +425,12 @@ namespace TFCore
 		m_pDeviceContext->PSSetShaderResources(a_nIndex, 1, &a_pShadowMap);
 	}
 
+	void TFModel::UnloadShadowMap(size_t a_nIndex)
+	{
+		ID3D11ShaderResourceView* _pSRV[1] = {NULL};
+		m_pDeviceContext->PSSetShaderResources(a_nIndex, 1, _pSRV);
+	}
+
 	// TODO: Its inefficient to be setting all these states per draw call, should 
 	// only do it once per batch of renderable types
 	void TFModel::Draw()

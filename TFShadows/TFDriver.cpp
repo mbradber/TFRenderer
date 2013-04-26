@@ -40,6 +40,8 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	// Bind the default sampler state to the PS
 	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler);
+	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_TRILINEAR);
+	m_pd3dImmDeviceContext->PSSetSamplers(1, 1, &_defaultSampler);
 
 
 	ID3D11VertexShader* _pNormalMapVS            = m_shaderManager.GetVertexShaderByName(L"NormalMapping");
@@ -114,6 +116,7 @@ void TFApplication::UpdateScene(float a_fDelta)
 {
 	TFCore::TFWinBase::UpdateScene(a_fDelta);
 
+	//a_fDelta = 0.00113f;
 	// Update camera (process user input)
 	m_fmCamera.Update(a_fDelta);
 
@@ -176,7 +179,7 @@ void TFApplication::RenderScene()
 	// Update the geometry with their respective transforms
 	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
 
-	m_box1.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_matWorld * m_lightManager.GetVPT(), m_fmCamera.GetPosition());
+	m_box1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_box1.ActivateShaders();
 	// bind the shadow map to an input slot of the pixel shader
 	m_box1.SetShadowMap(m_pShadowMap->GetDepthMapSRV(), 2);
@@ -187,17 +190,20 @@ void TFApplication::RenderScene()
 	m_matWorld *= XMMatrixTranslation(0.0f, -7.9f, 0.0f);
 	_matWVP = m_matWorld * m_matView * m_matProj;
 
-	m_box2.UpdateResources(_matWVP, m_matWorld, XMMatrixIdentity(), m_matWorld * m_lightManager.GetVPT(), m_fmCamera.GetPosition());
+	m_box2.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_box2.ActivateShaders();
 	m_box2.SetShadowMap(m_pShadowMap->GetDepthMapSRV(), 2);
 	m_box2.Draw();
 
 	// restore default states
+	m_box1.UnloadShadowMap(2); // unbind shadow maps as shader resources because we are about to rebind them as depth stencil views
+	m_box2.UnloadShadowMap(2);
 	m_pd3dImmDeviceContext->RSSetState(0);
 	m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
 
 	// Display the back buffer (vsync intervals)
-	m_pSwapChain->Present( 1, 0 );
+	//m_pSwapChain->Present( 1, 0 );
+	m_pSwapChain->Present(0, 0);
 }
 
 
