@@ -241,6 +241,20 @@ namespace TFCore
 
 		HR(m_pd3dDevice->CreateSamplerState(&_triLinearSampler, &_pSamplerState));
 		m_vSamplers.push_back(_pSamplerState);
+
+		D3D11_SAMPLER_DESC _pointSampler;
+		_pointSampler.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+		_pointSampler.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+		_pointSampler.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+		_pointSampler.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+		_pointSampler.MinLOD		 = -FLT_MAX;
+		_pointSampler.MaxLOD		 = FLT_MAX;
+		_pointSampler.MipLODBias     = 0;
+		_pointSampler.MaxAnisotropy  = 16;
+		_pointSampler.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+		HR(m_pd3dDevice->CreateSamplerState(&_pointSampler, &_pSamplerState));
+		m_vSamplers.push_back(_pSamplerState);
 	}
 
 	ID3D11SamplerState* TFShaderManager::GetSamplerState(TFSamplerIndex a_nSamplerIndex) const

@@ -42,6 +42,8 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler);
 	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_TRILINEAR);
 	m_pd3dImmDeviceContext->PSSetSamplers(1, 1, &_defaultSampler);
+	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_POINT);
+	m_pd3dImmDeviceContext->PSSetSamplers(2, 1, &_defaultSampler);
 
 
 	ID3D11VertexShader* _pNormalMapVS            = m_shaderManager.GetVertexShaderByName(L"NormalMapping");
@@ -98,6 +100,9 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 
 	// light source view matrix
 	m_matLightView = XMMatrixIdentity();
+
+	// Update the lights
+	m_lightManager.Update(1.0f, m_fmCamera.GetPosition());
 }
 
 void TFApplication::OnResize()
@@ -123,8 +128,8 @@ void TFApplication::UpdateScene(float a_fDelta)
 	// Grab view matrix from the camera
 	m_matView = m_fmCamera.GetView();
 
-	// Update the lights
-	m_lightManager.Update(a_fDelta, m_fmCamera.GetPosition());
+	//// Update the lights
+	//m_lightManager.Update(a_fDelta, m_fmCamera.GetPosition());
 }
 
 void TFApplication::RenderToShadowMap()
@@ -138,6 +143,7 @@ void TFApplication::RenderToShadowMap()
 
 	// Update the geometry of box 1
 	m_matWorld = XMMatrixScaling(0.2f, 0.2f, 0.2f);
+	m_matWorld = m_matWorld * XMMatrixTranslation(-25.0f, 0.0f, -25.0f);
 	
 	XMMATRIX _matWVP = m_matWorld * m_lightManager.GetView() * m_lightManager.GetProjection();
 
@@ -175,6 +181,7 @@ void TFApplication::RenderScene()
 
 	// Set world matrix for first box
 	m_matWorld = XMMatrixScaling(0.2f, 0.2f, 0.2f);
+	m_matWorld = m_matWorld * XMMatrixTranslation(-25.0f, 0.0f, -25.0f);
 
 	// Update the geometry with their respective transforms
 	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;

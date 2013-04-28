@@ -376,7 +376,7 @@ namespace TFCore
 		cb.texMatrix = a_matTex;
 
 		// update matrix to transform from object to projective texture coords
-		cb.lightVPT = a_matLightWVPT;
+		cb.lightVPT = XMMatrixTranspose(a_matLightWVPT);
 
 		//update material of buffer
 		cb.material  = m_material;

@@ -96,6 +96,7 @@ namespace TFCore
 	XMMATRIX TFLightManager::GetProjection()
 	{
 		return XMMatrixOrthographicOffCenterLH(-100, 100, -100, 100, 0.01f, 100.0f);
+		//return XMMatrixPerspectiveFovLH(XM_PIDIV4, 1008.f / 730.f,  0.01f, 100.0f);
 	}
 
 	XMMATRIX TFLightManager::GetVPT()
@@ -109,6 +110,8 @@ namespace TFCore
 
 
 		return GetView() * GetProjection() * T;
+
+		//return GetView() * GetProjection();
 	}
 
 }
