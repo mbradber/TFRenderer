@@ -24,15 +24,38 @@ SamplerState samLinear      : register(s1);
 SamplerComparisonState samShadow      : register(s2);
 //SamplerState samShadow : register(s2);
 
+float CalcShadow(float4 a_vShadowPosH)
+{
+	a_vShadowPosH.xyz /= a_vShadowPosH.w;
+	float _fDepth = a_vShadowPosH.z;
+
+	float dx = 1.0f / 2048.0f;
+
+	float _fShadowFactor = 0.0f;
+
+	float2 _pcfGrid[9] = 
+	{
+		float2(-dx, -dx),  float2(0.0f, -dx), float2(dx, -dx),
+		float2(-dx, 0.0f), float2(0.0f, 0),   float2(dx, 0.0f),
+		float2(-dx, dx),   float2(0.0f, dx),  float2(dx, dx),
+	};
+
+	[unroll]
+	for(int i = 0; i < 9; ++i)
+	{
+		_fShadowFactor += ShadowMap.SampleCmpLevelZero(samShadow, a_vShadowPosH.xy + _pcfGrid[i], _fDepth);
+	}
+
+
+	//float _fShadowFactor = ShadowMap.SampleCmpLevelZero(samShadow, a_vShadowPosH.xy, _fDepth);
+
+	return _fShadowFactor / 9.0f;
+}
+
 float4 main( VertexOut pin ) : SV_TARGET
 {
-	// SHADOW MAPPING STUFF...
-
-	// complete projection by manual divide by w
-	pin.ProjTex.xyz /= pin.ProjTex.w;
-	float _fDepth = pin.ProjTex.z;
-
-	float _fShadowFactor = ShadowMap.SampleCmpLevelZero(samShadow, pin.ProjTex.xy, _fDepth);
+	// get shadow factor
+	float _fShadowFactor = CalcShadow(pin.ProjTex);
 
 	// sample shadow map using projective texture coords
 	//float4 _sampledDepthVector = ShadowMap.Sample(samShadow, pin.ProjTex.xy);

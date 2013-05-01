@@ -84,7 +84,7 @@ namespace TFCore
 	{
 		XMVECTOR _vDir = XMVectorSet(m_directionalLight1.Direction.x, m_directionalLight1.Direction.y, m_directionalLight1.Direction.z, 0.0f);
 		XMVector4Normalize(_vDir);
-		XMVECTOR _vPos = -_vDir * 60;
+		XMVECTOR _vPos = -_vDir * 40;
 		//XMVECTOR _vAt  = _vPos + _vDir;
 		XMVECTOR _vAt = XMVectorZero();
 		XMVECTOR _vUp  = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -96,7 +96,7 @@ namespace TFCore
 	// TODO: Don't query this every frame
 	XMMATRIX TFLightManager::GetProjection()
 	{
-		return XMMatrixOrthographicOffCenterLH(-100, 100, -100, 100, 1.0f, 100.0f);
+		return XMMatrixOrthographicOffCenterLH(-60, 60, -35, 35, -20.0f, 100.0f);
 		//return XMMatrixPerspectiveFovLH(XM_PIDIV4, 1008.f / 730.f,  50, 100.0f);
 	}
 
