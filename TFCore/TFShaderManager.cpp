@@ -210,6 +210,8 @@ namespace TFCore
 		return m_mapInputLayouts.find(a_sName)->second;
 	}
 
+	// Note: The order that these are inserted matters as the 'TFSamplerIndex' enum expects
+	// this.
 	void TFShaderManager::BuildSamplerStates()
 	{
 		ID3D11SamplerState* _pSamplerState = NULL;
@@ -254,6 +256,23 @@ namespace TFCore
 		_pointSampler.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
 
 		HR(m_pd3dDevice->CreateSamplerState(&_pointSampler, &_pSamplerState));
+		m_vSamplers.push_back(_pSamplerState);
+
+        D3D11_SAMPLER_DESC SamDescShad = 
+        {
+            D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT,// D3D11_FILTER Filter;
+            D3D11_TEXTURE_ADDRESS_BORDER, //D3D11_TEXTURE_ADDRESS_MODE AddressU;
+            D3D11_TEXTURE_ADDRESS_BORDER, //D3D11_TEXTURE_ADDRESS_MODE AddressV;
+            D3D11_TEXTURE_ADDRESS_BORDER, //D3D11_TEXTURE_ADDRESS_MODE AddressW;
+            0,//FLOAT MipLODBias;
+            0,//UINT MaxAnisotropy;
+            D3D11_COMPARISON_LESS , //D3D11_COMPARISON_FUNC ComparisonFunc;
+            0.0,0.0,0.0,0.0,//FLOAT BorderColor[ 4 ];
+            0,//FLOAT MinLOD;
+            0//FLOAT MaxLOD;   
+        };
+
+		HR(m_pd3dDevice->CreateSamplerState(&SamDescShad, &_pSamplerState));
 		m_vSamplers.push_back(_pSamplerState);
 	}
 

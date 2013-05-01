@@ -71,7 +71,7 @@ namespace TFCore
 		:Ambient(0.3f, 0.3f, 0.3f, 1.0f),
 		 Diffuse(0.8f, 0.8f, 0.8f, 1.0f),
 		 Specular(0.5f, 0.5f, 0.5f, 1.0f),
-		 Direction(0.57735f, -0.57735f, 0.57735f)
+		 Direction(0.577350269f, -0.577350269f, 0.577350269f)
 	{
 	}
 
@@ -84,8 +84,9 @@ namespace TFCore
 	{
 		XMVECTOR _vDir = XMVectorSet(m_directionalLight1.Direction.x, m_directionalLight1.Direction.y, m_directionalLight1.Direction.z, 0.0f);
 		XMVector4Normalize(_vDir);
-		XMVECTOR _vPos = _vDir * -100;
-		XMVECTOR _vAt  = _vPos + _vDir;
+		XMVECTOR _vPos = -_vDir * 60;
+		//XMVECTOR _vAt  = _vPos + _vDir;
+		XMVECTOR _vAt = XMVectorZero();
 		XMVECTOR _vUp  = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 		return XMMatrixLookAtLH(_vPos, _vAt, _vUp);
@@ -95,8 +96,8 @@ namespace TFCore
 	// TODO: Don't query this every frame
 	XMMATRIX TFLightManager::GetProjection()
 	{
-		return XMMatrixOrthographicOffCenterLH(-100, 100, -100, 100, 0.01f, 100.0f);
-		//return XMMatrixPerspectiveFovLH(XM_PIDIV4, 1008.f / 730.f,  0.01f, 100.0f);
+		return XMMatrixOrthographicOffCenterLH(-100, 100, -100, 100, 1.0f, 100.0f);
+		//return XMMatrixPerspectiveFovLH(XM_PIDIV4, 1008.f / 730.f,  50, 100.0f);
 	}
 
 	XMMATRIX TFLightManager::GetVPT()

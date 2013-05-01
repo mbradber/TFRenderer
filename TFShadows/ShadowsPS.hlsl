@@ -21,26 +21,8 @@ Texture2D    NormalMap      : register(t1);
 Texture2D    ShadowMap      : register(t2);
 SamplerState samAnisotropic : register(s0);
 SamplerState samLinear      : register(s1);
-SamplerState samShadow      : register(s2);
-
-//SamplerComparisonState samShadow
-//{
-//	Filter   = COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
-//	AddressU = BORDER;
-//	AddressV = BORDER;
-//	AddressW = BORDER;
-//	BorderColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
-//
-//    ComparisonFunc = LESS_EQUAL;
-//};
-
-
-//SamplerState samLinear
-//{
-//	Filter = MIN_MAG_MIP_LINEAR;
-//	AddressU = WRAP;
-//	AddressV = WRAP;
-//};
+SamplerComparisonState samShadow      : register(s2);
+//SamplerState samShadow : register(s2);
 
 float4 main( VertexOut pin ) : SV_TARGET
 {
@@ -48,22 +30,14 @@ float4 main( VertexOut pin ) : SV_TARGET
 
 	// complete projection by manual divide by w
 	pin.ProjTex.xyz /= pin.ProjTex.w;
-
-	//pin.ProjTex.x = 0.5f * pin.ProjTex.x + 0.5f;
-	//pin.ProjTex.y = -0.5f * pin.ProjTex.y + 0.5f;
-
 	float _fDepth = pin.ProjTex.z;
 
+	float _fShadowFactor = ShadowMap.SampleCmpLevelZero(samShadow, pin.ProjTex.xy, _fDepth);
+
 	// sample shadow map using projective texture coords
-	float4 _sampledDepthVector = ShadowMap.Sample(samShadow, pin.ProjTex.xy);
-	float _sampledDepth = _sampledDepthVector.r;
-
-	// get this point's distance from the light source
-	float3 _toEyeVector = EyePosition - pin.PosW;
-	float  _pointDepth  = length(_toEyeVector);
-
-	//bool _bInShadow = _pointDepth < _sampledDepth;
-	bool _bInShadow = _fDepth > _sampledDepth;
+	//float4 _sampledDepthVector = ShadowMap.Sample(samShadow, pin.ProjTex.xy);
+	//float _sampledDepth = _sampledDepthVector.r;
+	//bool _bInShadow = _fDepth > _sampledDepth;
 
 	// Renormalize after transformation
 	pin.NormW = normalize(pin.NormW);
@@ -96,7 +70,8 @@ float4 main( VertexOut pin ) : SV_TARGET
 	float4 _diffuseLight = _lambert * LightObj.Diffuse * MaterialObj.Diffuse;
 	float4 _ambientLight = LightObj.Ambient * MaterialObj.Ambient;
 	float4 _color        = _texColor * (_ambientLight + _diffuseLight);
-	_color *= !_bInShadow;
+	//_color *= !_bInShadow;
+	_color *= _fShadowFactor;
 
 	return _color;
 }

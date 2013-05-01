@@ -42,7 +42,8 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler);
 	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_TRILINEAR);
 	m_pd3dImmDeviceContext->PSSetSamplers(1, 1, &_defaultSampler);
-	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_POINT);
+	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_SHADOW);
+	//_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_POINT);
 	m_pd3dImmDeviceContext->PSSetSamplers(2, 1, &_defaultSampler);
 
 
@@ -154,7 +155,7 @@ void TFApplication::RenderToShadowMap()
 
 	// update geometry of box 2 (ground)
 	m_matWorld = XMMatrixScaling(2.0f, 0.2f, 2.0f);
-	m_matWorld *= XMMatrixTranslation(0.0f, -7.9f, 0.0f);
+	m_matWorld *= XMMatrixTranslation(0.0f, -7.8f, 0.0f);
 	_matWVP = m_matWorld * m_lightManager.GetView() * m_lightManager.GetProjection();
 
 	// draw box 2
@@ -194,7 +195,7 @@ void TFApplication::RenderScene()
 
 	// update geometry of box 2 (ground)
 	m_matWorld = XMMatrixScaling(2.0f, 0.2f, 2.0f);
-	m_matWorld *= XMMatrixTranslation(0.0f, -7.9f, 0.0f);
+	m_matWorld *= XMMatrixTranslation(0.0f, -7.8f, 0.0f);
 	_matWVP = m_matWorld * m_matView * m_matProj;
 
 	m_box2.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
