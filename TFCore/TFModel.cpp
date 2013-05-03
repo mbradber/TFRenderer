@@ -56,7 +56,8 @@ namespace TFCore
 			aiProcess_JoinIdenticalVertices  |
 			aiProcess_SortByPType            |
 			aiProcess_MakeLeftHanded         |
-			aiProcess_GenSmoothNormals       |
+			//aiProcess_GenSmoothNormals       |
+			aiProcess_GenNormals |
 			aiProcess_GenUVCoords            |
 			aiProcess_TransformUVCoords      |
 			aiProcess_FlipWindingOrder       |

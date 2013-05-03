@@ -16,7 +16,8 @@ TFApplication::TFApplication()
 TFApplication::~TFApplication()
 {
 	// Delete renderable objects
-	delete m_pShadowMap;
+	delete m_pShadowMapFront;
+	delete m_pShadowMapBack;
 }
 
 void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
@@ -42,8 +43,8 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler);
 	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_TRILINEAR);
 	m_pd3dImmDeviceContext->PSSetSamplers(1, 1, &_defaultSampler);
-	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_SHADOW);
-	//_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_POINT);
+	//_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_SHADOW);
+	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_POINT);
 	m_pd3dImmDeviceContext->PSSetSamplers(2, 1, &_defaultSampler);
 
 
@@ -60,8 +61,9 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	ID3D11InputLayout*  _pShadowsInputLayout     = m_shaderManager.GetInputLayoutByName( L"Shadows");
 
 
-	// Init shadow map
-	m_pShadowMap = new TFRendering::TFShadowMap(m_pd3dDevice, m_pd3dImmDeviceContext, 2048, 2048);
+	// Init shadow maps
+	m_pShadowMapFront = new TFRendering::TFShadowMap(m_pd3dDevice, m_pd3dImmDeviceContext, 2048, 2048);
+	m_pShadowMapBack  = new TFRendering::TFShadowMap(m_pd3dDevice, m_pd3dImmDeviceContext, 2048, 2048);
 
 
 	//m_model.Init(m_pd3dDevice, m_pd3dImmDeviceContext, 1.0f, m_shaderManager.GetActiveVertexShader(),
@@ -135,18 +137,55 @@ void TFApplication::UpdateScene(float a_fDelta)
 
 void TFApplication::RenderToShadowMap()
 {
+	// RENDER WITH FRONTFACE CULL
+
 	//// Set the render state for depth bias rendering into shadow map
-	TFDepthBiasRender(m_pd3dDevice, m_pd3dImmDeviceContext);
+	//TFDepthBiasRender(m_pd3dDevice, m_pd3dImmDeviceContext);
+	TFRenderFrontFaceCull(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	// Set viewport to shadow map viewport, set render target to null (Disables color writes)
 	// and set the depth draws to shadow map depth stencil view
-	m_pShadowMap->SetRenderState();
+	m_pShadowMapBack->SetRenderState();
 
 	// Update the geometry of box 1
 	m_matWorld = XMMatrixScaling(0.2f, 0.2f, 0.2f);
 	m_matWorld = m_matWorld * XMMatrixTranslation(-25.0f, 0.0f, -25.0f);
 	
 	XMMATRIX _matWVP = m_matWorld * m_lightManager.GetView() * m_lightManager.GetProjection();
+
+	// draw box 1
+	m_box1.UpdateShadowResources(_matWVP);
+	m_box1.ActivateShadowShaders();
+	m_box1.Draw();
+
+	// update geometry of box 2 (ground)
+	m_matWorld = XMMatrixScaling(2.0f, 0.2f, 2.0f);
+	m_matWorld *= XMMatrixTranslation(0.0f, -7.8f, 0.0f);
+	_matWVP = m_matWorld * m_lightManager.GetView() * m_lightManager.GetProjection();
+
+	// draw box 2
+	m_box2.UpdateShadowResources(_matWVP);
+	m_box2.ActivateShadowShaders();
+	m_box2.Draw();
+
+	// restore default render states
+	m_pd3dImmDeviceContext->RSSetState(0);
+	m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
+
+	// RENDER WITH BACKFACE CULL
+
+	//TFRenderFrontFaceCull(m_pd3dDevice, m_pd3dImmDeviceContext);
+	m_pd3dImmDeviceContext->RSSetState(0);
+
+	// Set viewport to shadow map viewport, set render target to null (Disables color writes)
+	// and set the depth draws to shadow map depth stencil view
+	m_pShadowMapFront->SetRenderState();
+
+	// Update the geometry of box 1
+	m_matWorld = XMMatrixScaling(0.2f, 0.2f, 0.2f);
+	m_matWorld = m_matWorld * XMMatrixTranslation(-25.0f, 0.0f, -25.0f);
+	
+	_matWVP = m_matWorld * m_lightManager.GetView() * m_lightManager.GetProjection();
 
 	// draw box 1
 	m_box1.UpdateShadowResources(_matWVP);
@@ -190,7 +229,8 @@ void TFApplication::RenderScene()
 	m_box1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_box1.ActivateShaders();
 	// bind the shadow map to an input slot of the pixel shader
-	m_box1.SetShadowMap(m_pShadowMap->GetDepthMapSRV(), 2);
+	m_box1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
+	m_box1.SetShadowMap(m_pShadowMapBack->GetDepthMapSRV(), 3);
 	m_box1.Draw();
 
 	// update geometry of box 2 (ground)
@@ -200,12 +240,15 @@ void TFApplication::RenderScene()
 
 	m_box2.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_box2.ActivateShaders();
-	m_box2.SetShadowMap(m_pShadowMap->GetDepthMapSRV(), 2);
+	m_box2.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
+	m_box2.SetShadowMap(m_pShadowMapBack->GetDepthMapSRV(), 3);
 	m_box2.Draw();
 
 	// restore default states
 	m_box1.UnloadShadowMap(2); // unbind shadow maps as shader resources because we are about to rebind them as depth stencil views
+	m_box1.UnloadShadowMap(3);
 	m_box2.UnloadShadowMap(2);
+	m_box2.UnloadShadowMap(3);
 	m_pd3dImmDeviceContext->RSSetState(0);
 	m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
 

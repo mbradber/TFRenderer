@@ -36,6 +36,7 @@ private:
 
 	XMMATRIX m_matLightView;
 
-	TFRendering::TFShadowMap* m_pShadowMap;
+	TFRendering::TFShadowMap* m_pShadowMapFront;
+	TFRendering::TFShadowMap* m_pShadowMapBack;
 
 };

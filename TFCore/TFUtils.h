@@ -112,15 +112,29 @@ inline void TFRenderNoCull(ID3D11Device* a_pDevice, ID3D11DeviceContext* a_pDevi
 	a_pDeviceContext->RSSetState(_pRasterizerState);
 }
 
+inline void TFRenderFrontFaceCull(ID3D11Device* a_pDevice, ID3D11DeviceContext* a_pDeviceContext)
+{
+	D3D11_RASTERIZER_DESC rd;
+	ZeroMemory(&rd, sizeof(D3D11_RASTERIZER_DESC));
+
+	rd.FillMode = D3D11_FILL_SOLID;
+	rd.CullMode = D3D11_CULL_FRONT;
+
+	ID3D11RasterizerState* _pRasterizerState;
+	a_pDevice->CreateRasterizerState(&rd, &_pRasterizerState);
+	a_pDeviceContext->RSSetState(_pRasterizerState);
+}
+
+
 inline void TFDepthBiasRender(ID3D11Device* a_pDevice, ID3D11DeviceContext* a_pDeviceContext)
 {
 	D3D11_RASTERIZER_DESC rd;
 	ZeroMemory(&rd, sizeof(D3D11_RASTERIZER_DESC));
 	//rd.DepthBias = 100000;
-	rd.DepthBias = 10000;
+	rd.DepthBias = 50000;
 	rd.DepthBiasClamp = 0.0f;
 	//rd.SlopeScaledDepthBias = 1.0f;
-	rd.SlopeScaledDepthBias = 1.0f;
+	rd.SlopeScaledDepthBias = 5.0f;
 
 	//set fill and cull mode
 	rd.FillMode = D3D11_FILL_SOLID;

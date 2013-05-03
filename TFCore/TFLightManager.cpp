@@ -51,11 +51,13 @@ namespace TFCore
 		static float _rotationX = 0.0f;
 		static float _rotationZ = 0.0f;
 
-		_rotationX += a_fDeltaTime;
-		_rotationZ += a_fDeltaTime;
+		_rotationX += a_fDeltaTime / 5.0f;
+		_rotationZ += a_fDeltaTime / 5.0f;
 		
+		//m_directionalLight1.Direction.y = 0;
 		m_directionalLight1.Direction.x = cosf(_rotationX);
 		m_directionalLight1.Direction.z = sinf(_rotationZ);
+
 
 		// UPDATE LIGHT RESOURCE
 		m_directionaLight1Buffer.DirLight = m_directionalLight1;
@@ -96,7 +98,7 @@ namespace TFCore
 	// TODO: Don't query this every frame
 	XMMATRIX TFLightManager::GetProjection()
 	{
-		return XMMatrixOrthographicOffCenterLH(-60, 60, -35, 35, -20.0f, 100.0f);
+		return XMMatrixOrthographicOffCenterLH(-60, 60, -35, 30, -20.0f, 100.0f);
 		//return XMMatrixPerspectiveFovLH(XM_PIDIV4, 1008.f / 730.f,  50, 100.0f);
 	}
 
