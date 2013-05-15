@@ -43,9 +43,10 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler);
 	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_TRILINEAR);
 	m_pd3dImmDeviceContext->PSSetSamplers(1, 1, &_defaultSampler);
-	//_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_SHADOW);
-	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_POINT);
+	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_SHADOW);
 	m_pd3dImmDeviceContext->PSSetSamplers(2, 1, &_defaultSampler);
+	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_POINT);
+	m_pd3dImmDeviceContext->PSSetSamplers(3, 1, &_defaultSampler);
 
 
 	ID3D11VertexShader* _pNormalMapVS            = m_shaderManager.GetVertexShaderByName(L"NormalMapping");
@@ -124,7 +125,6 @@ void TFApplication::UpdateScene(float a_fDelta)
 {
 	TFCore::TFWinBase::UpdateScene(a_fDelta);
 
-	//a_fDelta = 0.00113f;
 	// Update camera (process user input)
 	m_fmCamera.Update(a_fDelta);
 
@@ -132,50 +132,14 @@ void TFApplication::UpdateScene(float a_fDelta)
 	m_matView = m_fmCamera.GetView();
 
 	//// Update the lights
-	//m_lightManager.Update(a_fDelta, m_fmCamera.GetPosition());
+	m_lightManager.Update(a_fDelta, m_fmCamera.GetPosition());
 }
 
 void TFApplication::RenderToShadowMap()
 {
-	// RENDER WITH FRONTFACE CULL
+	XMMATRIX _matWVP;
 
-	//// Set the render state for depth bias rendering into shadow map
-	//TFDepthBiasRender(m_pd3dDevice, m_pd3dImmDeviceContext);
-	TFRenderFrontFaceCull(m_pd3dDevice, m_pd3dImmDeviceContext);
-
-	// Set viewport to shadow map viewport, set render target to null (Disables color writes)
-	// and set the depth draws to shadow map depth stencil view
-	m_pShadowMapBack->SetRenderState();
-
-	// Update the geometry of box 1
-	m_matWorld = XMMatrixScaling(0.2f, 0.2f, 0.2f);
-	m_matWorld = m_matWorld * XMMatrixTranslation(-25.0f, 0.0f, -25.0f);
-	
-	XMMATRIX _matWVP = m_matWorld * m_lightManager.GetView() * m_lightManager.GetProjection();
-
-	// draw box 1
-	m_box1.UpdateShadowResources(_matWVP);
-	m_box1.ActivateShadowShaders();
-	m_box1.Draw();
-
-	// update geometry of box 2 (ground)
-	m_matWorld = XMMatrixScaling(2.0f, 0.2f, 2.0f);
-	m_matWorld *= XMMatrixTranslation(0.0f, -7.8f, 0.0f);
-	_matWVP = m_matWorld * m_lightManager.GetView() * m_lightManager.GetProjection();
-
-	// draw box 2
-	m_box2.UpdateShadowResources(_matWVP);
-	m_box2.ActivateShadowShaders();
-	m_box2.Draw();
-
-	// restore default render states
-	m_pd3dImmDeviceContext->RSSetState(0);
-	m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
-
-	// RENDER WITH BACKFACE CULL
-
-	//TFRenderFrontFaceCull(m_pd3dDevice, m_pd3dImmDeviceContext);
-	m_pd3dImmDeviceContext->RSSetState(0);
+	TFDepthBiasRender(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	// Set viewport to shadow map viewport, set render target to null (Disables color writes)
 	// and set the depth draws to shadow map depth stencil view
@@ -183,7 +147,7 @@ void TFApplication::RenderToShadowMap()
 
 	// Update the geometry of box 1
 	m_matWorld = XMMatrixScaling(0.2f, 0.2f, 0.2f);
-	m_matWorld = m_matWorld * XMMatrixTranslation(-25.0f, 0.0f, -25.0f);
+	m_matWorld = m_matWorld * XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 	
 	_matWVP = m_matWorld * m_lightManager.GetView() * m_lightManager.GetProjection();
 
@@ -221,7 +185,7 @@ void TFApplication::RenderScene()
 
 	// Set world matrix for first box
 	m_matWorld = XMMatrixScaling(0.2f, 0.2f, 0.2f);
-	m_matWorld = m_matWorld * XMMatrixTranslation(-25.0f, 0.0f, -25.0f);
+	m_matWorld = m_matWorld * XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 
 	// Update the geometry with their respective transforms
 	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
