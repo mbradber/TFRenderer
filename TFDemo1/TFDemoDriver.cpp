@@ -186,7 +186,7 @@ void TFDemoDriver::RenderScene()
 	// build shadow map
 	RenderToShadowMap();
 
-	//TFRenderWireframe(m_pd3dDevice, m_pd3dImmDeviceContext);
+	TFRenderWireframe(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	// Set world matrix for first box
 	m_matWorld = XMMatrixScaling(0.2f, 0.2f, 0.2f);
@@ -199,7 +199,7 @@ void TFDemoDriver::RenderScene()
 	m_box1.ActivateShaders();
 	// bind the shadow map to an input slot of the pixel shader
 	m_box1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
-	m_box1.Draw();
+	//m_box1.Draw();
 
 	// update geometry of box 2 (ground)
 	m_matWorld = XMMatrixScaling(2.0f, 0.2f, 2.0f);
@@ -209,7 +209,15 @@ void TFDemoDriver::RenderScene()
 	m_box2.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_box2.ActivateShaders();
 	m_box2.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
-	m_box2.Draw();
+	//m_box2.Draw();
+
+	// draw terrain
+	m_matWorld = XMMatrixIdentity();
+	_matWVP = m_matWorld * m_matView * m_matProj;
+
+	m_terrain.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_terrain.ActivateShaders();
+	m_terrain.Draw();
 
 	// restore default states
 	m_box1.UnloadShadowMap(2); // unbind shadow maps as shader resources because we are about to rebind them as depth stencil views

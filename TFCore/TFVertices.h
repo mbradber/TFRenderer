@@ -60,6 +60,15 @@ namespace TFCore
 		XMFLOAT3 Norm;
 		XMFLOAT2 TexC;
 		XMFLOAT3 TanU;
+
+		TFPosNormTexTan()
+			:
+			Pos(XMFLOAT3(0, 0, 0)),
+			Norm(XMFLOAT3(0, 0, 0)),
+			TexC(XMFLOAT2(0, 0)),
+			TanU(XMFLOAT3(0, 0, 0))
+		{
+		}
 	};
 
 	const D3D11_INPUT_ELEMENT_DESC TFPosNormTexTanLayout[] = 

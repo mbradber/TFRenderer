@@ -12,7 +12,7 @@ namespace TFCore
 		:m_nVertexCount(0),
 		 m_nIndexCount(0)
 	{
-		// Define material for cube
+		// Define material for model
 		m_material.Ambient  = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 		m_material.Diffuse  = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		m_material.Specular = XMFLOAT4(0.6f, 0.6f, 0.6f, 16.0f);
