@@ -105,13 +105,11 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	// init terrain
 	m_terrain.Init(m_pd3dDevice, 
 		m_pd3dImmDeviceContext,
-		1.0f,
 		_pShadowsVS,
 		_pShadowsPS,
 		_pShadowsInputLayout,
-		"..\\Textures\\terrain1.raw"
-		);
-	//m_terrain.GenerateHeightMap("..\\Textures\\terrain.raw");
+		"..\\Textures\\terrain1.raw",
+		257);
 }
 
 void TFDemoDriver::OnResize()

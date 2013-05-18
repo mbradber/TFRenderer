@@ -16,11 +16,11 @@ namespace TFCore
 
 	void Init(ID3D11Device* a_pDevice, 
 		ID3D11DeviceContext* a_pDeviceContext, 
-		float a_fScale, 
 		ID3D11VertexShader* a_pVertexShader,
 		ID3D11PixelShader* a_pPixelShader,
 		ID3D11InputLayout* a_pInputLayout,
-		const std::string& a_sAssetPath);
+		const std::string& a_sAssetPath,
+		size_t a_nGridSize);
 
 	void Draw();
 	void UpdateResources(const XMMATRIX& a_matWVP, 
@@ -33,8 +33,9 @@ namespace TFCore
 
 	// TODO: CLEANUP COM CRAP IN DTOR
 	private:
-		void GenerateHeightMap(std::string a_sFilePath);
+		void GenerateHeightMap(std::string a_sFilePath, size_t a_nGridSize);
 		void GenerateGrid(size_t a_nWidth, size_t a_nDepth);
+		void GenerateNormal(TFPosNormTexTan& a_vert);
 
 		std::vector<unsigned char> m_hmData;
 		ID3D11Device*			  m_pd3dDevice;

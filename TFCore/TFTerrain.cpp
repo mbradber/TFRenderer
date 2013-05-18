@@ -25,11 +25,11 @@ namespace TFCore
 
 	void TFTerrain::Init(ID3D11Device* a_pDevice, 
 		ID3D11DeviceContext* a_pDeviceContext, 
-		float a_fScale, 
 		ID3D11VertexShader* a_pVertexShader,
 		ID3D11PixelShader* a_pPixelShader,
 		ID3D11InputLayout* a_pInputLayout,
-		const std::string& a_sAssetPath)
+		const std::string& a_sAssetPath,
+		size_t a_nGridSize)
 	{
 		m_pd3dDevice = a_pDevice;
 		m_pDeviceContext = a_pDeviceContext;
@@ -38,15 +38,14 @@ namespace TFCore
 		m_pPixelShader = a_pPixelShader;
 		m_pInputLayout = a_pInputLayout;
 
-		GenerateHeightMap(a_sAssetPath);
+		GenerateHeightMap(a_sAssetPath, a_nGridSize);
 
-		GenerateGrid(257, 257);
+		GenerateGrid(a_nGridSize, a_nGridSize);
 	}
 
-	void TFTerrain::GenerateHeightMap(std::string a_sFilePath)
+	void TFTerrain::GenerateHeightMap(std::string a_sFilePath, size_t a_nGridSize)
 	{
-		//std::vector<unsigned char> m_hmData(2049 * 2049);
-		m_hmData.resize(257 * 257, 0);
+		m_hmData.resize(a_nGridSize * a_nGridSize, 0);
 
 		ifstream _terrainStream(a_sFilePath, ifstream::binary);
 
@@ -59,6 +58,11 @@ namespace TFCore
 		{
 			
 		}
+
+	}
+
+	void TFTerrain::GenerateNormal(TFPosNormTexTan& a_vert)
+	{
 
 	}
 
@@ -86,6 +90,9 @@ namespace TFCore
 				_vVertices[_nVertIdx].TanU.y = 0;
 				_vVertices[_nVertIdx].TanU.z = 0;	
 
+				_vVertices[_nVertIdx].TexC.x = (float)j;
+				_vVertices[_nVertIdx].TexC.y = (float)((a_nDepth - 1) - i);
+
 				_nVertIdx++;
 			}
 		}
@@ -97,14 +104,48 @@ namespace TFCore
 		{
 			for(size_t j = 0; j < a_nWidth - 1; ++j)
 			{
+				// First triangle of quad...
 				_vIndices[k] = (i + 1) * a_nWidth + j;
 				_vIndices[k + 1] = (i + 1) * a_nWidth + j + 1;
 				_vIndices[k + 2] = i * a_nWidth + j;
 
+				// Calculate normals
+				XMVECTOR _vA = XMLoadFloat3(&_vVertices[_vIndices[k]].Pos);
+				XMVECTOR _vB = XMLoadFloat3(&_vVertices[_vIndices[k + 1]].Pos);
+				XMVECTOR _vC = XMLoadFloat3(&_vVertices[_vIndices[k + 2]].Pos);
+
+				XMVECTOR _vD = _vB - _vA;
+				XMVECTOR _vE = _vC - _vA;
+
+				_vE = XMVector3Dot(_vD, _vE);
+
+				// Store the new normal
+				XMStoreFloat3(&_vVertices[_vIndices[k]].Norm, _vE);
+				XMStoreFloat3(&_vVertices[_vIndices[k + 1]].Norm, _vE);
+				XMStoreFloat3(&_vVertices[_vIndices[k + 2]].Norm, _vE);
+
+
+				// Second triangle of quad...
 				_vIndices[k + 3] = i * a_nWidth + j;
 				_vIndices[k + 4] = (i + 1) * a_nWidth + j + 1;
 				_vIndices[k + 5] = i * a_nWidth + j + 1;
 
+				// Calculate normals
+				_vA = XMLoadFloat3(&_vVertices[_vIndices[k + 3]].Pos);
+				_vB = XMLoadFloat3(&_vVertices[_vIndices[k + 4]].Pos);
+				_vC = XMLoadFloat3(&_vVertices[_vIndices[k + 5]].Pos);	
+
+				_vD = _vB - _vA;
+				_vE = _vC - _vA;
+
+				_vE = XMVector3Dot(_vD, _vE);
+
+				// Store the new normal
+				XMStoreFloat3(&_vVertices[_vIndices[k + 3]].Norm, _vE);
+				XMStoreFloat3(&_vVertices[_vIndices[k + 4]].Norm, _vE);
+				XMStoreFloat3(&_vVertices[_vIndices[k + 5]].Norm, _vE);
+
+				// incremenet
 				k += 6;
 			}
 		}
