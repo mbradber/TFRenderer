@@ -93,7 +93,7 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();
-	m_matProj  = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 0.01f, 100.0f);
+	m_matProj  = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 1.0f, 1000.0f);
 	m_matView  = XMMatrixLookAtLH(XMVectorSet(-5.0f, 0.0f, -5.0f, 1.0f), XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f), XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 
 	// light source view matrix
@@ -109,7 +109,7 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 		_pShadowsVS,
 		_pShadowsPS,
 		_pShadowsInputLayout,
-		"..\\Textures\\terrain.raw"
+		"..\\Textures\\terrain1.raw"
 		);
 	//m_terrain.GenerateHeightMap("..\\Textures\\terrain.raw");
 }
@@ -118,7 +118,7 @@ void TFDemoDriver::OnResize()
 {
 	TFWinBase::OnResize();
 	// Rebuild projection matrix on window resize
-	m_matProj = TFMatrixPerspectiveLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 0.01f, 100.0f);
+	m_matProj = TFMatrixPerspectiveLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 1.0f, 1000.0f);
 }
 
 void TFDemoDriver::Run()

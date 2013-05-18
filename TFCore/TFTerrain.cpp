@@ -38,15 +38,15 @@ namespace TFCore
 		m_pPixelShader = a_pPixelShader;
 		m_pInputLayout = a_pInputLayout;
 
-		//GenerateHeightMap(a_sAssetPath);
+		GenerateHeightMap(a_sAssetPath);
 
-		GenerateGrid(10, 10);
+		GenerateGrid(257, 257);
 	}
 
 	void TFTerrain::GenerateHeightMap(std::string a_sFilePath)
 	{
 		//std::vector<unsigned char> m_hmData(2049 * 2049);
-		m_hmData.resize(2049 * 2049, 0);
+		m_hmData.resize(257 * 257, 0);
 
 		ifstream _terrainStream(a_sFilePath, ifstream::binary);
 
@@ -74,9 +74,9 @@ namespace TFCore
 		{
 			for(size_t j = 0; j < a_nWidth; ++j)
 			{
-				_vVertices[_nVertIdx].Pos.x = (float)j;
-				_vVertices[_nVertIdx].Pos.y = 0;
-				_vVertices[_nVertIdx].Pos.z = (float)i;
+				_vVertices[_nVertIdx].Pos.x = (float)j - (a_nWidth / 2);
+				_vVertices[_nVertIdx].Pos.y = m_hmData[_nVertIdx];
+				_vVertices[_nVertIdx].Pos.z = (float)i - (a_nDepth / 2);
 
 				_vVertices[_nVertIdx].Norm.x = 0;
 				_vVertices[_nVertIdx].Norm.y = 1;
