@@ -110,6 +110,8 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 		_pShadowsInputLayout,
 		"..\\Textures\\terrain1.raw",
 		257);
+
+	m_terrain.AddTexture("..\\Textures\\grass.dds");
 }
 
 void TFDemoDriver::OnResize()
@@ -135,7 +137,7 @@ void TFDemoDriver::UpdateScene(float a_fDelta)
 	m_matView = m_fmCamera.GetView();
 
 	// Update the lights
-	m_lightManager.Update(a_fDelta, m_fmCamera.GetPosition());
+	//m_lightManager.Update(a_fDelta, m_fmCamera.GetPosition());
 }
 
 void TFDemoDriver::RenderToShadowMap()
@@ -182,13 +184,19 @@ void TFDemoDriver::RenderScene()
 	TFCore::TFWinBase::RenderScene();
 
 	// build shadow map
-	RenderToShadowMap();
+	//RenderToShadowMap();
 
-	TFRenderWireframe(m_pd3dDevice, m_pd3dImmDeviceContext);
+	//TFRenderWireframe(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	// Set world matrix for first box
-	m_matWorld = XMMatrixScaling(0.2f, 0.2f, 0.2f);
-	m_matWorld = m_matWorld * XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+	/*m_matWorld = XMMatrixScaling(0.2f, 0.2f, 0.2f);*/
+	m_matWorld = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+
+	XMFLOAT3 _vLightPos = m_lightManager.GetPosition();
+
+	m_matWorld = m_matWorld * XMMatrixTranslation(_vLightPos.x, 
+		_vLightPos.y, 
+		_vLightPos.z);
 
 	// Update the geometry with their respective transforms
 	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
@@ -196,8 +204,8 @@ void TFDemoDriver::RenderScene()
 	m_box1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_box1.ActivateShaders();
 	// bind the shadow map to an input slot of the pixel shader
-	m_box1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
-	//m_box1.Draw();
+	//m_box1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
+	m_box1.Draw();
 
 	// update geometry of box 2 (ground)
 	m_matWorld = XMMatrixScaling(2.0f, 0.2f, 2.0f);

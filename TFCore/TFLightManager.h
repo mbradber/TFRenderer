@@ -31,6 +31,7 @@ namespace TFCore
 		XMMATRIX GetView();
 		XMMATRIX GetProjection();
 		XMMATRIX GetVPT();
+		XMFLOAT3 GetPosition() const;
 
 	private:
 
@@ -48,6 +49,7 @@ namespace TFCore
 		TFDirectionalLight m_directionalLight1;
 		TFBufferDirectionalLight m_directionaLight1Buffer;
 		ID3D11Buffer* m_pCBDirectionalLight;
+		XMVECTOR m_vPos;
 	};
 
 }

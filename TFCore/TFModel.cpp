@@ -402,8 +402,6 @@ namespace TFCore
 		// Bind constant buffers to VS and PS
 		m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pCBPerObject);
 		m_pDeviceContext->PSSetConstantBuffers(0, 1, &m_pCBPerObject);
-		// Bind texture
-		//m_pDeviceContext->PSSetShaderResources(0, 1, &m_pTextureSRV);
 		// Set the input layout
 		m_pDeviceContext->IASetInputLayout(m_pInputLayout);
 	}

@@ -31,11 +31,12 @@ namespace TFCore
 
 	void ActivateShaders();
 
+	void AddTexture(const std::string& a_sTexturePath);
+
 	// TODO: CLEANUP COM CRAP IN DTOR
 	private:
 		void GenerateHeightMap(std::string a_sFilePath, size_t a_nGridSize);
 		void GenerateGrid(size_t a_nWidth, size_t a_nDepth);
-		void GenerateNormal(TFPosNormTexTan& a_vert);
 
 		std::vector<unsigned char> m_hmData;
 		ID3D11Device*			  m_pd3dDevice;
@@ -48,6 +49,7 @@ namespace TFCore
 		ID3D11VertexShader*	      m_pVertexShader;
 		ID3D11PixelShader*		  m_pPixelShader;
 		ID3D11InputLayout*		  m_pInputLayout;
+		ID3D11ShaderResourceView* m_pTextureSRV;
 	};
 
 }

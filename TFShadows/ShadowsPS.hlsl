@@ -30,11 +30,11 @@ float CalcShadow(float4 a_vShadowPosH, float3 a_vNorm, float3 a_vLightVec)
 	a_vShadowPosH.xyz /= a_vShadowPosH.w;
 	float _fDepth = a_vShadowPosH.z;
 
-	float _fDot = dot(a_vNorm, a_vLightVec);
-	if(_fDot < 0.2)
-	{
-		return 0;
-	}
+	//float _fDot = dot(a_vNorm, a_vLightVec);
+	//if(_fDot < 0.2)
+	//{
+	//	return 0;
+	//}
 
 	float dx = 1.0f / 2048.0f;
 	float _fShadowFactor = 0.0f;
@@ -88,7 +88,7 @@ float4 main( VertexOut pin ) : SV_TARGET
 	float4 _ambientLight = LightObj.Ambient * MaterialObj.Ambient;
 
 	float _fShadowFactor = 1.0f;
-	_fShadowFactor = CalcShadow(pin.ProjTex, pin.NormW, _lightVec.xyz);
+	//_fShadowFactor = CalcShadow(pin.ProjTex, pin.NormW, _lightVec.xyz);
 	
 	return _texColor * _diffuseLight * _fShadowFactor + _ambientLight * _texColor;
 }

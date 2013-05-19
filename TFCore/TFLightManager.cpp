@@ -67,6 +67,19 @@ namespace TFCore
 
 		// Bind the constant buffer containing the light info to the shaders it will be used in
 		m_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pCBDirectionalLight);
+
+		// update light's position
+		XMVECTOR _vDir = XMVectorSet(m_directionalLight1.Direction.x, m_directionalLight1.Direction.y, m_directionalLight1.Direction.z, 0.0f);
+		XMVector4Normalize(_vDir);
+		m_vPos = -_vDir * 300;		
+	}
+
+	XMFLOAT3 TFLightManager::GetPosition() const
+	{
+		XMFLOAT3 _vPos;
+		XMStoreFloat3(&_vPos, m_vPos);
+		
+		return _vPos;
 	}
 
 	TFLightManager::TFDirectionalLight::TFDirectionalLight()
@@ -84,21 +97,18 @@ namespace TFCore
 	// position + forward vector
 	XMMATRIX TFLightManager::GetView()
 	{
-		XMVECTOR _vDir = XMVectorSet(m_directionalLight1.Direction.x, m_directionalLight1.Direction.y, m_directionalLight1.Direction.z, 0.0f);
-		XMVector4Normalize(_vDir);
-		XMVECTOR _vPos = -_vDir * 40;
 		//XMVECTOR _vAt  = _vPos + _vDir;
 		XMVECTOR _vAt = XMVectorZero();
 		XMVECTOR _vUp  = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
-		return XMMatrixLookAtLH(_vPos, _vAt, _vUp);
+		return XMMatrixLookAtLH(m_vPos, _vAt, _vUp);
 	}
 
 	// TODO: Do a more formal calculation of the dimensions of this orthographic viewing volume
 	// TODO: Don't query this every frame
 	XMMATRIX TFLightManager::GetProjection()
 	{
-		return XMMatrixOrthographicOffCenterLH(-60, 60, -35, 30, -20.0f, 100.0f);
+		return XMMatrixOrthographicOffCenterLH(-1000, 1000, -1000, 1000, 0, 1000.0f);
 		//return XMMatrixPerspectiveFovLH(XM_PIDIV4, 1008.f / 730.f,  50, 100.0f);
 	}
 

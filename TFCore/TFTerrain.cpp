@@ -61,11 +61,6 @@ namespace TFCore
 
 	}
 
-	void TFTerrain::GenerateNormal(TFPosNormTexTan& a_vert)
-	{
-
-	}
-
 	void TFTerrain::GenerateGrid(size_t a_nWidth, size_t a_nDepth)
 	{
 		size_t _nFaceCount = (a_nWidth - 1) * (a_nDepth - 1) * 2;
@@ -117,7 +112,7 @@ namespace TFCore
 				XMVECTOR _vD = _vB - _vA;
 				XMVECTOR _vE = _vC - _vA;
 
-				_vE = XMVector3Dot(_vD, _vE);
+				_vE = XMVector3Cross(_vD, _vE);
 
 				// Store the new normal
 				XMStoreFloat3(&_vVertices[_vIndices[k]].Norm, _vE);
@@ -138,7 +133,7 @@ namespace TFCore
 				_vD = _vB - _vA;
 				_vE = _vC - _vA;
 
-				_vE = XMVector3Dot(_vD, _vE);
+				_vE = XMVector3Cross(_vD, _vE);
 
 				// Store the new normal
 				XMStoreFloat3(&_vVertices[_vIndices[k + 3]].Norm, _vE);
@@ -191,6 +186,14 @@ namespace TFCore
 
 		// Create the constant buffer with the device
 		HR(m_pd3dDevice->CreateBuffer(&sbd, NULL, &m_pCBPerObject));
+
+		// Terrain textures
+		HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, L"..\\Textures\\grass.dds", NULL, NULL, &m_pTextureSRV, NULL));
+	}
+
+	void TFTerrain::AddTexture(const std::string& a_sTexturePath)
+	{
+
 	}
 
 	// TODO: The slot number argument that is specified when binding these resources corresponds to 
@@ -204,8 +207,6 @@ namespace TFCore
 		// Bind constant buffers to VS and PS
 		m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pCBPerObject);
 		m_pDeviceContext->PSSetConstantBuffers(0, 1, &m_pCBPerObject);
-		// Bind texture
-		//m_pDeviceContext->PSSetShaderResources(0, 1, &m_pTextureSRV);
 		// Set the input layout
 		m_pDeviceContext->IASetInputLayout(m_pInputLayout);
 	}
@@ -256,6 +257,10 @@ namespace TFCore
 		m_pDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 		// Set primitive topology
 		m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		// Bind textures
+		m_pDeviceContext->PSSetShaderResources(0, 1, &m_pTextureSRV);
+
 		// Draw self
 		m_pDeviceContext->DrawIndexed(m_nIndexCount, 0, 0);
 	}
