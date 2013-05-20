@@ -29,6 +29,7 @@ namespace TFCore
 		ID3D11PixelShader* a_pPixelShader,
 		ID3D11InputLayout* a_pInputLayout,
 		const std::string& a_sAssetPath,
+		const std::wstring& a_sBlendMap,
 		size_t a_nGridSize)
 	{
 		m_pd3dDevice = a_pDevice;
@@ -37,9 +38,9 @@ namespace TFCore
 		m_pVertexShader = a_pVertexShader;
 		m_pPixelShader = a_pPixelShader;
 		m_pInputLayout = a_pInputLayout;
+		m_wsBlendMapPath = a_sBlendMap;
 
 		GenerateHeightMap(a_sAssetPath, a_nGridSize);
-
 		GenerateGrid(a_nGridSize, a_nGridSize);
 	}
 
@@ -66,7 +67,7 @@ namespace TFCore
 		size_t _nFaceCount = (a_nWidth - 1) * (a_nDepth - 1) * 2;
 		m_nIndexCount = _nFaceCount * 3;
 
-		std::vector<TFPosNormTexTan> _vVertices(a_nWidth * a_nDepth);
+		std::vector<TFPosNormTex4Tan> _vVertices(a_nWidth * a_nDepth);
 
 		size_t _nVertIdx = 0;
 		for(size_t i = 0; i < a_nDepth; ++i)
@@ -85,8 +86,13 @@ namespace TFCore
 				_vVertices[_nVertIdx].TanU.y = 0;
 				_vVertices[_nVertIdx].TanU.z = 0;	
 
+				// set repeating tiles UV coords
 				_vVertices[_nVertIdx].TexC.x = (float)j;
 				_vVertices[_nVertIdx].TexC.y = (float)((a_nDepth - 1) - i);
+
+				// Set blend map's UV coords
+				_vVertices[_nVertIdx].TexC.z = (float)j / a_nWidth;
+				_vVertices[_nVertIdx].TexC.w = (float)((a_nDepth - 1) - i) / a_nDepth;
 
 				_nVertIdx++;
 			}
@@ -149,7 +155,7 @@ namespace TFCore
 		D3D11_BUFFER_DESC bd;
 		ZeroMemory( &bd, sizeof(bd) );
 		bd.Usage          = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth      = sizeof( TFPosNormTexTan ) * _vVertices.size();
+		bd.ByteWidth      = sizeof( TFPosNormTex4Tan ) * _vVertices.size();
 		bd.BindFlags      = D3D11_BIND_VERTEX_BUFFER;
 		bd.CPUAccessFlags = 0; // No cpu access
 		bd.MiscFlags      = 0; // Unused
@@ -188,7 +194,32 @@ namespace TFCore
 		HR(m_pd3dDevice->CreateBuffer(&sbd, NULL, &m_pCBPerObject));
 
 		// Terrain textures
-		HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, L"..\\Textures\\grass.dds", NULL, NULL, &m_pTextureSRV, NULL));
+
+		// grass
+		HR(D3DX11CreateShaderResourceViewFromFile(
+			m_pd3dDevice, 
+			L"..\\Textures\\grass.dds", 
+			NULL, 
+			NULL, 
+			&m_pTexture1SRV, 
+			NULL));
+
+		// light dirt
+		HR(D3DX11CreateShaderResourceViewFromFile(
+			m_pd3dDevice, 
+			L"..\\Textures\\lightdirt.dds", 
+			NULL, 
+			NULL, 
+			&m_pTexture2SRV, 
+			NULL));
+
+		// load the blend map for the terrain
+		HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, 
+			m_wsBlendMapPath.c_str(), 
+			NULL, 
+			NULL, 
+			&m_pBlendMapSRV, 
+			NULL));
 	}
 
 	void TFTerrain::AddTexture(const std::string& a_sTexturePath)
@@ -231,7 +262,7 @@ namespace TFCore
 		// update wvp of buffer
 		cb.wvpMatrix = XMMatrixTranspose(a_matWVP);
 		// update the transform matrix for the texture coordinates
-		cb.texMatrix = a_matTex;
+		cb.texMatrix = XMMatrixTranspose(a_matTex);
 
 		// update matrix to transform from object to projective texture coords
 		cb.lightVPT = XMMatrixTranspose(a_matLightWVPT);
@@ -247,7 +278,7 @@ namespace TFCore
 	void TFTerrain::Draw()
 	{
 		// Set vertex buffers
-		UINT _nStride = sizeof(TFPosNormTexTan);
+		UINT _nStride = sizeof(TFPosNormTex4Tan);
 		UINT _nOffset = 0;
 
 		// bind vertex buffer to input assembler
@@ -259,7 +290,9 @@ namespace TFCore
 		m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		// Bind textures
-		m_pDeviceContext->PSSetShaderResources(0, 1, &m_pTextureSRV);
+		m_pDeviceContext->PSSetShaderResources(0, 1, &m_pTexture1SRV);
+		m_pDeviceContext->PSSetShaderResources(1, 1, &m_pTexture2SRV);
+		m_pDeviceContext->PSSetShaderResources(2, 1, &m_pBlendMapSRV);
 
 		// Draw self
 		m_pDeviceContext->DrawIndexed(m_nIndexCount, 0, 0);

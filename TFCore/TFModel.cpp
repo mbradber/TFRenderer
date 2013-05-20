@@ -374,7 +374,7 @@ namespace TFCore
 		// update wvp of buffer
 		cb.wvpMatrix = XMMatrixTranspose(a_matWVP);
 		// update the transform matrix for the texture coordinates
-		cb.texMatrix = a_matTex;
+		cb.texMatrix = XMMatrixTranspose(a_matTex);
 
 		// update matrix to transform from object to projective texture coords
 		cb.lightVPT = XMMatrixTranspose(a_matLightWVPT);

@@ -68,7 +68,7 @@ float4 main( VertexOut pin ) : SV_TARGET
 	float3 N = pin.NormW;
 	float3 B = cross(N, T);
 
-	// construct transform from tanget to object space...
+	// construct transform from tangent to object space...
 	float3x3 TBN = float3x3(T, B, N);
 	// calculate "bumped normal" as sample normal in object space
 	float3 _bumpedNormal = mul(_normalT, TBN);
@@ -90,5 +90,5 @@ float4 main( VertexOut pin ) : SV_TARGET
 	float _fShadowFactor = 1.0f;
 	//_fShadowFactor = CalcShadow(pin.ProjTex, pin.NormW, _lightVec.xyz);
 	
-	return _texColor * _diffuseLight * _fShadowFactor + _ambientLight * _texColor;
+	return (_texColor * _diffuseLight) * _fShadowFactor + (_texColor * _ambientLight);
 }

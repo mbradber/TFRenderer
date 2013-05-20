@@ -20,6 +20,7 @@ namespace TFCore
 		ID3D11PixelShader* a_pPixelShader,
 		ID3D11InputLayout* a_pInputLayout,
 		const std::string& a_sAssetPath,
+		const std::wstring& a_sBlendMap,
 		size_t a_nGridSize);
 
 	void Draw();
@@ -39,6 +40,7 @@ namespace TFCore
 		void GenerateGrid(size_t a_nWidth, size_t a_nDepth);
 
 		std::vector<unsigned char> m_hmData;
+		std::wstring              m_wsBlendMapPath;
 		ID3D11Device*			  m_pd3dDevice;
 		ID3D11DeviceContext*	  m_pDeviceContext;
 		ID3D11Buffer*			  m_pVertexBuffer;
@@ -49,7 +51,9 @@ namespace TFCore
 		ID3D11VertexShader*	      m_pVertexShader;
 		ID3D11PixelShader*		  m_pPixelShader;
 		ID3D11InputLayout*		  m_pInputLayout;
-		ID3D11ShaderResourceView* m_pTextureSRV;
+		ID3D11ShaderResourceView* m_pTexture1SRV;
+		ID3D11ShaderResourceView* m_pTexture2SRV;
+		ID3D11ShaderResourceView* m_pBlendMapSRV;
 	};
 
 }

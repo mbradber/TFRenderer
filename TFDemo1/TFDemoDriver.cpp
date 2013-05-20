@@ -28,7 +28,8 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	m_lightManager.Init(m_pd3dDevice, m_pd3dImmDeviceContext);
 	m_shaderManager.Init(m_pd3dDevice);
 
-	// register shaders
+	// register shaders 
+	// TODO: don't always use the debug shaders...
 	m_shaderManager.AddVertexShader(L"NormalMapping", L"..\\Debug\\NormalMapVS.cso", TFPosNormTexTanLayout, 4);
 	m_shaderManager.AddPixelShader(L"NormalMapping", L"..\\Debug\\NormalMapPS.cso");
 
@@ -37,6 +38,9 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 
 	m_shaderManager.AddVertexShader(L"Shadows", L"..\\Debug\\ShadowsVS.cso", TFPosNormTexTanLayout, 4);
 	m_shaderManager.AddPixelShader(L"Shadows", L"..\\Debug\\ShadowsPS.cso");
+
+	m_shaderManager.AddVertexShader(L"Terrain", L"..\\Debug\\TerrainVS.cso", TFPosNormTex4TanLayout, 4);
+	m_shaderManager.AddPixelShader(L"Terrain", L"..\\Debug\\TerrainPS.cso");
 
 	// bind samplers
 	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
@@ -60,6 +64,10 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	ID3D11VertexShader* _pShadowsVS              = m_shaderManager.GetVertexShaderByName(L"Shadows");
 	ID3D11PixelShader*  _pShadowsPS              = m_shaderManager.GetPixelShaderByName( L"Shadows");
 	ID3D11InputLayout*  _pShadowsInputLayout     = m_shaderManager.GetInputLayoutByName( L"Shadows");
+
+	ID3D11VertexShader* _pTerrainVS              = m_shaderManager.GetVertexShaderByName(L"Terrain");
+	ID3D11PixelShader*  _pTerrainPS              = m_shaderManager.GetPixelShaderByName( L"Terrain");
+	ID3D11InputLayout*  _pTerrainInputLayout     = m_shaderManager.GetInputLayoutByName( L"Terrain");
 
 	// create shadow maps
 	m_pShadowMapFront = new TFRendering::TFShadowMap(m_pd3dDevice, m_pd3dImmDeviceContext, 2048, 2048);
@@ -105,10 +113,11 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	// init terrain
 	m_terrain.Init(m_pd3dDevice, 
 		m_pd3dImmDeviceContext,
-		_pShadowsVS,
-		_pShadowsPS,
-		_pShadowsInputLayout,
-		"..\\Textures\\terrain1.raw",
+		_pTerrainVS,
+		_pTerrainPS,
+		_pTerrainInputLayout,
+		"..\\Textures\\terrain2.raw",
+		L"..\\Textures\\blend_map1.png",
 		257);
 
 	m_terrain.AddTexture("..\\Textures\\grass.dds");
