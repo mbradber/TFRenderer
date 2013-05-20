@@ -44,9 +44,14 @@ float4 main(VertexOut pin) : SV_TARGET
 	float4 _f4DiffuseLight = _fLambert * LightObj.Diffuse;
 	float4 _f4AmbientLight = LightObj.Ambient;
 
-	// Calculate final color
-	_f4GrassColor *= _f4BlendValue.r;
-	_f4DirtColor  *= _f4BlendValue.g;
+	// Calculate blended colors
+	float4 _f4GrassColorBlended = _f4GrassColor * _f4BlendValue.g;
+	_f4GrassColor = (_f4GrassColorBlended * _f4DiffuseLight)
+		+ (_f4GrassColorBlended * _f4AmbientLight);
+
+	float4 _f4DirtColorBlended = _f4DirtColor * _f4BlendValue.r;
+		_f4DirtColor = (_f4DirtColorBlended * _f4DiffuseLight)
+		+ (_f4DirtColorBlended * _f4AmbientLight);
 
 	// return alpha blended terrain color
 	return _f4GrassColor + _f4DirtColor;
