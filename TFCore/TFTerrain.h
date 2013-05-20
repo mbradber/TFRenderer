@@ -21,7 +21,7 @@ namespace TFCore
 		ID3D11InputLayout* a_pInputLayout,
 		const std::string& a_sAssetPath,
 		const std::wstring& a_sBlendMap,
-		size_t a_nGridSize);
+		int a_nGridSize);
 
 	void Draw();
 	void UpdateResources(const XMMATRIX& a_matWVP, 
@@ -36,8 +36,8 @@ namespace TFCore
 
 	// TODO: CLEANUP COM CRAP IN DTOR
 	private:
-		void GenerateHeightMap(std::string a_sFilePath, size_t a_nGridSize);
-		void GenerateGrid(size_t a_nWidth, size_t a_nDepth);
+		void GenerateHeightMap(std::string a_sFilePath, int a_nGridSize);
+		void GenerateGrid(int a_nWidth, int a_nDepth);
 
 		std::vector<unsigned char> m_hmData;
 		std::wstring              m_wsBlendMapPath;
@@ -45,7 +45,7 @@ namespace TFCore
 		ID3D11DeviceContext*	  m_pDeviceContext;
 		ID3D11Buffer*			  m_pVertexBuffer;
 		ID3D11Buffer*			  m_pIndexBuffer;
-		size_t                    m_nIndexCount;
+		int                       m_nIndexCount;
 		TFMaterial                m_material;
 		ID3D11Buffer*             m_pCBPerObject;
 		ID3D11VertexShader*	      m_pVertexShader;

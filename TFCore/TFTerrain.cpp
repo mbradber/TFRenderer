@@ -30,7 +30,7 @@ namespace TFCore
 		ID3D11InputLayout* a_pInputLayout,
 		const std::string& a_sAssetPath,
 		const std::wstring& a_sBlendMap,
-		size_t a_nGridSize)
+		int a_nGridSize)
 	{
 		m_pd3dDevice = a_pDevice;
 		m_pDeviceContext = a_pDeviceContext;
@@ -44,7 +44,7 @@ namespace TFCore
 		GenerateGrid(a_nGridSize, a_nGridSize);
 	}
 
-	void TFTerrain::GenerateHeightMap(std::string a_sFilePath, size_t a_nGridSize)
+	void TFTerrain::GenerateHeightMap(std::string a_sFilePath, int a_nGridSize)
 	{
 		m_hmData.resize(a_nGridSize * a_nGridSize, 0);
 
@@ -62,17 +62,17 @@ namespace TFCore
 
 	}
 
-	void TFTerrain::GenerateGrid(size_t a_nWidth, size_t a_nDepth)
+	void TFTerrain::GenerateGrid(int a_nWidth, int a_nDepth)
 	{
-		size_t _nFaceCount = (a_nWidth - 1) * (a_nDepth - 1) * 2;
+		int _nFaceCount = (a_nWidth - 1) * (a_nDepth - 1) * 2;
 		m_nIndexCount = _nFaceCount * 3;
 
 		std::vector<TFPosNormTex4Tan> _vVertices(a_nWidth * a_nDepth);
 
-		size_t _nVertIdx = 0;
-		for(size_t i = 0; i < a_nDepth; ++i)
+		int _nVertIdx = 0;
+		for(int i = 0; i < a_nDepth; ++i)
 		{
-			for(size_t j = 0; j < a_nWidth; ++j)
+			for(int j = 0; j < a_nWidth; ++j)
 			{
 				_vVertices[_nVertIdx].Pos.x = (float)j - (a_nWidth / 2);
 				_vVertices[_nVertIdx].Pos.y = m_hmData[_nVertIdx];
@@ -98,12 +98,51 @@ namespace TFCore
 			}
 		}
 
-		std::vector<size_t> _vIndices(m_nIndexCount);
+		// Smooth out the vertex heights
 
-		size_t k = 0;
-		for(size_t i = 0; i < a_nDepth - 1; ++i)
+		int k = 0;
+		for(int i = 0; i < a_nDepth; ++i)
 		{
-			for(size_t j = 0; j < a_nWidth - 1; ++j)
+			for(int j = 0; j < a_nWidth; ++j)
+			{
+				k = (i * a_nWidth) + j; // current index
+
+				// check if this index is on a border
+				if(k + a_nWidth >= (int)_vVertices.size() - 1 // top row
+					|| k - a_nWidth <= 0                 // bottom row
+					|| j + 1 == a_nWidth                 // right border
+					|| j == 0                            // left border
+					)
+				{
+					continue;
+				}
+
+				else
+				{
+					float _fTotalHeight = _vVertices[k + a_nWidth + 1].Pos.y;
+					_fTotalHeight += _vVertices[k + 1].Pos.y;
+					_fTotalHeight += _vVertices[k - a_nWidth + 1].Pos.y;
+					_fTotalHeight += _vVertices[k + a_nWidth].Pos.y;
+					_fTotalHeight += _vVertices[k].Pos.y;
+					_fTotalHeight += _vVertices[k - a_nWidth].Pos.y;
+					_fTotalHeight += _vVertices[k + a_nWidth - 1].Pos.y;
+					_fTotalHeight += _vVertices[k - 1].Pos.y;
+					_fTotalHeight += _vVertices[k - a_nWidth - 1].Pos.y;
+
+					_vVertices[k].Pos.y = (_fTotalHeight / 9.0f);
+				}
+
+			}
+		}
+
+		// calculate indices
+
+		std::vector<int> _vIndices(m_nIndexCount);
+
+		k = 0;
+		for(int i = 0; i < a_nDepth - 1; ++i)
+		{
+			for(int j = 0; j < a_nWidth - 1; ++j)
 			{
 				// First triangle of quad...
 				_vIndices[k] = (i + 1) * a_nWidth + j;
@@ -151,6 +190,8 @@ namespace TFCore
 			}
 		}
 
+
+
 		// describe this buffer
 		D3D11_BUFFER_DESC bd;
 		ZeroMemory( &bd, sizeof(bd) );
@@ -170,7 +211,7 @@ namespace TFCore
 		D3D11_BUFFER_DESC ibd;
 		ZeroMemory(&ibd, sizeof(ibd));
 		ibd.Usage = D3D11_USAGE_IMMUTABLE;
-		ibd.ByteWidth = sizeof(size_t) * _vIndices.size();
+		ibd.ByteWidth = sizeof(int) * _vIndices.size();
 		ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		ibd.CPUAccessFlags = 0;
 		ibd.MiscFlags = 0;
