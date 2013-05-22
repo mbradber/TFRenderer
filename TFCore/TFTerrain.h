@@ -37,7 +37,7 @@ namespace TFCore
 	// TODO: CLEANUP COM CRAP IN DTOR
 	private:
 		void GenerateHeightMap(std::string a_sFilePath, int a_nGridSize);
-		void GenerateGrid(int a_nWidth, int a_nDepth);
+		void GenerateGrid(int a_nWidth, int a_nDepth, float a_fTextureScale);
 
 		std::vector<unsigned char> m_hmData;
 		std::wstring              m_wsBlendMapPath;
@@ -53,7 +53,10 @@ namespace TFCore
 		ID3D11InputLayout*		  m_pInputLayout;
 		ID3D11ShaderResourceView* m_pTexture1SRV;
 		ID3D11ShaderResourceView* m_pTexture2SRV;
-		ID3D11ShaderResourceView* m_pBlendMapSRV;
+		ID3D11ShaderResourceView* m_pTexture3SRV;
+		ID3D11ShaderResourceView* m_pTexture4SRV;
+		ID3D11ShaderResourceView* m_pBlendMapGrassSRV;
+		ID3D11ShaderResourceView* m_pBlendMapDirtSRV;
 	};
 
 }

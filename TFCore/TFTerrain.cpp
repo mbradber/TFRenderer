@@ -41,7 +41,7 @@ namespace TFCore
 		m_wsBlendMapPath = a_sBlendMap;
 
 		GenerateHeightMap(a_sAssetPath, a_nGridSize);
-		GenerateGrid(a_nGridSize, a_nGridSize);
+		GenerateGrid(a_nGridSize, a_nGridSize, 16.0f);
 	}
 
 	void TFTerrain::GenerateHeightMap(std::string a_sFilePath, int a_nGridSize)
@@ -62,7 +62,7 @@ namespace TFCore
 
 	}
 
-	void TFTerrain::GenerateGrid(int a_nWidth, int a_nDepth)
+	void TFTerrain::GenerateGrid(int a_nWidth, int a_nDepth, float a_fTextureScale)
 	{
 		int _nFaceCount = (a_nWidth - 1) * (a_nDepth - 1) * 2;
 		m_nIndexCount = _nFaceCount * 3;
@@ -87,8 +87,8 @@ namespace TFCore
 				_vVertices[_nVertIdx].TanU.z = 0;	
 
 				// set repeating tiles UV coords
-				_vVertices[_nVertIdx].TexC.x = (float)j;
-				_vVertices[_nVertIdx].TexC.y = (float)((a_nDepth - 1) - i);
+				_vVertices[_nVertIdx].TexC.x = (float)j / a_fTextureScale;
+				_vVertices[_nVertIdx].TexC.y = (float)((a_nDepth - 1) - i) / a_fTextureScale;
 
 				// Set blend map's UV coords
 				_vVertices[_nVertIdx].TexC.z = (float)j / a_nWidth;
@@ -239,7 +239,7 @@ namespace TFCore
 		// grass
 		HR(D3DX11CreateShaderResourceViewFromFile(
 			m_pd3dDevice, 
-			L"..\\Textures\\grass.dds", 
+			L"..\\Textures\\Terrain\\grass.dds", 
 			NULL, 
 			NULL, 
 			&m_pTexture1SRV, 
@@ -248,18 +248,44 @@ namespace TFCore
 		// light dirt
 		HR(D3DX11CreateShaderResourceViewFromFile(
 			m_pd3dDevice, 
-			L"..\\Textures\\lightdirt.dds", 
+			L"..\\Textures\\Terrain\\lightdirt.dds", 
 			NULL, 
 			NULL, 
 			&m_pTexture2SRV, 
 			NULL));
 
-		// load the blend map for the terrain
+		// dark dirt
+		HR(D3DX11CreateShaderResourceViewFromFile(
+			m_pd3dDevice, 
+			L"..\\Textures\\Terrain\\grass_dull.dds", 
+			NULL, 
+			NULL, 
+			&m_pTexture3SRV, 
+			NULL));
+
+		// stone
+		HR(D3DX11CreateShaderResourceViewFromFile(
+			m_pd3dDevice, 
+			L"..\\Textures\\Terrain\\darkdirt.dds", 
+			NULL, 
+			NULL, 
+			&m_pTexture4SRV, 
+			NULL));
+
+		// load the blend map for the terrain grass
 		HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, 
-			m_wsBlendMapPath.c_str(), 
+			L"..\\Textures\\Terrain\\blend_map_grass.png",  
 			NULL, 
 			NULL, 
-			&m_pBlendMapSRV, 
+			&m_pBlendMapGrassSRV, 
+			NULL));
+
+		// load the blend map for the terrain rock
+		HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, 
+			L"..\\Textures\\Terrain\\blend_map_dirt.png", 
+			NULL, 
+			NULL, 
+			&m_pBlendMapDirtSRV, 
 			NULL));
 	}
 
@@ -330,10 +356,15 @@ namespace TFCore
 		// Set primitive topology
 		m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		// Bind textures
+		// Bind terrain textures
 		m_pDeviceContext->PSSetShaderResources(0, 1, &m_pTexture1SRV);
 		m_pDeviceContext->PSSetShaderResources(1, 1, &m_pTexture2SRV);
-		m_pDeviceContext->PSSetShaderResources(2, 1, &m_pBlendMapSRV);
+		m_pDeviceContext->PSSetShaderResources(2, 1, &m_pTexture3SRV);
+		m_pDeviceContext->PSSetShaderResources(3, 1, &m_pTexture4SRV);
+
+		// bind blend map textures
+		m_pDeviceContext->PSSetShaderResources(4, 1, &m_pBlendMapGrassSRV);
+		m_pDeviceContext->PSSetShaderResources(5, 1, &m_pBlendMapDirtSRV);
 
 		// Draw self
 		m_pDeviceContext->DrawIndexed(m_nIndexCount, 0, 0);
