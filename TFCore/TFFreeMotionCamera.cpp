@@ -5,7 +5,7 @@ namespace TFCore
 {
 
 	TFFreeMotionCamera::TFFreeMotionCamera()
-		:m_vPosition(0.0f, 220.0f, 0.0f, 1.0f),
+		:m_vPosition(0.0f, 100.0f, 0.0f, 1.0f),
 		 m_vForward(0.0f, -0.4f, 1.0f, 0.0f),
 		 m_vUp(0.0f, 1.0f, 0.0f, 0.0f),
 		 m_vSide(1.0f, 0.0f, 0.0f, 0.0f),

@@ -3,6 +3,7 @@
 #include <d3d11.h>
 #include <string>
 #include <vector>
+#include <fstream>
 #include "TFModel.h"
 
 namespace TFCore
@@ -34,10 +35,13 @@ namespace TFCore
 
 	void AddTexture(const std::string& a_sTexturePath);
 
+	void LoadBM(const std::string& a_sFilePath);
+
 	// TODO: CLEANUP COM CRAP IN DTOR
 	private:
 		void GenerateHeightMap(std::string a_sFilePath, int a_nGridSize);
 		void GenerateGrid(int a_nWidth, int a_nDepth, float a_fTextureScale);
+		int  GetNextValue4B(std::ifstream& a_bmStream);
 
 		std::vector<unsigned char> m_hmData;
 		std::wstring              m_wsBlendMapPath;
