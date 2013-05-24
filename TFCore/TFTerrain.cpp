@@ -42,7 +42,7 @@ namespace TFCore
 
 		//GenerateHeightMap(a_sAssetPath, a_nGridSize);
 
-		LoadBM("..\\Textures\\Terrain\\blend_map.bmp");
+		LoadBM("..\\Textures\\Terrain\\heightmap.bmp");
 		GenerateGrid(a_nGridSize, a_nGridSize, 16.0f);
 	}
 
@@ -117,7 +117,7 @@ namespace TFCore
 			for(int j = 0; j < a_nWidth; ++j)
 			{
 				_vVertices[_nVertIdx].Pos.x = (float)j - (a_nWidth / 2);
-				_vVertices[_nVertIdx].Pos.y = m_hmData[_nVertIdx];
+				_vVertices[_nVertIdx].Pos.y = m_hmData[_nVertIdx] / 2.0f;
 				_vVertices[_nVertIdx].Pos.z = (float)i - (a_nDepth / 2);
 
 				_vVertices[_nVertIdx].Norm.x = 0;
