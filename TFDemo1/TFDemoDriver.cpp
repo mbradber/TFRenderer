@@ -43,6 +43,9 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	m_shaderManager.AddVertexShader(L"Terrain", L"..\\Debug\\TerrainVS.cso", TFPosNormTex4TanLayout, 4);
 	m_shaderManager.AddPixelShader(L"Terrain", L"..\\Debug\\TerrainPS.cso");
 
+	m_shaderManager.AddVertexShader(L"StillWater", L"..\\Debug\\StillWaterVS.cso", TFPosNormTex4TanLayout, 4);
+	m_shaderManager.AddPixelShader(L"StillWater", L"..\\Debug\\StillWaterPS.cso");
+
 	// bind samplers
 	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler);
@@ -69,6 +72,10 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	ID3D11VertexShader* _pTerrainVS              = m_shaderManager.GetVertexShaderByName(L"Terrain");
 	ID3D11PixelShader*  _pTerrainPS              = m_shaderManager.GetPixelShaderByName( L"Terrain");
 	ID3D11InputLayout*  _pTerrainInputLayout     = m_shaderManager.GetInputLayoutByName( L"Terrain");
+
+	ID3D11VertexShader* _pStillWaterVS           = m_shaderManager.GetVertexShaderByName(L"StillWater");
+	ID3D11PixelShader*  _pStillWaterPS           = m_shaderManager.GetPixelShaderByName( L"StillWater");
+	ID3D11InputLayout*  _pStillWaterInputLayout  = m_shaderManager.GetInputLayoutByName( L"StillWater");
 
 	// create shadow maps
 	m_pShadowMapFront = new TFRendering::TFShadowMap(m_pd3dDevice, m_pd3dImmDeviceContext, 2048, 2048);
@@ -132,12 +139,12 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	// init water body 1
 	m_waterBody1.Init(m_pd3dDevice, 
 		m_pd3dImmDeviceContext,
-		_pTerrainVS,
-		_pTerrainPS,
-		_pTerrainInputLayout,
+		_pStillWaterVS,
+		_pStillWaterPS,
+		_pStillWaterInputLayout,
 		"", // this will not be using a heightmap
-		100,
-		100);
+		60,
+		60);
 
 }
 
@@ -256,7 +263,7 @@ void TFDemoDriver::RenderScene()
 	m_terrain.Draw();
 
 	// draw water
-	m_matWorld = XMMatrixIdentity();
+	m_matWorld = XMMatrixTranslation(62.0f, 39.0f, -11.0f);
 	_matWVP = m_matWorld * m_matView * m_matProj;
 
 	m_waterBody1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
