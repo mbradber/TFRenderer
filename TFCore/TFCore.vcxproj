@@ -101,6 +101,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="TFGrid.h" />
     <ClInclude Include="TFLightManager.h" />
     <ClInclude Include="TFCore.h" />
     <ClInclude Include="TFCube.h" />
@@ -120,6 +121,7 @@
     <ClInclude Include="TFVertices.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="TFGrid.cpp" />
     <ClCompile Include="TFLightManager.cpp" />
     <ClCompile Include="TFCore.cpp" />
     <ClCompile Include="TFCube.cpp" />
