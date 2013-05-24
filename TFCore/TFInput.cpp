@@ -10,6 +10,7 @@
 #define S_KEY 0x53
 #define T_KEY 0x54
 #define X_KEY 0x58
+#define Y_KEY 0x59
 #define Z_KEY 0x5A
 
 namespace TFCore
@@ -139,6 +140,11 @@ namespace TFCore
 	bool TFInput::IsDownPressed() const
 	{
 		return m_aKeyDown[Q_KEY];
+	}
+
+	bool TFInput::IsYPressed() const
+	{
+		return m_aKeyDown[Y_KEY];
 	}
 
 }

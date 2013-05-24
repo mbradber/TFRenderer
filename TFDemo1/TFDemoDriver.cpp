@@ -4,9 +4,10 @@
 #include "TFVertices.h"
 #include "TFUtils.h"
 #include "TFModel.h"
+#include <sstream>
 
 using namespace TFCore;
-
+using namespace std;
 
 TFDemoDriver::TFDemoDriver(void)
 {
@@ -157,6 +158,16 @@ void TFDemoDriver::UpdateScene(float a_fDelta)
 
 	// Update the lights
 	//m_lightManager.Update(a_fDelta, m_fmCamera.GetPosition());
+
+	if(TFInput::Instance()->IsYPressed())
+	{
+		XMFLOAT3 _camPos = m_fmCamera.GetPosition();
+
+		stringstream _ss;
+		_ss << _camPos.x << ", " << _camPos.y << ", " << _camPos.z << endl;
+
+		OutputDebugStringA(_ss.str().c_str());
+	}
 }
 
 void TFDemoDriver::RenderToShadowMap()
@@ -238,9 +249,9 @@ void TFDemoDriver::RenderScene()
 
 	// draw house 1
 	m_matWorld = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	m_matWorld = m_matWorld * XMMatrixRotationAxis(m_fmCamera.GetUpVector(), XM_PIDIV2);
+	m_matWorld = m_matWorld * XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PIDIV2);
 
-	m_matWorld = m_matWorld * XMMatrixTranslation(62.0f, 48.45, -70.0f);
+	m_matWorld = m_matWorld * XMMatrixTranslation(-82.0f, 54.5, 73.0f);
 	_matWVP = m_matWorld * m_matView * m_matProj;
 
 	m_house1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());

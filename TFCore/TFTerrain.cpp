@@ -42,7 +42,7 @@ namespace TFCore
 
 		//GenerateHeightMap(a_sAssetPath, a_nGridSize);
 
-		LoadBM("..\\Textures\\Terrain\\heightmap2.bmp");
+		LoadBM("..\\Textures\\Terrain\\heightmap_1.bmp");
 		GenerateGrid(a_nGridSize, a_nGridSize, 16.0f);
 	}
 

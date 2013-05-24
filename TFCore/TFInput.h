@@ -23,6 +23,7 @@ namespace TFCore
 		bool IsBackPressed()    const;
 		bool IsDownPressed()    const;
 		bool IsUpPressed()      const;
+		bool IsYPressed()       const;
 
 	private:
 		TFInput();
