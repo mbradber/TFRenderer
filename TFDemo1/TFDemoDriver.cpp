@@ -122,7 +122,7 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 
 	m_terrain.AddTexture("..\\Textures\\Terrain\\grass.dds");
 
-	m_terrain.LoadBM("..\\Textures\\Terrain\\blend_map.bmp");
+	
 }
 
 void TFDemoDriver::OnResize()

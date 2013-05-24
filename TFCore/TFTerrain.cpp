@@ -41,6 +41,8 @@ namespace TFCore
 		m_wsBlendMapPath = a_sBlendMap;
 
 		//GenerateHeightMap(a_sAssetPath, a_nGridSize);
+
+		LoadBM("..\\Textures\\Terrain\\blend_map.bmp");
 		GenerateGrid(a_nGridSize, a_nGridSize, 16.0f);
 	}
 
@@ -67,10 +69,10 @@ namespace TFCore
 		char c[4];
 		a_bmStream.read(c, 4);
 
-		int d = (int)(c[3] << 24);
-		d    += (int)(c[2] << 16);
-		d    += (int)(c[1] << 8);
-		d    += (int)(c[0]);
+		int d = (int)((UCHAR)c[3] << 24);
+		d    += (int)((UCHAR)c[2] << 16);
+		d    += (int)((UCHAR)c[1] << 8);
+		d    += (int)((UCHAR)c[0]);
 
 		return d;
 	}
@@ -81,20 +83,25 @@ namespace TFCore
 
 		if(_bmStream.is_open())
 		{
-			char a = _bmStream.get();
-			char b = _bmStream.get();
+			char a = _bmStream.get(); // B
+			char b = _bmStream.get(); // M
 
 			int c = GetNextValue4B(_bmStream); // bm file size
 			int d = GetNextValue4B(_bmStream); // reserved
-			int e = GetNextValue4B(_bmStream); // raster data offset
+			size_t e = GetNextValue4B(_bmStream); // raster data offset
 
-			_bmStream.seekg(e); // seek to raster data
+			_bmStream.seekg(e + 1, _bmStream.beg); // seek to raster data + 1 (first byte will be 0)
 
-			UCHAR f = _bmStream.get(); // first channel of grayscale image
-			m_hmData.push_back(f); // save this pixel's data
-
-			_bmStream.seekg(_bmStream.tellg + 3);
+			while(_bmStream.good())
+			{
+				m_hmData.push_back(_bmStream.get());
+				_bmStream.seekg(3, _bmStream.cur); // go forward 3 bytes to the next height value			
+			}
 		}
+
+		m_hmData.pop_back(); // extraneous 255 at the end...
+
+		_bmStream.close();
 	}
 
 	void TFTerrain::GenerateGrid(int a_nWidth, int a_nDepth, float a_fTextureScale)
@@ -110,7 +117,7 @@ namespace TFCore
 			for(int j = 0; j < a_nWidth; ++j)
 			{
 				_vVertices[_nVertIdx].Pos.x = (float)j - (a_nWidth / 2);
-				_vVertices[_nVertIdx].Pos.y = 0;//m_hmData[_nVertIdx];
+				_vVertices[_nVertIdx].Pos.y = m_hmData[_nVertIdx];
 				_vVertices[_nVertIdx].Pos.z = (float)i - (a_nDepth / 2);
 
 				_vVertices[_nVertIdx].Norm.x = 0;
