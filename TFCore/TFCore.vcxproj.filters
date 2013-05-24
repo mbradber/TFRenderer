@@ -72,6 +72,9 @@
     <ClInclude Include="TFGrid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TFWaterStill.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TFCore.cpp">
@@ -111,6 +114,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TFGrid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TFWaterStill.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

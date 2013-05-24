@@ -119,6 +119,7 @@
     <ClInclude Include="TFTypes.h" />
     <ClInclude Include="TFUtils.h" />
     <ClInclude Include="TFVertices.h" />
+    <ClInclude Include="TFWaterStill.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TFGrid.cpp" />
@@ -134,6 +135,7 @@
     <ClCompile Include="TFTerrain.cpp" />
     <ClCompile Include="TFTextManager.cpp" />
     <ClCompile Include="TFTimer.cpp" />
+    <ClCompile Include="TFWaterStill.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,10 +1,5 @@
 #pragma once
 
-#include <d3d11.h>
-#include <string>
-#include <vector>
-#include <fstream>
-#include "TFModel.h"
 #include "TFGrid.h"
 
 namespace TFCore

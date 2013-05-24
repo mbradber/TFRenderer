@@ -7,7 +7,8 @@ using namespace std;
 namespace TFCore
 {
 	TFGrid::TFGrid()
-		:m_nIndexCount(0)
+		:m_nIndexCount(0),
+		m_bUsingHeightmap(true)
 	{
 		// Define material for terrain
 		m_material.Ambient  = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -95,7 +96,17 @@ namespace TFCore
 			for(int j = 0; j < a_nWidth; ++j)
 			{
 				_vVertices[_nVertIdx].Pos.x = (float)j - (a_nWidth / 2);
-				_vVertices[_nVertIdx].Pos.y = m_hmData[_nVertIdx] / 2.0f;
+
+				// determine whether to read height from heightmap
+				if(m_bUsingHeightmap)
+				{
+					_vVertices[_nVertIdx].Pos.y = m_hmData[_nVertIdx] / 2.0f;
+				}
+				else
+				{
+					_vVertices[_nVertIdx].Pos.y = 0;
+				}
+
 				_vVertices[_nVertIdx].Pos.z = (float)i - (a_nDepth / 2);
 
 				_vVertices[_nVertIdx].Norm.x = 0;
@@ -118,40 +129,43 @@ namespace TFCore
 			}
 		}
 
-		// Smooth out the vertex heights
+		// Smooth out the vertex heights if heights read from heightmap
 
 		int k = 0;
-		for(int i = 0; i < a_nDepth; ++i)
+		if(m_bUsingHeightmap)
 		{
-			for(int j = 0; j < a_nWidth; ++j)
+			for(int i = 0; i < a_nDepth; ++i)
 			{
-				k = (i * a_nWidth) + j; // current index
-
-				// check if this index is on a border
-				if(k + a_nWidth >= (int)_vVertices.size() - 1 // top row
-					|| k - a_nWidth <= 0                 // bottom row
-					|| j + 1 == a_nWidth                 // right border
-					|| j == 0                            // left border
-					)
+				for(int j = 0; j < a_nWidth; ++j)
 				{
-					continue;
+					k = (i * a_nWidth) + j; // current index
+
+					// check if this index is on a border
+					if(k + a_nWidth >= (int)_vVertices.size() - 1 // top row
+						|| k - a_nWidth <= 0                 // bottom row
+						|| j + 1 == a_nWidth                 // right border
+						|| j == 0                            // left border
+						)
+					{
+						continue;
+					}
+
+					else
+					{
+						float _fTotalHeight = _vVertices[k + a_nWidth + 1].Pos.y;
+						_fTotalHeight += _vVertices[k + 1].Pos.y;
+						_fTotalHeight += _vVertices[k - a_nWidth + 1].Pos.y;
+						_fTotalHeight += _vVertices[k + a_nWidth].Pos.y;
+						_fTotalHeight += _vVertices[k].Pos.y;
+						_fTotalHeight += _vVertices[k - a_nWidth].Pos.y;
+						_fTotalHeight += _vVertices[k + a_nWidth - 1].Pos.y;
+						_fTotalHeight += _vVertices[k - 1].Pos.y;
+						_fTotalHeight += _vVertices[k - a_nWidth - 1].Pos.y;
+
+						_vVertices[k].Pos.y = (_fTotalHeight / 9.0f);
+					}
+
 				}
-
-				else
-				{
-					float _fTotalHeight = _vVertices[k + a_nWidth + 1].Pos.y;
-					_fTotalHeight += _vVertices[k + 1].Pos.y;
-					_fTotalHeight += _vVertices[k - a_nWidth + 1].Pos.y;
-					_fTotalHeight += _vVertices[k + a_nWidth].Pos.y;
-					_fTotalHeight += _vVertices[k].Pos.y;
-					_fTotalHeight += _vVertices[k - a_nWidth].Pos.y;
-					_fTotalHeight += _vVertices[k + a_nWidth - 1].Pos.y;
-					_fTotalHeight += _vVertices[k - 1].Pos.y;
-					_fTotalHeight += _vVertices[k - a_nWidth - 1].Pos.y;
-
-					_vVertices[k].Pos.y = (_fTotalHeight / 9.0f);
-				}
-
 			}
 		}
 
@@ -315,7 +329,20 @@ namespace TFCore
 
 	void TFGrid::Draw()
 	{
+		// Set vertex buffers
+		UINT _nStride = sizeof(TFPosNormTex4Tan);
+		UINT _nOffset = 0;
 
+		// bind vertex buffer to input assembler
+		m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &_nStride, &_nOffset);
+
+		// bind index buffer to input assembler
+		m_pDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+		// Set primitive topology
+		m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		// Draw self
+		m_pDeviceContext->DrawIndexed(m_nIndexCount, 0, 0);
 	}
 }
 

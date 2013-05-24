@@ -8,6 +8,7 @@
 #include "TFModel.h"
 #include "TFShadowMap.h"
 #include "TFTerrain.h"
+#include "TFWaterStill.h"
 
 class TFDemoDriver : public TFCore::TFWinBase
 {
@@ -40,6 +41,8 @@ private:
 
 	TFRendering::TFShadowMap* m_pShadowMapFront;
 
-	TFCore::TFTerrain m_terrain;
+	// landscape
+	TFCore::TFTerrain    m_terrain;
+	TFCore::TFWaterStill m_waterBody1;
 };
 

@@ -125,8 +125,19 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 		_pTerrainVS,
 		_pTerrainPS,
 		_pTerrainInputLayout,
+		"..\\Textures\\Terrain\\heightmap_1.bmp",
 		257,
 		257);
+
+	// init water body 1
+	m_waterBody1.Init(m_pd3dDevice, 
+		m_pd3dImmDeviceContext,
+		_pTerrainVS,
+		_pTerrainPS,
+		_pTerrainInputLayout,
+		"", // this will not be using a heightmap
+		100,
+		100);
 
 }
 
@@ -187,16 +198,6 @@ void TFDemoDriver::RenderToShadowMap()
 	m_box1.ActivateShadowShaders();
 	m_box1.Draw();
 
-	// update geometry of box 2 (ground)
-	m_matWorld = XMMatrixScaling(2.0f, 0.2f, 2.0f);
-	m_matWorld *= XMMatrixTranslation(0.0f, -7.8f, 0.0f);
-	_matWVP = m_matWorld * m_lightManager.GetView() * m_lightManager.GetProjection();
-
-	// draw box 2
-	m_box2.UpdateShadowResources(_matWVP);
-	m_box2.ActivateShadowShaders();
-	m_box2.Draw();
-
 	// restore default render states
 	m_pd3dImmDeviceContext->RSSetState(0);
 	m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
@@ -233,15 +234,6 @@ void TFDemoDriver::RenderScene()
 	//m_box1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
 	m_box1.Draw();
 
-	// update geometry of box 2 (ground)
-	m_matWorld = XMMatrixScaling(2.0f, 0.2f, 2.0f);
-	m_matWorld *= XMMatrixTranslation(0.0f, -7.8f, 0.0f);
-	_matWVP = m_matWorld * m_matView * m_matProj;
-
-	m_box2.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
-	m_box2.ActivateShaders();
-	m_box2.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
-	//m_box2.Draw();
 
 	// draw house 1
 	m_matWorld = XMMatrixScaling(0.01f, 0.01f, 0.01f);
@@ -263,9 +255,16 @@ void TFDemoDriver::RenderScene()
 	m_terrain.ActivateShaders();
 	m_terrain.Draw();
 
+	// draw water
+	m_matWorld = XMMatrixIdentity();
+	_matWVP = m_matWorld * m_matView * m_matProj;
+
+	m_waterBody1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_waterBody1.ActivateShaders();
+	m_waterBody1.Draw();
+
 	// restore default states
 	m_box1.UnloadShadowMap(2); // unbind shadow maps as shader resources because we are about to rebind them as depth stencil views
-	m_box2.UnloadShadowMap(2);
 	m_pd3dImmDeviceContext->RSSetState(0);
 	m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
 
