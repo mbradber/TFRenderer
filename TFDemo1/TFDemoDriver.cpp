@@ -99,6 +99,14 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 		_pRenderDepthPS,
 		_pRenderDepthInputLayout);
 
+	m_house1.Init(m_pd3dDevice,
+		m_pd3dImmDeviceContext, 
+		1.0f, 
+		_pShadowsVS,
+		_pShadowsPS,
+		_pShadowsInputLayout,
+		"..\\Models\\house_obj.obj");
+
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();
 	m_matProj  = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 1.0f, 1000.0f);
@@ -227,6 +235,18 @@ void TFDemoDriver::RenderScene()
 	m_box2.ActivateShaders();
 	m_box2.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
 	//m_box2.Draw();
+
+	// draw house 1
+	m_matWorld = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	m_matWorld = m_matWorld * XMMatrixRotationAxis(m_fmCamera.GetUpVector(), XM_PIDIV2);
+
+	m_matWorld = m_matWorld * XMMatrixTranslation(62.0f, 48.45, -70.0f);
+	_matWVP = m_matWorld * m_matView * m_matProj;
+
+	m_house1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_house1.ActivateShaders();
+	m_house1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
+	m_house1.Draw();
 
 	// draw terrain
 	m_matWorld = XMMatrixIdentity();
