@@ -424,10 +424,20 @@ namespace TFCore
 		m_pDeviceContext->PSSetShaderResources(a_nIndex, 1, &a_pShadowMap);
 	}
 
+	void TFModel::SetReflectionMap(ID3D11ShaderResourceView* a_pReflectionMap, size_t a_nIndex)
+	{
+		m_pDeviceContext->PSSetShaderResources(a_nIndex, 1, &a_pReflectionMap);
+	}
+
 	void TFModel::UnloadShadowMap(size_t a_nIndex)
 	{
 		ID3D11ShaderResourceView* _pSRV[1] = {NULL};
 		m_pDeviceContext->PSSetShaderResources(a_nIndex, 1, _pSRV);
+	}
+
+	void TFModel::BindDefaultTexture()
+	{
+		m_pDeviceContext->PSSetShaderResources(2, 1, &m_vMeshTexturesColor[0]);
 	}
 
 	// TODO: Its inefficient to be setting all these states per draw call, should 

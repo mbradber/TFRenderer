@@ -37,5 +37,5 @@ float4 main(VertexOut pin) : SV_TARGET
 	// Renormalize after transformation
 	pin.NormW = normalize(pin.NormW);
 
-	return float4(0.0f, 0.0f, 0.0f, 1.0f);
+	return float4(0.0f, 0.0f, 1.0f, 1.0f);
 }

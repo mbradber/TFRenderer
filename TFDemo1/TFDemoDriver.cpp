@@ -18,6 +18,7 @@ TFDemoDriver::~TFDemoDriver(void)
 {
 	// Delete renderable objects
 	delete m_pShadowMapFront;
+	delete m_pReflectionMap;
 }
 
 void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
@@ -45,6 +46,9 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 
 	m_shaderManager.AddVertexShader(L"StillWater", L"..\\Debug\\StillWaterVS.cso", TFPosNormTex4TanLayout, 4);
 	m_shaderManager.AddPixelShader(L"StillWater", L"..\\Debug\\StillWaterPS.cso");
+
+	m_shaderManager.AddVertexShader(L"Sky", L"..\\Debug\\SkyVS.cso", TFPosNormTexTanLayout, 4);
+	m_shaderManager.AddPixelShader(L"Sky", L"..\\Debug\\SkyPS.cso");
 
 	// bind samplers
 	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
@@ -77,8 +81,13 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	ID3D11PixelShader*  _pStillWaterPS           = m_shaderManager.GetPixelShaderByName( L"StillWater");
 	ID3D11InputLayout*  _pStillWaterInputLayout  = m_shaderManager.GetInputLayoutByName( L"StillWater");
 
-	// create shadow maps
+	ID3D11VertexShader* _pSkyVS                  = m_shaderManager.GetVertexShaderByName(L"Sky");
+	ID3D11PixelShader*  _pSkyPS                  = m_shaderManager.GetPixelShaderByName( L"Sky");
+	ID3D11InputLayout*  _pSkyInputLayout         = m_shaderManager.GetInputLayoutByName( L"Sky");
+
+	// create render to texture maps
 	m_pShadowMapFront = new TFRendering::TFShadowMap(m_pd3dDevice, m_pd3dImmDeviceContext, 2048, 2048);
+	m_pReflectionMap  = new TFRendering::TFReflectionMap(m_pd3dDevice, m_pd3dImmDeviceContext, 512, 512);
 
 	// init models
 	m_box1.Init(m_pd3dDevice,
@@ -107,6 +116,7 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 		_pRenderDepthPS,
 		_pRenderDepthInputLayout);
 
+	// house
 	m_house1.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
 		1.0f, 
@@ -115,16 +125,36 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 		_pShadowsInputLayout,
 		"..\\Models\\house_obj.obj");
 
-	// Set up initial matrices for WVP
-	m_matWorld = XMMatrixIdentity();
-	m_matProj  = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 1.0f, 1000.0f);
-	m_matView  = XMMatrixLookAtLH(XMVectorSet(-5.0f, 0.0f, -5.0f, 1.0f), XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f), XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+	// tree1
+	m_tree1.Init(m_pd3dDevice,
+		m_pd3dImmDeviceContext, 
+		1.0f, 
+		_pShadowsVS,
+		_pShadowsPS,
+		_pShadowsInputLayout,
+		//"..\\Models\\firtree1.3ds");
+		"..\\Models\\Crate_Fragile.obj");
 
-	// light source view matrix
-	m_matLightView = XMMatrixIdentity();
+	// tree2
+	m_tree2.Init(m_pd3dDevice,
+		m_pd3dImmDeviceContext, 
+		1.0f, 
+		_pShadowsVS,
+		_pShadowsPS,
+		_pShadowsInputLayout,
+		//"..\\Models\\firtree1.3ds");
+		"..\\Models\\Crate_Fragile.obj");
 
-	// Update the lights
-	m_lightManager.Update(1.0f, m_fmCamera.GetPosition());
+	// ellipse for bounding world
+	m_ellipsoid.Init(m_pd3dDevice,
+		m_pd3dImmDeviceContext, 
+		1.0f, 
+		_pSkyVS,
+		_pSkyPS,
+		_pSkyInputLayout,
+		"..\\Models\\ellipsoid.obj");
+
+	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, "..\\Textures\\grasscube1024.dds", 0, 0, &m_cubeMapSRV, 0);
 
 	// init terrain
 	m_terrain.Init(m_pd3dDevice, 
@@ -146,6 +176,16 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 		60,
 		60);
 
+	// Set up initial matrices for WVP
+	m_matWorld = XMMatrixIdentity();
+	m_matProj  = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 1.0f, 1000.0f);
+	m_matView  = XMMatrixLookAtLH(XMVectorSet(-5.0f, 0.0f, -5.0f, 1.0f), XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f), XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+
+	// light source view matrix
+	m_matLightView = XMMatrixIdentity();
+
+	// Update the lights
+	m_lightManager.Update(1.0f, m_fmCamera.GetPosition());
 }
 
 void TFDemoDriver::OnResize()
@@ -213,12 +253,66 @@ void TFDemoDriver::RenderToShadowMap()
 	ResetRenderTarget();
 }
 
+void TFDemoDriver::RenderToReflectionMap()
+{
+	XMMATRIX _matWVP;
+
+	m_pReflectionMap->SetRenderTarget();
+
+	// draw tree 1
+	m_matWorld = XMMatrixScaling(0.25f, 0.25f, 0.25f);
+	m_matWorld *= XMMatrixTranslation(80, 80, 17);
+	_matWVP = m_matWorld * m_matView * m_matProj;
+
+	m_tree1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_tree1.ActivateShaders();
+	m_tree1.BindDefaultTexture();
+	m_tree1.Draw();	
+
+	// tree 2
+	m_matWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	m_matWorld *= XMMatrixTranslation(70, 60, -17);
+	_matWVP = m_matWorld * m_matView * m_matProj;
+
+	m_tree2.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_tree2.ActivateShaders();
+	m_tree2.BindDefaultTexture();
+	m_tree2.Draw();	
+
+	// draw terrain
+	m_matWorld = XMMatrixIdentity();
+	_matWVP = m_matWorld * m_matView * m_matProj;
+
+
+	m_terrain.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_terrain.ActivateShaders();
+	m_terrain.Draw();
+
+	// draw skybox
+	m_matWorld = XMMatrixScaling(1000.0f, 1000.0f, 1000.0f);
+	_matWVP = m_matWorld * m_matView * m_matProj;
+
+	// update render state and depth/stencil state for ellipsoid
+	TFRenderNoCull(m_pd3dDevice, m_pd3dImmDeviceContext);
+	TFSetDepthLessEqual(m_pd3dDevice, m_pd3dImmDeviceContext);
+
+	m_pd3dImmDeviceContext->PSSetShaderResources(0, 1, &m_cubeMapSRV); // bind cube map SRV
+	m_ellipsoid.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_ellipsoid.ActivateShaders();
+	m_ellipsoid.Draw();
+
+	// reset render target
+	ResetRenderTarget();
+}
+
 void TFDemoDriver::RenderScene()
 {
 	TFCore::TFWinBase::RenderScene();
 
 	// build shadow map
 	//RenderToShadowMap();
+
+	RenderToReflectionMap();
 
 	//TFRenderWireframe(m_pd3dDevice, m_pd3dImmDeviceContext);
 
@@ -254,9 +348,32 @@ void TFDemoDriver::RenderScene()
 	m_house1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
 	m_house1.Draw();
 
+	// draw tree 1
+	m_matWorld = XMMatrixScaling(0.25f, 0.25f, 0.25f);
+	m_matWorld *= XMMatrixTranslation(80, 80, 17);
+	_matWVP = m_matWorld * m_matView * m_matProj;
+
+	m_tree1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_tree1.ActivateShaders();
+	//m_tree1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
+	m_tree1.SetReflectionMap(m_pReflectionMap->GetReflectionMapSRV(), 2);
+	m_tree1.Draw();	
+
+	// tree 2
+	m_matWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	m_matWorld *= XMMatrixTranslation(70, 60, -17);
+	_matWVP = m_matWorld * m_matView * m_matProj;
+
+	m_tree2.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_tree2.ActivateShaders();
+	//m_tree1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
+	m_tree2.SetReflectionMap(m_pReflectionMap->GetReflectionMapSRV(), 2);
+	m_tree2.Draw();	
+
 	// draw terrain
 	m_matWorld = XMMatrixIdentity();
 	_matWVP = m_matWorld * m_matView * m_matProj;
+
 
 	m_terrain.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_terrain.ActivateShaders();
@@ -269,6 +386,19 @@ void TFDemoDriver::RenderScene()
 	m_waterBody1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_waterBody1.ActivateShaders();
 	m_waterBody1.Draw();
+
+	// draw skybox
+	m_matWorld = XMMatrixScaling(1000.0f, 1000.0f, 1000.0f);
+	_matWVP = m_matWorld * m_matView * m_matProj;
+
+	// update render state and depth/stencil state for ellipsoid
+	TFRenderNoCull(m_pd3dDevice, m_pd3dImmDeviceContext);
+	TFSetDepthLessEqual(m_pd3dDevice, m_pd3dImmDeviceContext);
+
+	m_pd3dImmDeviceContext->PSSetShaderResources(0, 1, &m_cubeMapSRV); // bind cube map SRV
+	m_ellipsoid.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_ellipsoid.ActivateShaders();
+	m_ellipsoid.Draw();
 
 	// restore default states
 	m_box1.UnloadShadowMap(2); // unbind shadow maps as shader resources because we are about to rebind them as depth stencil views

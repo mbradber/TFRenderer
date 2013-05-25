@@ -7,6 +7,7 @@
 #include "TFLightManager.h"
 #include "TFModel.h"
 #include "TFShadowMap.h"
+#include "TFReflectionMap.h"
 #include "TFTerrain.h"
 #include "TFWaterStill.h"
 
@@ -23,6 +24,7 @@ public:
 	void InitStockShaders();
 	void OnResize();
 	void RenderToShadowMap();
+	void RenderToReflectionMap();
 
 private:
 
@@ -39,10 +41,20 @@ private:
 
 	XMMATRIX m_matLightView;
 
+	// render to texture views
 	TFRendering::TFShadowMap* m_pShadowMapFront;
+	TFRendering::TFReflectionMap* m_pReflectionMap;
+
+	// trees
+	TFCore::TFModel m_tree1;
+	TFCore::TFModel m_tree2;
 
 	// landscape
 	TFCore::TFTerrain    m_terrain;
 	TFCore::TFWaterStill m_waterBody1;
+
+	// sky
+	TFCore::TFModel m_ellipsoid;
+	ID3D11ShaderResourceView* m_cubeMapSRV;
 };
 

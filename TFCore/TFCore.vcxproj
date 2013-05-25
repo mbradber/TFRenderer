@@ -111,6 +111,7 @@
     <ClInclude Include="TFMaterial.h" />
     <ClInclude Include="TFMath.h" />
     <ClInclude Include="TFModel.h" />
+    <ClInclude Include="TFReflectionMap.h" />
     <ClInclude Include="TFShaderManager.h" />
     <ClInclude Include="TFShadowMap.h" />
     <ClInclude Include="TFTerrain.h" />
@@ -130,6 +131,7 @@
     <ClCompile Include="TFInput.cpp" />
     <ClCompile Include="TFIRenderable.cpp" />
     <ClCompile Include="TFModel.cpp" />
+    <ClCompile Include="TFReflectionMap.cpp" />
     <ClCompile Include="TFShaderManager.cpp" />
     <ClCompile Include="TFShadowMap.cpp" />
     <ClCompile Include="TFTerrain.cpp" />

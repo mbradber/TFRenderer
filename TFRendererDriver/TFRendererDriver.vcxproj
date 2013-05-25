@@ -90,7 +90,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SimpleDirLightCommon.hlsli" />
-    <ClInclude Include="SkyCommon.h" />
     <ClInclude Include="TFDriver.h" />
   </ItemGroup>
   <ItemGroup>
@@ -132,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="RenderDepthCommon.hlsli" />
+    <None Include="SkyCommon.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -35,9 +35,6 @@
     <ClInclude Include="TFDriver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SkyCommon.h">
-      <Filter>Shaders\Sky</Filter>
-    </ClInclude>
     <ClInclude Include="SimpleDirLightCommon.hlsli">
       <Filter>Shaders\SimpleLightTexture</Filter>
     </ClInclude>
@@ -68,6 +65,9 @@
   <ItemGroup>
     <None Include="RenderDepthCommon.hlsli">
       <Filter>Shaders\Shadows</Filter>
+    </None>
+    <None Include="SkyCommon.hlsli">
+      <Filter>Shaders\Sky</Filter>
     </None>
   </ItemGroup>
 </Project>
