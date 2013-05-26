@@ -435,11 +435,6 @@ namespace TFCore
 		m_pDeviceContext->PSSetShaderResources(a_nIndex, 1, _pSRV);
 	}
 
-	void TFModel::BindDefaultTexture()
-	{
-		m_pDeviceContext->PSSetShaderResources(2, 1, &m_vMeshTexturesColor[0]);
-	}
-
 	// TODO: Its inefficient to be setting all these states per draw call, should 
 	// only do it once per batch of renderable types
 	void TFModel::Draw()

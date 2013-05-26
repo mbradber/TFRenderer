@@ -18,12 +18,7 @@ cbuffer cbPerFrame : register(b1)
 };
 
 // Textures
-//Texture2D GrassLayer      : register(t0);
-//Texture2D DirtLayer       : register(t1);
-//Texture2D DullGrassLayer  : register(t2);
-//Texture2D DarkDirtLayer   : register(t3);
-//Texture2D BlendLayerGrass : register(t4);
-//Texture2D BlendLayerDirt  : register(t5);   
+Texture2D ReflectionMap : register(t0);
 
 // Samplers
 SamplerState samAnisotropic         : register(s0);
@@ -37,5 +32,12 @@ float4 main(VertexOut pin) : SV_TARGET
 	// Renormalize after transformation
 	pin.NormW = normalize(pin.NormW);
 
-	return float4(0.0f, 0.0f, 1.0f, 1.0f);
+	//return ReflectionMap.Sample(samAnisotropic, pin.TexC.zw);
+	//return ReflectionMap.Sample(samAnisotropic, pin.PosH.xy);
+	float4 ProjCoords = pin.PosND;
+	ProjCoords /= ProjCoords.w;
+	ProjCoords.x = ProjCoords.x / 2.0f + 0.5f;
+	ProjCoords.y = ProjCoords.y / -2.0f + 0.5f;
+
+	return ReflectionMap.Sample(samAnisotropic, ProjCoords.xy);
 }
