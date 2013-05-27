@@ -259,56 +259,70 @@ void TFDemoDriver::RenderToReflectionMap()
 
 	m_pReflectionMap->SetRenderTarget();
 
+	TFRenderFrontFaceCull(m_pd3dDevice, m_pd3dImmDeviceContext);
+
 	XMMATRIX _matFlip = XMMatrixScaling(1.0f, -1.0f, 1.0f);
 	float _fPlaneVerticalOffset = 39.0f;
 
 	// draw tree 1
-	//m_matWorld = XMMatrixScaling(0.25f, 0.25f, 0.25f);
-	//m_matWorld *= XMMatrixTranslation(80, 80, 17);
-	//_matWVP = m_matWorld * m_matView * m_matProj;
+	m_matWorld = XMMatrixScaling(0.25f, 0.25f, 0.25f);
+	m_matWorld *= XMMatrixTranslation(80, 80, 17);
+	m_matWorld *= _matFlip; // flip the object
+	m_matWorld *= XMMatrixTranslation(0, 2 * _fPlaneVerticalOffset, 0);
+	_matWVP = m_matWorld * m_matView * m_matProj;
 
-	//m_tree1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
-	//m_tree1.ActivateShaders();
-	//m_tree1.Draw();	
+	m_tree1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_tree1.ActivateShaders();
+	m_tree1.Draw();	
 
 	// tree 2
-	TFRenderFrontFaceCull(m_pd3dDevice, m_pd3dImmDeviceContext);
-
 	m_matWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
 	m_matWorld *= XMMatrixTranslation(70, 50, -17);
 	m_matWorld *= _matFlip; // flip the object
 	m_matWorld *= XMMatrixTranslation(0, 2 * _fPlaneVerticalOffset, 0); // move the object up by 2 * reflection plane offset...
 	_matWVP = m_matWorld * m_matView * m_matProj;
 
-	m_tree2.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), _matFlip, m_fmCamera.GetPosition());
+	m_tree2.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_tree2.ActivateShaders();
 	m_tree2.Draw();	
 
-	m_pd3dImmDeviceContext->RSSetState(0);
 
-	// draw terrain
-	//m_matWorld = XMMatrixIdentity();
 
-	//m_matWorld *= _matFlip; // flip the object
-	//m_matWorld *= XMMatrixTranslation(0, 2 * _fPlaneVerticalOffset, 0); // move the object up by 2 * reflection plane offset...
-	//_matWVP = m_matWorld * m_matView * m_matProj;
-
-	//m_terrain.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), _matFlip, m_fmCamera.GetPosition());
-	//m_terrain.ActivateShaders();
-	//m_terrain.Draw();
 
 	// draw skybox
-	//m_matWorld = XMMatrixScaling(1000.0f, 1000.0f, 1000.0f);
-	//_matWVP = m_matWorld * m_matView * m_matProj;
+	m_matWorld = XMMatrixScaling(1000.0f, 1000.0f, 1000.0f);
+	m_matWorld *= _matFlip; // flip the object
+	m_matWorld *= XMMatrixTranslation(0, 2 * _fPlaneVerticalOffset, 0); // move the object up by 2 * reflection plane offset...
+	_matWVP = m_matWorld * m_matView * m_matProj;
 
-	//// update render state and depth/stencil state for ellipsoid
-	//TFRenderNoCull(m_pd3dDevice, m_pd3dImmDeviceContext);
-	//TFSetDepthLessEqual(m_pd3dDevice, m_pd3dImmDeviceContext);
+	// update render state and depth/stencil state for ellipsoid
+	TFRenderNoCull(m_pd3dDevice, m_pd3dImmDeviceContext);
+	TFSetDepthLessEqual(m_pd3dDevice, m_pd3dImmDeviceContext);
 
-	//m_pd3dImmDeviceContext->PSSetShaderResources(0, 1, &m_cubeMapSRV); // bind cube map SRV
-	//m_ellipsoid.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
-	//m_ellipsoid.ActivateShaders();
-	//m_ellipsoid.Draw();
+	m_pd3dImmDeviceContext->PSSetShaderResources(0, 1, &m_cubeMapSRV); // bind cube map SRV
+	m_ellipsoid.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_ellipsoid.ActivateShaders();
+	m_ellipsoid.Draw();
+
+
+	// draw terrain
+	XMFLOAT4 _f4ClipData;
+	_f4ClipData.x = 39.0f; // height of this reflective surface in world space
+	_f4ClipData.y = 1.0f;  // whether or not to use a clip plane in the VS
+	m_terrain.UpdateFrameData(_f4ClipData);
+
+	m_matWorld = XMMatrixIdentity();
+	m_matWorld *= _matFlip; // flip the object
+	m_matWorld *= XMMatrixTranslation(0, 2 * _fPlaneVerticalOffset, 0); // move the object up by 2 * reflection plane offset...
+	_matWVP = m_matWorld * m_matView * m_matProj;
+
+	m_terrain.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_terrain.ActivateShaders();
+	m_terrain.Draw();
+
+
+	m_pd3dImmDeviceContext->RSSetState(0);
+
 
 	// reset render target
 	ResetRenderTarget();
@@ -387,16 +401,20 @@ void TFDemoDriver::RenderScene()
 
 
 	// draw terrain
+	XMFLOAT4 _f4ClipData;
+	_f4ClipData.x = 39.0f; // height of this reflective surface in world space
+	_f4ClipData.y = 0.0f;  // whether or not to use a clip plane in the VS
+	m_terrain.UpdateFrameData(_f4ClipData);
+
 	m_matWorld = XMMatrixIdentity();
 	_matWVP = m_matWorld * m_matView * m_matProj;
-
 
 	m_terrain.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_terrain.ActivateShaders();
 	m_terrain.Draw();
 
 	// draw water
-	m_matWorld = XMMatrixScaling(40.0f, 40.0f, 25.0f);
+	m_matWorld = XMMatrixScaling(40.0f, 40.0f, 20.0);
 	m_matWorld *= XMMatrixTranslation(55.0f, 39.0f, -9.0f);
 
 	//m_matWorld = XMMatrixTranslation(62.0f, 39.0f, -11.0f);

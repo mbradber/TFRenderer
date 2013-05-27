@@ -38,6 +38,20 @@ namespace TFCore
 
 		GenerateHeightmapFromBMP(a_sHeightmap);
 		GenerateGrid(a_nGridWidth, a_nGridDepth, 16.0f);
+
+		// GENERATE SHADER RESOURCES
+
+		// describe the cb for the WVP matrix
+		D3D11_BUFFER_DESC sbd;
+		ZeroMemory(&sbd, sizeof(sbd));
+		sbd.Usage          = D3D11_USAGE_DEFAULT;
+		sbd.ByteWidth      = sizeof(XMFLOAT4); // must be multiple of 16 for constant buffer
+		sbd.BindFlags      = D3D11_BIND_CONSTANT_BUFFER;
+		sbd.CPUAccessFlags = 0;
+		sbd.MiscFlags      = 0;
+
+		// Create the constant buffer with the device
+		HR(m_pd3dDevice->CreateBuffer(&sbd, NULL, &m_pCBPerFrame));
 	}
 
 	void TFTerrain::GenerateGrid(int a_nWidth, int a_nDepth, float a_fTextureScale)
@@ -98,6 +112,15 @@ namespace TFCore
 			NULL, 
 			&m_pBlendMapDirtSRV, 
 			NULL));
+	}
+
+	void TFTerrain::UpdateFrameData(XMFLOAT4 a_f4Data)
+	{
+		// update resource
+		m_pDeviceContext->UpdateSubresource(m_pCBPerFrame , 0, NULL, &a_f4Data, 0, 0);
+
+		// bind to vertex shader for terrain
+		m_pDeviceContext->VSSetConstantBuffers(1, 1, &m_pCBPerFrame);
 	}
 
 	// TODO: Its inefficient to be setting all these states per draw call, should 

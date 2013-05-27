@@ -22,6 +22,8 @@ namespace TFCore
 
 	void Draw();
 
+	void UpdateFrameData(XMFLOAT4 a_f4Data);
+
 	// TODO: CLEANUP COM CRAP IN DTOR
 	private:
 		void GenerateGrid(int a_nWidth, int a_nDepth, float a_fTextureScale);
@@ -33,6 +35,7 @@ namespace TFCore
 		ID3D11ShaderResourceView* m_pTexture4SRV;
 		ID3D11ShaderResourceView* m_pBlendMapGrassSRV;
 		ID3D11ShaderResourceView* m_pBlendMapDirtSRV;
+		ID3D11Buffer*             m_pCBPerFrame;
 	};
 
 }
