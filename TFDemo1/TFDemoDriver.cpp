@@ -60,6 +60,22 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_POINT);
 	m_pd3dImmDeviceContext->PSSetSamplers(3, 1, &_defaultSampler);
 
+	// blend states
+	D3D11_BLEND_DESC blendDesc1 = {0};
+	blendDesc1.AlphaToCoverageEnable = false;
+	blendDesc1.IndependentBlendEnable = false;
+
+	blendDesc1.RenderTarget[0].BlendEnable = true;
+	blendDesc1.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendDesc1.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc1.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc1.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc1.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendDesc1.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendDesc1.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	m_pd3dDevice->CreateBlendState(&blendDesc1, &m_pBlendState1);
+
 	// get handles to shaders and input layouts
 	ID3D11VertexShader* _pNormalMapVS            = m_shaderManager.GetVertexShaderByName(L"NormalMapping");
 	ID3D11PixelShader*  _pNormalMapPS            = m_shaderManager.GetPixelShaderByName(L"NormalMapping");
@@ -400,6 +416,7 @@ void TFDemoDriver::RenderScene()
 	m_tree2.Draw();	
 
 
+
 	// draw terrain
 	XMFLOAT4 _f4ClipData;
 	_f4ClipData.x = 39.0f; // height of this reflective surface in world space
@@ -414,16 +431,20 @@ void TFDemoDriver::RenderScene()
 	m_terrain.Draw();
 
 	// draw water
-	//m_matWorld = XMMatrixScaling(40.0f, 40.0f, 20.0);
 	m_matWorld *= XMMatrixTranslation(55.0f, 39.0f, -9.0f);
-
-	//m_matWorld = XMMatrixTranslation(62.0f, 39.0f, -11.0f);
 	_matWVP = m_matWorld * m_matView * m_matProj;
 
-	m_waterBody1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), m_waterBody1.GetTextureTransform(), m_fmCamera.GetPosition());
+	m_waterBody1.UpdateResources(_matWVP, m_matWorld, m_waterBody1.GetTextureTransformNeg(), m_waterBody1.GetTextureTransform(), m_fmCamera.GetPosition());
 	m_waterBody1.BindReflectionMap(m_pReflectionMap->GetReflectionMapSRV());
 	m_waterBody1.ActivateShaders();
+
+	float blendFactors[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	m_pd3dImmDeviceContext->OMSetBlendState(m_pBlendState1, blendFactors, 0xffffffff);
+
 	m_waterBody1.Draw();
+
+	m_pd3dImmDeviceContext->OMSetBlendState(NULL, blendFactors, 0xffffffff); // reset blend state
+
 
 	// draw skybox
 	m_matWorld = XMMatrixScaling(1000.0f, 1000.0f, 1000.0f);

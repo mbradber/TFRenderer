@@ -52,6 +52,7 @@ private:
 	// landscape
 	TFCore::TFTerrain    m_terrain;
 	TFCore::TFWaterStill m_waterBody1;
+	ID3D11BlendState*    m_pBlendState1;
 
 	// sky
 	TFCore::TFModel m_ellipsoid;

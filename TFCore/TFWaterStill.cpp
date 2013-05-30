@@ -1,5 +1,5 @@
 #include "TFWaterStill.h"
-
+#include <math.h>
 #include "TFUtils.h"
 
 namespace TFCore
@@ -176,18 +176,27 @@ namespace TFCore
 
 	void TFWaterStill::Update(float a_fDelta)
 	{
-		m_fWaterOffsetX += 0.25f * a_fDelta;
+		m_fWaterOffsetX += a_fDelta * 0.2f;
+		m_fWaterOffsetY += -a_fDelta * 0.1f;
+		//m_fWaterOffsetX = fmod(m_fWaterOffsetX, 12.0f);
 		//m_fWaterOffsetY += 0.1f * a_fDelta;
 		//m_fWaterOffsetX = 0.25f * sinf(12.0f * m_fWaterOffsetY);
 
-		m_matTexTransform = XMMatrixTranslation(m_fWaterOffsetX, m_fWaterOffsetY, 0);
+		m_matTexTransform = XMMatrixTranslation(fmod(m_fWaterOffsetX, 12.0f), 0, 0);
 
 
+		m_matTexTransformNeg = XMMatrixTranslation(fmod(m_fWaterOffsetY, 12.0f), 0, 0);
+		m_matTexTransformNeg *= XMMatrixScaling(0.5f, 0.5f, 0.5f);
 	}
 
 	XMMATRIX TFWaterStill::GetTextureTransform() const
 	{
 		return m_matTexTransform;
+	}
+
+	XMMATRIX TFWaterStill::GetTextureTransformNeg() const
+	{
+		return m_matTexTransformNeg;
 	}
 
 	void TFWaterStill::BindReflectionMap(ID3D11ShaderResourceView* a_pReflectionMap)

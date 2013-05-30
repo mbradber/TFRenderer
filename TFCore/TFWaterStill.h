@@ -24,10 +24,12 @@ namespace TFCore
 		void BindReflectionMap(ID3D11ShaderResourceView*);
 		void ActivateShaders();
 		XMMATRIX GetTextureTransform() const;
+		XMMATRIX GetTextureTransformNeg() const;
 
 	private:
 		ID3D11ShaderResourceView* m_pNormalMapSRV;
 		XMMATRIX m_matTexTransform;
+		XMMATRIX m_matTexTransformNeg;
 		float m_fWaterOffsetX;
 		float m_fWaterOffsetY;
 	};
