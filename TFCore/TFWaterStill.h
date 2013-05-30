@@ -20,7 +20,16 @@ namespace TFCore
 			int a_nGridWidth,
 			int a_nGridDepth);
 
+		void Update(float a_fDelta);
 		void BindReflectionMap(ID3D11ShaderResourceView*);
+		void ActivateShaders();
+		XMMATRIX GetTextureTransform() const;
+
+	private:
+		ID3D11ShaderResourceView* m_pNormalMapSRV;
+		XMMATRIX m_matTexTransform;
+		float m_fWaterOffsetX;
+		float m_fWaterOffsetY;
 	};
 
 }

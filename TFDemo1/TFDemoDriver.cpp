@@ -173,8 +173,8 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 		_pStillWaterPS,
 		_pStillWaterInputLayout,
 		"", // this will not be using a heightmap
-		1,
-		1);
+		50,
+		50);
 
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();
@@ -212,6 +212,9 @@ void TFDemoDriver::UpdateScene(float a_fDelta)
 
 	// Update the lights
 	//m_lightManager.Update(a_fDelta, m_fmCamera.GetPosition());
+
+	// Update water sim
+	m_waterBody1.Update(a_fDelta);
 
 	if(TFInput::Instance()->IsYPressed())
 	{
@@ -285,9 +288,6 @@ void TFDemoDriver::RenderToReflectionMap()
 	m_tree2.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_tree2.ActivateShaders();
 	m_tree2.Draw();	
-
-
-
 
 	// draw skybox
 	m_matWorld = XMMatrixScaling(1000.0f, 1000.0f, 1000.0f);
@@ -414,13 +414,13 @@ void TFDemoDriver::RenderScene()
 	m_terrain.Draw();
 
 	// draw water
-	m_matWorld = XMMatrixScaling(40.0f, 40.0f, 20.0);
+	//m_matWorld = XMMatrixScaling(40.0f, 40.0f, 20.0);
 	m_matWorld *= XMMatrixTranslation(55.0f, 39.0f, -9.0f);
 
 	//m_matWorld = XMMatrixTranslation(62.0f, 39.0f, -11.0f);
 	_matWVP = m_matWorld * m_matView * m_matProj;
 
-	m_waterBody1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_waterBody1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), m_waterBody1.GetTextureTransform(), m_fmCamera.GetPosition());
 	m_waterBody1.BindReflectionMap(m_pReflectionMap->GetReflectionMapSRV());
 	m_waterBody1.ActivateShaders();
 	m_waterBody1.Draw();

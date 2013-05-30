@@ -73,7 +73,7 @@ float4 main( VertexOut pin ) : SV_TARGET
 	// calculate "bumped normal" as sample normal in object space
 	float3 _bumpedNormal = mul(_normalT, TBN);
 	// bring bumped normal from object space to world space
-	_bumpedNormal = mul(float4(_bumpedNormal, 0.0f), WorldMatrix).xyz;
+	_bumpedNormal = normalize(mul(float4(_bumpedNormal, 0.0f), WorldMatrix).xyz);
 
 	// Sample the diffuse map for the crate
 	float4 _texColor = DiffuseMap.Sample(samAnisotropic, pin.TexC);
