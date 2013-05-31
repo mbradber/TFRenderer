@@ -3,11 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TFCore", "TFCore\TFCore.vcxproj", "{A579FCC6-46CB-436D-AB08-06BA3915275C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TFAssetLoader", "TFAssetLoader\TFAssetLoader.vcxproj", "{A097FEA4-D690-41C9-9850-8D65BBEA42A4}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A579FCC6-46CB-436D-AB08-06BA3915275C} = {A579FCC6-46CB-436D-AB08-06BA3915275C}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TFShadows", "TFShadows\TFShadows.vcxproj", "{73EAE43B-A8F9-4771-AEC1-F462B22AF421}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A579FCC6-46CB-436D-AB08-06BA3915275C} = {A579FCC6-46CB-436D-AB08-06BA3915275C}
@@ -29,10 +24,6 @@ Global
 		{A579FCC6-46CB-436D-AB08-06BA3915275C}.Debug|Win32.Build.0 = Debug|Win32
 		{A579FCC6-46CB-436D-AB08-06BA3915275C}.Release|Win32.ActiveCfg = Release|Win32
 		{A579FCC6-46CB-436D-AB08-06BA3915275C}.Release|Win32.Build.0 = Release|Win32
-		{A097FEA4-D690-41C9-9850-8D65BBEA42A4}.Debug|Win32.ActiveCfg = Debug|Win32
-		{A097FEA4-D690-41C9-9850-8D65BBEA42A4}.Debug|Win32.Build.0 = Debug|Win32
-		{A097FEA4-D690-41C9-9850-8D65BBEA42A4}.Release|Win32.ActiveCfg = Release|Win32
-		{A097FEA4-D690-41C9-9850-8D65BBEA42A4}.Release|Win32.Build.0 = Release|Win32
 		{73EAE43B-A8F9-4771-AEC1-F462B22AF421}.Debug|Win32.ActiveCfg = Debug|Win32
 		{73EAE43B-A8F9-4771-AEC1-F462B22AF421}.Debug|Win32.Build.0 = Debug|Win32
 		{73EAE43B-A8F9-4771-AEC1-F462B22AF421}.Release|Win32.ActiveCfg = Release|Win32

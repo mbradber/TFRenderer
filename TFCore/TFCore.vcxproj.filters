@@ -54,9 +54,6 @@
     <ClInclude Include="TFLightManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TFMaterial.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TFTextManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>

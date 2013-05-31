@@ -27,16 +27,18 @@ namespace TFCore
 		m_pPixelShaderShadows(NULL),
 		m_pTextureSRV(NULL)
 	{
-		// Define material for model
-		m_material.Ambient  = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-		m_material.Diffuse  = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		m_material.Specular = XMFLOAT4(0.6f, 0.6f, 0.6f, 16.0f);
+
 	}
 
 
 	TFModel::~TFModel()
 	{
-
+		ReleaseCOM(m_pVertexBuffer);
+		ReleaseCOM(m_pIndexBuffer);
+		ReleaseCOM(m_pCBPerObject);
+		ReleaseCOM(m_pCBPerObject_Shadow);
+		ReleaseCOM(m_pTextureSRV);
+		ReleaseCOM(m_pTextureSRV);
 	}
 
 	void TFModel::Init(ID3D11Device* a_pDevice, 
@@ -69,8 +71,7 @@ namespace TFCore
 			aiProcess_JoinIdenticalVertices  |
 			aiProcess_SortByPType            |
 			aiProcess_MakeLeftHanded         |
-			//aiProcess_GenSmoothNormals       |
-			aiProcess_GenNormals |
+			aiProcess_GenNormals             |
 			aiProcess_GenUVCoords            |
 			aiProcess_TransformUVCoords      |
 			aiProcess_FlipWindingOrder       |
@@ -79,21 +80,20 @@ namespace TFCore
 
 		TF_ASSERT(scene != NULL, FILE_NAME, LINE_NO);
 
-
 		size_t _nNumMeshes = scene->mNumMeshes;
 
 		aiNode* _root = scene->mRootNode;
 
+		// Find number of vertices and indices of this model
 		SurveyNode(scene, _root, &m_nVertexCount, &m_nIndexCount); 
 
 		// Allocate data buffers
 		TFPosNormTexTan* _pVertices = new TFPosNormTexTan[m_nVertexCount];
-		UINT*        _pIndices  = new UINT[m_nIndexCount];
+		UINT*            _pIndices  = new UINT[m_nIndexCount];
 
 		// Traverse the scene nodes and parse vertex and index data
 		size_t _nVertexOffset = 0;
 		size_t _nIndexOffset  = 0;
-		aiMatrix4x4 _matAccumulation;
 		ProcessNode(scene, _root, _pVertices, _pIndices, &_nVertexOffset, &_nIndexOffset);
 
 		// describe the vertex buffer
@@ -109,7 +109,7 @@ namespace TFCore
 		ZeroMemory( &InitData, sizeof(InitData) );
 		InitData.pSysMem = _pVertices;
 
-		// Create a buffer to hold this cube's vert data in video memory
+		// Create a buffer to hold this model's vert data in video memory
 		HR(m_pd3dDevice->CreateBuffer(&bd, &InitData, &m_pVertexBuffer));
 
 		// describe this index buffer
@@ -171,6 +171,7 @@ namespace TFCore
 		// grab the number of meshes for this node
 		size_t _nNumMeshes = a_pNode->mNumMeshes;
 
+		// for each mesh of this node
 		for(size_t i = 0; i < _nNumMeshes; ++i)
 		{
 			aiMesh* _mesh   = a_pScene->mMeshes[a_pNode->mMeshes[i]];
@@ -178,8 +179,10 @@ namespace TFCore
 			// Make sure all the primitive types of this mesh are triangles
 			TF_ASSERT(_mesh->mPrimitiveTypes == aiPrimitiveType_TRIANGLE, FILE_NAME, LINE_NO);
 
+			// Process each vertex of this mesh
 			for(size_t j = 0; j < _mesh->mNumVertices; ++j)
 			{
+				// update the offset (where to store these vertices in the single vertex buffer)
 				size_t _nVertexIndex = j + *a_pVertexOffset;
 
 				// Copy vertex data
@@ -208,7 +211,6 @@ namespace TFCore
 			for(size_t j = 0; j < _mesh->mNumFaces; ++j)
 			{
 				aiFace _face         = _mesh->mFaces[j];
-				size_t _nNumIndices  = _face.mNumIndices;
 				size_t _nIndexOffset = (j * 3) + *a_pIndexOffset;
 
 				a_pIndices[_nIndexOffset + 0] = _face.mIndices[0] + *a_pVertexOffset;
@@ -219,7 +221,7 @@ namespace TFCore
 			// Check this mesh for materials
 			aiMaterial* _pMaterial      = a_pScene->mMaterials[_mesh->mMaterialIndex];
 			size_t _nNumDiffuseTextures = _pMaterial->GetTextureCount(aiTextureType_DIFFUSE);
-			size_t _nNumBumpTextures    = _pMaterial->GetTextureCount(aiTextureType_HEIGHT);
+			size_t _nNumBumpTextures    = _pMaterial->GetTextureCount(aiTextureType_HEIGHT); //bump map
 
 			aiString _sTexturePathColor;
 			aiString _sTexturePathNormal;
@@ -249,11 +251,10 @@ namespace TFCore
 			}
 
 			// Convert texture path to widestring
-			std::string _sTexturePathColorAsString = _sTexturePathColor.C_Str();
-			//std::string _sTexturePathColorAsString = "dwarf2.jpg";
-			std::string _sTexturePathNormalAsString = _sTexturePathNormal.C_Str();
-			std::wstring _wsTexturePathColor  = L"..\\Textures\\";
-			std::wstring _wsTexturePathNormal = L"..\\Textures\\";
+			std::string  _sTexturePathColorAsString  = _sTexturePathColor.C_Str();
+			std::string  _sTexturePathNormalAsString = _sTexturePathNormal.C_Str();
+			std::wstring _wsTexturePathColor         = L"..\\Textures\\";
+			std::wstring _wsTexturePathNormal        = L"..\\Textures\\";
 
 			_wsTexturePathColor.append(std::wstring(_sTexturePathColorAsString.begin(), _sTexturePathColorAsString.end()));
 			_wsTexturePathNormal.append(std::wstring(_sTexturePathNormalAsString.begin(), _sTexturePathNormalAsString.end()));
@@ -262,16 +263,17 @@ namespace TFCore
 			TFMesh _tfMesh;
 			_tfMesh.TexturePathColor  = _wsTexturePathColor;
 			_tfMesh.TexturePathNormal = _wsTexturePathNormal;
-			_tfMesh.StartIndex        = *a_pIndexOffset;
+			_tfMesh.StartIndex        = *a_pIndexOffset; // the offset in the index buffer where this mesh starts
 			_tfMesh.NumIndices        = _mesh->mNumFaces * 3;
 			
-			// Create Shader resource view from texture path and store it
-
+			// Create Shader resource view from texture path and store it for binding later when drawing this mesh
 			if(_wsTexturePathColor != L"..\\Textures\\")
 			{
 				HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _wsTexturePathColor.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
 				m_vMeshTexturesColor.push_back(m_pTextureSRV);
 
+				// save the index in the diffuse textures vector (m_vMeshTexturesColor) that this meshes diffuse
+				// texture is stored
 				_tfMesh.TextureIndexColor = m_vMeshTexturesColor.size() - 1; 
 			}
 
@@ -280,10 +282,12 @@ namespace TFCore
 				HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _wsTexturePathNormal.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
 				m_vMeshTexturesNormals.push_back(m_pTextureSRV);
 
+				// save the index in the normal map textures vector (m_vMeshTexturesNormals) that this meshes normal
+				// map is stored
 				_tfMesh.TextureIndexNormal = m_vMeshTexturesNormals.size() - 1;
 			}
 
-			// Save mesh data
+			// Save mesh data to be draw later
 			m_meshes.push_back(_tfMesh);
 			
 			// Update the vertex offset for the next mesh
@@ -317,7 +321,7 @@ namespace TFCore
 		m_pInputLayoutShadows  = a_pInputLayout;
 	}
 
-	// TODO: Look into making this a more general function or moving it into a "Resource Manager". It is not 
+	// TODO: Look into making this a more general function or moving it into a "Resource Manager". Also, It is not 
 	// good practice to have to replace the type everytime we want to use a new vertex type.
 	void TFModel::GenerateShaderResources()
 	{
@@ -391,9 +395,6 @@ namespace TFCore
 
 		// update matrix to transform from object to projective texture coords
 		cb.lightVPT = XMMatrixTranspose(a_matLightWVPT);
-
-		//update material of buffer
-		cb.material  = m_material;
 
 		m_pDeviceContext->UpdateSubresource(m_pCBPerObject , 0, NULL, &cb, 0, 0);
 	}

@@ -2,7 +2,6 @@
 
 #include <d3d11.h>
 #include "TFIRenderable.h"
-#include "TFMaterial.h"
 
 namespace TFCore
 {
@@ -13,7 +12,6 @@ namespace TFCore
 		XMMATRIX   worldInvTransposeMatrix;
 		XMMATRIX   wvpMatrix;
 		XMMATRIX   texMatrix;
-		TFMaterial material;
 	};
 
 	class TFCube
@@ -56,7 +54,6 @@ namespace TFCore
 		ID3D11InputLayout*		  m_pInputLayout;
 		ID3D11Buffer*			  m_pConstantBufferWVP;
 		ID3D11Buffer*             m_pConstantBufferLight;
-		TFMaterial                m_material;
 		float					  m_fScale;
 		std::wstring              m_wsShaderPath;
 		std::wstring              m_wsTexturePath;

@@ -108,7 +108,6 @@
     <ClInclude Include="TFFreeMotionCamera.h" />
     <ClInclude Include="TFInput.h" />
     <ClInclude Include="TFIRenderable.h" />
-    <ClInclude Include="TFMaterial.h" />
     <ClInclude Include="TFMath.h" />
     <ClInclude Include="TFModel.h" />
     <ClInclude Include="TFReflectionMap.h" />

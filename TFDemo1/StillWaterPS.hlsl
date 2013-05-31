@@ -87,8 +87,8 @@ float4 main(VertexOut pin) : SV_TARGET
 	float4 _lightVec     = float4(LightObj.Direction, 0.0f) * -1.0f;
 	float  _lambert      = max(0, dot(_lightVec, _bumpedNormal));
 
-	float4 _f4Diffuse = _lambert * LightObj.Diffuse * MaterialObj.Diffuse;
-	float4 _f4AmbientLight = LightObj.Ambient * MaterialObj.Ambient;
+	float4 _f4Diffuse = _lambert * LightObj.Diffuse;
+	float4 _f4AmbientLight = LightObj.Ambient;
 	float4 _f4FinalColor = (_f4Diffuse * _f4Reflection) + (_f4AmbientLight * _f4Reflection);
 	_f4FinalColor.a = 0.70f;
 

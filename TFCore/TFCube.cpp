@@ -27,10 +27,7 @@ namespace TFCore
 		 INDEX_COUNT(36),
 		 m_wsShaderPath(L"")
 	{
-		// Define material for cube
-		m_material.Ambient  = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-		m_material.Diffuse  = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		m_material.Specular = XMFLOAT4(0.6f, 0.6f, 0.6f, 16.0f);
+
 	}
 
 	TFCube::~TFCube()
@@ -283,9 +280,6 @@ namespace TFCore
 		cb.wvpMatrix = XMMatrixTranspose(a_matWVP);
 		// update the transform matrix for the texture coordinates
 		cb.texMatrix = a_matTex;
-
-		//update material of buffer
-		cb.material  = m_material;
 
 		m_pDeviceContext->UpdateSubresource(m_pConstantBufferWVP , 0, NULL, &cb, 0, 0);
 	}

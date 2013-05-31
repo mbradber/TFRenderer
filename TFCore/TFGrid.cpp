@@ -10,10 +10,6 @@ namespace TFCore
 		:m_nIndexCount(0),
 		m_bUsingHeightmap(true)
 	{
-		// Define material for terrain
-		m_material.Ambient  = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-		m_material.Diffuse  = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		m_material.Specular = XMFLOAT4(0.6f, 0.6f, 0.6f, 16.0f);
 	}
 
 
@@ -305,9 +301,6 @@ namespace TFCore
 
 		// update matrix to transform from object to projective texture coords
 		cb.lightVPT = XMMatrixTranspose(a_matLightWVPT);
-
-		//update material of buffer
-		cb.material  = m_material;
 
 		m_pDeviceContext->UpdateSubresource(m_pCBPerObject , 0, NULL, &cb, 0, 0);
 	}

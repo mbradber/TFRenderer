@@ -48,7 +48,6 @@ namespace TFCore
 		ID3D11Buffer*			   m_pVertexBuffer;
 		ID3D11Buffer*			   m_pIndexBuffer;
 		int                        m_nIndexCount;
-		TFMaterial                 m_material;
 		ID3D11Buffer*              m_pCBPerObject;
 		ID3D11VertexShader*	       m_pVertexShader;
 		ID3D11PixelShader*		   m_pPixelShader;

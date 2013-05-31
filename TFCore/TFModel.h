@@ -1,7 +1,6 @@
 #pragma once
 
 #include <d3d11.h>
-#include "TFMaterial.h"
 #include "TFVertices.h"
 #include <string>
 #include <vector>
@@ -19,7 +18,6 @@ namespace TFCore
 		XMMATRIX   wvpMatrix;
 		XMMATRIX   texMatrix;
 		XMMATRIX   lightVPT;
-		TFMaterial material;
 	};
 
 	class TFModel
@@ -101,7 +99,6 @@ namespace TFCore
 		ID3D11Buffer*							m_pCBPerObject_Shadow;
 		size_t									m_nVertexCount;
 		size_t									m_nIndexCount;
-		TFMaterial								m_material;
 		std::string								m_sAssetPath;
 		ID3D11VertexShader*						m_pVertexShader;
 		ID3D11PixelShader*						m_pPixelShader;

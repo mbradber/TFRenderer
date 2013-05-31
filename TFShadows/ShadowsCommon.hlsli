@@ -1,10 +1,4 @@
 
-struct Material
-{
-	float4 Ambient;
-	float4 Diffuse;
-	float4 Specular;
-};
 
 struct VertexOut
 {
@@ -23,5 +17,4 @@ cbuffer cbPerObject : register(b0)
 	float4x4 WorldViewProjectionMatrix;
 	float4x4 TexTransform;
 	float4x4 LightWVPT;
-	Material MaterialObj;
 }

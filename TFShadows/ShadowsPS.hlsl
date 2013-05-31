@@ -86,8 +86,8 @@ float4 main( VertexOut pin ) : SV_TARGET
 	float4 _lightVec     = float4(LightObj.Direction, 0.0f) * -1.0f;
 	float  _lambert      = max(0, dot(_lightVec, pin.NormW));
 	//float _lambert = max(0, dot(_lightVec, float4(_bumpedNormal, 0.0f)));
-	float4 _diffuseLight = _lambert * LightObj.Diffuse * MaterialObj.Diffuse;
-	float4 _ambientLight = LightObj.Ambient * MaterialObj.Ambient;
+	float4 _diffuseLight = _lambert * LightObj.Diffuse;
+	float4 _ambientLight = LightObj.Ambient;
 
 	float _fShadowFactor = 1.0f;
 	//_fShadowFactor = CalcShadow(pin.ProjTex, pin.NormW, _lightVec.xyz);
