@@ -141,6 +141,11 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 
 	m_house1.SetWorldMatrix(_matWorld);
 
+	// add support for shadows on terrain
+	m_house1.AddShadowShaders(_pRenderDepthVS,
+		_pRenderDepthPS,
+		_pRenderDepthInputLayout);
+
 	// tree1
 	m_tree1.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
@@ -150,10 +155,16 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 		"..\\Models\\palm4.obj");
 
 	_matWorld  = XMMatrixScaling(0.1f, 0.1f, 0.1f);
-	_matWorld *= XMMatrixRotationAxis(m_fmCamera.GetUpVector(), XM_PIDIV4 + XM_PIDIV2);
-	_matWorld *= XMMatrixTranslation(-55, 43, 35);
+	_matWorld *= XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PIDIV2 + XM_PIDIV4);
+	//_matWorld *= XMMatrixTranslation(-55, 43, 35);
+	_matWorld *= XMMatrixTranslation(-51.0f, 42.0f, -14.0f);
 
 	m_tree1.SetWorldMatrix(_matWorld);
+
+	// add support for shadows on tree 1
+	m_tree1.AddShadowShaders(_pRenderDepthVS,
+		_pRenderDepthPS,
+		_pRenderDepthInputLayout);
 
 	// tree2
 	m_tree2.Init(m_pd3dDevice,
@@ -165,7 +176,8 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 
 	_matWorld  = XMMatrixScaling(0.1f, 0.1f, 0.1f);
 	_matWorld *= XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PIDIV2);
-	_matWorld *= XMMatrixTranslation(-51, 41.5, -12);
+	//_matWorld *= XMMatrixTranslation(-51, 41.5, -12);
+	_matWorld *= XMMatrixTranslation(-55, 43, 35);
 
 	m_tree2.SetWorldMatrix(_matWorld);
 
@@ -287,6 +299,22 @@ void TFDemoDriver::RenderToShadowMap()
 	//m_box1.ActivateShadowShaders();
 	//m_box1.Draw();
 
+	/*** HOUSE ***/
+	m_matWorld = m_house1.GetWorldMatrix();
+	_matWVP = m_matWorld * _matViewProj;
+
+	m_house1.UpdateShadowResources(_matWVP);
+	m_house1.ActivateShadowShaders();
+	m_house1.Draw();
+
+
+	/*** TREE 1 ***/
+	m_matWorld = m_tree1.GetWorldMatrix();
+	_matWVP = m_matWorld * _matViewProj;
+
+	m_tree1.UpdateShadowResources(_matWVP);
+	m_tree1.ActivateShadowShaders();
+	m_tree1.Draw();	
 
 
 	/*** TERRAIN ***/
@@ -295,16 +323,12 @@ void TFDemoDriver::RenderToShadowMap()
 	//_f4ClipData.y = 0.0f;  // whether or not to use a clip plane in the VS
 	////m_terrain.UpdateFrameData(_f4ClipData);
 
-	m_matWorld = m_terrain.GetWorldMatrix();
-	_matWVP = m_matWorld * _matViewProj;
+	//m_matWorld = m_terrain.GetWorldMatrix();
+	//_matWVP = m_matWorld * _matViewProj;
 
-	//m_terrain.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
-	//m_terrain.ActivateShaders();
-
-
-	m_terrain.UpdateShadowResources(_matWVP);
-	m_terrain.ActivateShadowShaders();
-	m_terrain.Draw();
+	//m_terrain.UpdateShadowResources(_matWVP);
+	//m_terrain.ActivateShadowShaders();
+	//m_terrain.Draw();
 
 	// restore default render states
 	m_pd3dImmDeviceContext->RSSetState(0);
@@ -461,6 +485,7 @@ void TFDemoDriver::RenderScene()
 
 	m_terrain.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_terrain.ActivateShaders();
+	m_terrain.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 6); // bind shadow map
 	m_terrain.Draw();
 
 	/*** WATER ***/
@@ -493,6 +518,7 @@ void TFDemoDriver::RenderScene()
 
 	// restore default states
 	m_box1.UnloadShadowMap(2); // unbind shadow maps as shader resources because we are about to rebind them as depth stencil views
+	m_terrain.UnloadShadowMap(6);
 	m_pd3dImmDeviceContext->RSSetState(0);
 	m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
 

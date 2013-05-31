@@ -40,6 +40,9 @@ namespace TFCore
 			ID3D11PixelShader* a_pPixelShader,
 			ID3D11InputLayout* a_pInputLayout);
 
+		void SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap, size_t a_nIndex);
+		void UnloadShadowMap(size_t a_nIndex);
+
 	protected:
 
 		void GenerateGrid(int a_nWidth, int a_nDepth, float a_fTextureScale);

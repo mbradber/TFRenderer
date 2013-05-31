@@ -369,6 +369,17 @@ namespace TFCore
 		m_pDeviceContext->IASetInputLayout(m_pInputLayoutShadows);
 	}
 
+	void TFGrid::SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap, size_t a_nIndex)
+	{
+		m_pDeviceContext->PSSetShaderResources(a_nIndex, 1, &a_pShadowMap);
+	}
+
+	void TFGrid::UnloadShadowMap(size_t a_nIndex)
+	{
+		ID3D11ShaderResourceView* _pSRV[1] = {NULL};
+		m_pDeviceContext->PSSetShaderResources(a_nIndex, 1, _pSRV);
+	}
+
 	void TFGrid::Draw()
 	{
 		// Set vertex buffers

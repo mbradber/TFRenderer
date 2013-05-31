@@ -24,6 +24,7 @@ Texture2D DullGrassLayer  : register(t2);
 Texture2D DarkDirtLayer   : register(t3);
 Texture2D BlendLayerGrass : register(t4);
 Texture2D BlendLayerDirt  : register(t5);   
+Texture2D ShadowMapFront  : register(t6);
 
 // Samplers
 SamplerState samAnisotropic         : register(s0);
@@ -31,6 +32,29 @@ SamplerState samLinear              : register(s1);
 SamplerComparisonState samShadowPCF : register(s2);
 SamplerState pointSampler           : register(s3);
 
+float CalcShadow(float4 a_vShadowPosH)
+{
+	float dx = 1.0f / 2048.0f;
+
+	a_vShadowPosH.xyz /= a_vShadowPosH.w;
+	float _fDepth = a_vShadowPosH.z;
+	float _fShadowFactor = 0.0f;
+
+	float2 _pcfGrid[9] = 
+	{
+		float2(-dx, -dx),  float2(0.0f, -dx), float2(dx, -dx),
+		float2(-dx, 0.0f), float2(0.0f, 0),   float2(dx, 0.0f),
+		float2(-dx, dx),   float2(0.0f, dx),  float2(dx, dx),
+	};
+	 
+	[unroll]
+	for(int i = 0; i < 9; ++i)
+	{
+		_fShadowFactor += ShadowMapFront.SampleCmpLevelZero(samShadowPCF, a_vShadowPosH.xy + _pcfGrid[i], _fDepth);
+	}
+
+	return _fShadowFactor / 9.0f;
+}
 
 float4 main(VertexOut pin) : SV_TARGET
 {
@@ -68,6 +92,12 @@ float4 main(VertexOut pin) : SV_TARGET
 	_f4DarkDirtColor = (_f4DarkDirtColorBlended * _f4DiffuseLight)
 		+ (_f4DarkDirtColorBlended * _f4AmbientLight);
 
+	float _fShadowFactor = CalcShadow(pin.ProjTex);
+
 	// return alpha blended terrain color
-	return _f4GrassColor + _f4DullGrassColor + _f4DirtColor + _f4DarkDirtColor;
+	float4 _f4TerrainColor = _f4GrassColor + _f4DullGrassColor + _f4DirtColor + _f4DarkDirtColor;
+	float4 _f4Diffuse = _f4TerrainColor * _fShadowFactor;
+	float4 _f4Ambient = _f4TerrainColor * 0.25;
+
+	return _f4Ambient + _f4Diffuse;
 }

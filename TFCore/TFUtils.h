@@ -130,7 +130,7 @@ inline void TFDepthBiasRender(ID3D11Device* a_pDevice, ID3D11DeviceContext* a_pD
 {
 	D3D11_RASTERIZER_DESC rd;
 	ZeroMemory(&rd, sizeof(D3D11_RASTERIZER_DESC));
-	rd.DepthBias = 50000;
+	rd.DepthBias = 8000;
 	rd.DepthBiasClamp = 0.0f;
 	rd.SlopeScaledDepthBias = 1.0f;
 

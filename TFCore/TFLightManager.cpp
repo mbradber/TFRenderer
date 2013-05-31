@@ -8,7 +8,8 @@ namespace TFCore
 		:m_pDevice(NULL),
 		 m_pDeviceContext(NULL)
 	{
-		m_vPos = XMVectorSet(-146.0f, 141.0f, 62.0f, 0.0f);
+		//m_vPos = XMVectorSet(-146.0f, 141.0f, 62.0f, 0.0f);
+		m_vPos = XMVectorSet(-111, 99, 48, 0);
 	}
 
 
