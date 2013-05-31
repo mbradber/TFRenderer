@@ -81,10 +81,19 @@
     <ClCompile Include="TFDemoDriver.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="FoliageCommon.hlsli" />
     <None Include="StillWaterCommon.hlsli" />
     <None Include="TerrainCommon.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="FoliagePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="FoliageVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="StillWaterPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>

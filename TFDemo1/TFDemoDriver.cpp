@@ -50,6 +50,9 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	m_shaderManager.AddVertexShader(L"Sky", L"..\\Debug\\SkyVS.cso", TFPosNormTexTanLayout, 4);
 	m_shaderManager.AddPixelShader(L"Sky", L"..\\Debug\\SkyPS.cso");
 
+	m_shaderManager.AddVertexShader(L"Foliage", L"..\\Debug\\FoliageVS.cso", TFPosNormTexTanLayout, 4);
+	m_shaderManager.AddPixelShader(L"Foliage", L"..\\Debug\\FoliagePS.cso");
+
 	// bind samplers
 	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler);
@@ -101,6 +104,10 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	ID3D11PixelShader*  _pSkyPS                  = m_shaderManager.GetPixelShaderByName( L"Sky");
 	ID3D11InputLayout*  _pSkyInputLayout         = m_shaderManager.GetInputLayoutByName( L"Sky");
 
+	ID3D11VertexShader* _pFoliageVS              = m_shaderManager.GetVertexShaderByName(L"Foliage");
+	ID3D11PixelShader*  _pFoliagePS              = m_shaderManager.GetPixelShaderByName( L"Foliage");
+	ID3D11InputLayout*  _pFoliageInputLayout     = m_shaderManager.GetInputLayoutByName( L"Foliage");
+
 	// create render to texture maps
 	m_pShadowMapFront = new TFRendering::TFShadowMap(m_pd3dDevice, m_pd3dImmDeviceContext, 2048, 2048);
 	m_pReflectionMap  = new TFRendering::TFReflectionMap(m_pd3dDevice, m_pd3dImmDeviceContext, 512, 512);
@@ -141,20 +148,20 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	// tree1
 	m_tree1.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
-		_pShadowsVS,
-		_pShadowsPS,
-		_pShadowsInputLayout,
+		_pFoliageVS,
+		_pFoliagePS,
+		_pFoliageInputLayout,
 		//"..\\Models\\firtree1.3ds");
-		"..\\Models\\obj__tree1.obj");
+		"..\\Models\\palm4.obj");
 
 	// tree2
 	m_tree2.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
-		_pShadowsVS,
-		_pShadowsPS,
-		_pShadowsInputLayout,
+		_pFoliageVS,
+		_pFoliagePS,
+		_pFoliageInputLayout,
 		//"..\\Models\\firtree1.3ds");
-		"..\\Models\\Crate_Fragile.obj");
+		"..\\Models\\palm3.obj");
 
 	// ellipse for bounding world
 	m_ellipsoid.Init(m_pd3dDevice,
@@ -278,8 +285,9 @@ void TFDemoDriver::RenderToReflectionMap()
 	float _fPlaneVerticalOffset = 39.0f;
 
 	// draw tree 1
-	m_matWorld = XMMatrixScaling(0.25f, 0.25f, 0.25f);
-	m_matWorld *= XMMatrixTranslation(80, 80, 17);
+	m_matWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	m_matWorld = m_matWorld * XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PIDIV4);
+	m_matWorld *= XMMatrixTranslation(50, 43, -34);
 	m_matWorld *= _matFlip; // flip the object
 	m_matWorld *= XMMatrixTranslation(0, 2 * _fPlaneVerticalOffset, 0);
 	_matWVP = m_matWorld * m_matView * m_matProj;
@@ -290,7 +298,8 @@ void TFDemoDriver::RenderToReflectionMap()
 
 	// tree 2
 	m_matWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
-	m_matWorld *= XMMatrixTranslation(70, 50, -17);
+	m_matWorld *= XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PIDIV2);
+	m_matWorld *= XMMatrixTranslation(66, 42, 14);
 	m_matWorld *= _matFlip; // flip the object
 	m_matWorld *= XMMatrixTranslation(0, 2 * _fPlaneVerticalOffset, 0); // move the object up by 2 * reflection plane offset...
 	_matWVP = m_matWorld * m_matView * m_matProj;
@@ -384,9 +393,13 @@ void TFDemoDriver::RenderScene()
 	m_house1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
 	m_house1.Draw();
 
+	// TODO: dont calculate static object transform matrices every tick
+
 	// draw tree 1
-	m_matWorld = XMMatrixScaling(0.25f, 0.25f, 0.25f);
-	m_matWorld *= XMMatrixTranslation(80, 80, 17);
+	m_matWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	m_matWorld = m_matWorld * XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PIDIV4);
+	m_matWorld *= XMMatrixTranslation(50, 43, -34);
+	
 	_matWVP = m_matWorld * m_matView * m_matProj;
 
 	m_tree1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
@@ -396,10 +409,9 @@ void TFDemoDriver::RenderScene()
 	m_tree1.Draw();	
 
 	// tree 2
-
-
 	m_matWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
-	m_matWorld *= XMMatrixTranslation(70, 50, -17);
+	m_matWorld *= XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PIDIV2);
+	m_matWorld *= XMMatrixTranslation(66, 42, 14);
 
 	_matWVP = m_matWorld * m_matView * m_matProj;
 

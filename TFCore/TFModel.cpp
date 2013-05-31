@@ -30,7 +30,6 @@ namespace TFCore
 
 	}
 
-
 	TFModel::~TFModel()
 	{
 		ReleaseCOM(m_pVertexBuffer);
@@ -94,6 +93,8 @@ namespace TFCore
 		// Traverse the scene nodes and parse vertex and index data
 		size_t _nVertexOffset = 0;
 		size_t _nIndexOffset  = 0;
+
+		// Populate the vertex and index buffers with the mesh data of this model
 		ProcessNode(scene, _root, _pVertices, _pIndices, &_nVertexOffset, &_nIndexOffset);
 
 		// describe the vertex buffer
@@ -119,12 +120,11 @@ namespace TFCore
 		bd.CPUAccessFlags = 0;
 		bd.MiscFlags      = 0; // Unused
 		InitData.pSysMem  = _pIndices;
-		HR(m_pd3dDevice->CreateBuffer(&bd, &InitData, &m_pIndexBuffer));
 
+		HR(m_pd3dDevice->CreateBuffer(&bd, &InitData, &m_pIndexBuffer));
 
 		delete [] _pVertices;
 		delete [] _pIndices;
-
 
 		GenerateShaderResources();
 	}
@@ -182,7 +182,7 @@ namespace TFCore
 			// Process each vertex of this mesh
 			for(size_t j = 0; j < _mesh->mNumVertices; ++j)
 			{
-				// update the offset (where to store these vertices in the single vertex buffer)
+				// calculate the offset for this vertex of the mesh in the model's single large vertex buffer
 				size_t _nVertexIndex = j + *a_pVertexOffset;
 
 				// Copy vertex data
@@ -190,11 +190,12 @@ namespace TFCore
 				a_pVertices[_nVertexIndex].Pos.y = _mesh->mVertices[j].y;
 				a_pVertices[_nVertexIndex].Pos.z = _mesh->mVertices[j].z;
 
+				// normals
 				a_pVertices[_nVertexIndex].Norm.x = _mesh->mNormals[j].x;
 				a_pVertices[_nVertexIndex].Norm.y = _mesh->mNormals[j].y;
 				a_pVertices[_nVertexIndex].Norm.z = _mesh->mNormals[j].z;
 
-				// copy text coords from mesh
+				// copy tex coords from mesh
 				a_pVertices[_nVertexIndex].TexC.x = _mesh->mTextureCoords[0][j].x;
 				a_pVertices[_nVertexIndex].TexC.y = _mesh->mTextureCoords[0][j].y;
 
@@ -211,6 +212,7 @@ namespace TFCore
 			for(size_t j = 0; j < _mesh->mNumFaces; ++j)
 			{
 				aiFace _face         = _mesh->mFaces[j];
+				// store this mesh's index data in the model's index buffer
 				size_t _nIndexOffset = (j * 3) + *a_pIndexOffset;
 
 				a_pIndices[_nIndexOffset + 0] = _face.mIndices[0] + *a_pVertexOffset;
@@ -265,9 +267,11 @@ namespace TFCore
 			_tfMesh.TexturePathNormal = _wsTexturePathNormal;
 			_tfMesh.StartIndex        = *a_pIndexOffset; // the offset in the index buffer where this mesh starts
 			_tfMesh.NumIndices        = _mesh->mNumFaces * 3;
+
+			// TODO: D3DX stuff is deprecated, use another method for loading textures when you have time.
 			
 			// Create Shader resource view from texture path and store it for binding later when drawing this mesh
-			if(_wsTexturePathColor != L"..\\Textures\\")
+			if(_nNumDiffuseTextures > 0)
 			{
 				HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _wsTexturePathColor.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
 				m_vMeshTexturesColor.push_back(m_pTextureSRV);
@@ -277,7 +281,7 @@ namespace TFCore
 				_tfMesh.TextureIndexColor = m_vMeshTexturesColor.size() - 1; 
 			}
 
-			if(_wsTexturePathNormal != L"..\\Textures\\")
+			if(_nNumBumpTextures > 0)
 			{
 				HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _wsTexturePathNormal.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
 				m_vMeshTexturesNormals.push_back(m_pTextureSRV);
@@ -347,13 +351,6 @@ namespace TFCore
 
 		// Create the constant buffer with the device
 		HR(m_pd3dDevice->CreateBuffer(&bd, NULL, &m_pCBPerObject_Shadow));		
-
-		// TODO: D3DX stuff is deprecated, use another method for loading textures when you have time.
-
-		// Create the texture for this model
-		//HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, m_wsTexturePath.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
-		//HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, , NULL, NULL, &m_pTextureSRV, NULL));
-		
 	}
 
 	ID3D11VertexShader* TFModel::GetVertexShader() const
@@ -457,8 +454,8 @@ namespace TFCore
 		UINT _nStride = sizeof(TFPosNormTexTan);
 		UINT _nOffset = 0;
 
+		// Set vertex buffer for this model
 		m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &_nStride, &_nOffset);
-
 		// Set index buffer
 		m_pDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 		// Set primitive topology

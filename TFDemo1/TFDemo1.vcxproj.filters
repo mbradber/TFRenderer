@@ -40,12 +40,21 @@
     <FxCompile Include="StillWaterVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="FoliageVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="FoliagePS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="TerrainCommon.hlsli">
       <Filter>Shaders</Filter>
     </None>
     <None Include="StillWaterCommon.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="FoliageCommon.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
