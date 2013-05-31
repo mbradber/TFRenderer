@@ -9,8 +9,23 @@ namespace TFCore
 {
 	//TODO: initialize members when they become more stable
 	TFModel::TFModel()
-		:m_nVertexCount(0),
-		 m_nIndexCount(0)
+		:
+		m_pd3dDevice(NULL),
+		m_pDeviceContext(NULL),
+		m_pVertexBuffer(NULL),
+		m_pIndexBuffer(NULL),
+		m_pInputLayout(NULL),
+		m_pInputLayoutShadows(NULL),
+		m_pCBPerObject(NULL),
+		m_pCBPerObject_Shadow(NULL),
+		m_nVertexCount(0),
+		m_nIndexCount(0),
+		m_sAssetPath(""),
+		m_pVertexShader(NULL),
+		m_pPixelShader(NULL),
+		m_pVertexShaderShadows(NULL),
+		m_pPixelShaderShadows(NULL),
+		m_pTextureSRV(NULL)
 	{
 		// Define material for model
 		m_material.Ambient  = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -26,7 +41,6 @@ namespace TFCore
 
 	void TFModel::Init(ID3D11Device* a_pDevice, 
 		ID3D11DeviceContext* a_pDeviceContext, 
-		float a_fScale, 
 		ID3D11VertexShader* a_pVertexShader,
 		ID3D11PixelShader* a_pPixelShader,
 		ID3D11InputLayout* a_pInputLayout,
@@ -37,7 +51,6 @@ namespace TFCore
 
 		m_pd3dDevice     = a_pDevice;
 		m_pDeviceContext = a_pDeviceContext;
-		m_fScale         = a_fScale;
 		m_sAssetPath     = a_sAssetPath;
 		m_pVertexShader  = a_pVertexShader;
 		m_pPixelShader   = a_pPixelShader;

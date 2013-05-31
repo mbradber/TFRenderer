@@ -77,6 +77,8 @@ float4 main( VertexOut pin ) : SV_TARGET
 
 	// Sample the diffuse map for the crate
 	float4 _texColor = DiffuseMap.Sample(samAnisotropic, pin.TexC);
+	float _texColorSum = _texColor.r + _texColor.g + _texColor.b;
+	clip(_texColorSum - 0.01);
 	//float4 _texColor = ShadowMapFront.Sample(samLinear, pin.ProjTex.xy);
 	//float4 _texColor = ShadowMapFront.Sample(samLinear, pin.TexC);
 

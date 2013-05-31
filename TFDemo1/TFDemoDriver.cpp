@@ -108,7 +108,6 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	// init models
 	m_box1.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
-		1.0f, 
 		_pShadowsVS,
 		_pShadowsPS,
 		_pShadowsInputLayout,
@@ -121,7 +120,6 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 
 	m_box2.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
-		1.0f, 
 		_pShadowsVS,
 		_pShadowsPS,
 		_pShadowsInputLayout,
@@ -135,7 +133,6 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	// house
 	m_house1.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
-		1.0f, 
 		_pShadowsVS,
 		_pShadowsPS,
 		_pShadowsInputLayout,
@@ -144,17 +141,15 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	// tree1
 	m_tree1.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
-		1.0f, 
 		_pShadowsVS,
 		_pShadowsPS,
 		_pShadowsInputLayout,
 		//"..\\Models\\firtree1.3ds");
-		"..\\Models\\Crate_Fragile.obj");
+		"..\\Models\\obj__tree1.obj");
 
 	// tree2
 	m_tree2.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
-		1.0f, 
 		_pShadowsVS,
 		_pShadowsPS,
 		_pShadowsInputLayout,
@@ -164,7 +159,6 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	// ellipse for bounding world
 	m_ellipsoid.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
-		1.0f, 
 		_pSkyVS,
 		_pSkyPS,
 		_pSkyInputLayout,

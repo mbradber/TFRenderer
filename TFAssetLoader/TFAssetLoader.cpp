@@ -46,7 +46,6 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 
 	m_simpleCube.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
-		1.0f, 
 		_pNormalMapVS,
 		_pNormalMapPS,
 		_pInputLayout,

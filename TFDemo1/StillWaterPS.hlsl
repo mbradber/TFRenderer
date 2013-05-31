@@ -57,7 +57,7 @@ float3 GetBumpedNormal(float2 a_f2TexCoords, VertexOut pin)
 
 float4 main(VertexOut pin) : SV_TARGET
 {
-	float dx = 5.0f / 512.0f;
+	float dx = 15.0f / 512.0f;
 
 	// Renormalize after transformation
 	pin.NormW = normalize(pin.NormW);
@@ -67,21 +67,6 @@ float4 main(VertexOut pin) : SV_TARGET
 	ProjCoords /= ProjCoords.w;
 	ProjCoords.x = ProjCoords.x / 2.0f + 0.5f;
 	ProjCoords.y = ProjCoords.y / -2.0f + 0.5f;
-
-
-	//float4 _normalSample = NormalMap.Sample(samLinear, pin.TexC.xy);
-	//float3 _normalT      = (2.0f * _normalSample - float4(1.0f, 1.0f, 1.0f, 1.0f)).xyz;
-	//// Get the (tangent - projection of tangent onto normal) vector
-	//float3 T = normalize(pin.TanW - (dot(pin.TanW, pin.NormW) * pin.NormW));
-	//float3 N = pin.NormW;
-	//float3 B = cross(N, T);
-
-	//// construct transform from tangent to object space...
-	//float3x3 TBN = float3x3(T, B, N);
-	//// calculate "bumped normal" as sample normal in object space
-	//float3 _bumpedNormal = mul(_normalT, TBN);
-	//// bring bumped normal from object space to world space
-	//_bumpedNormal = normalize(mul(float4(_bumpedNormal, 0.0f), WorldMatrix).xyz);
 
 	float3 _bumpedNormal = GetBumpedNormal(pin.TexC.zw, pin);
 	float3 _bumpedNormalNeg = GetBumpedNormal(pin.TexC.xy, pin);
@@ -93,6 +78,7 @@ float4 main(VertexOut pin) : SV_TARGET
 	_f2SampleCoords.x += _bumpedNormal.x * dx;
 	_f2SampleCoords.y += _bumpedNormal.z * dx;
 	float4 _f4Reflection = ReflectionMap.Sample(samAnisotropic, _f2SampleCoords);
+	_f4Reflection *= 0.75f;
 
 	//_bumpedNormal = DistortNormal(_bumpedNormal, pin.ProjTex.xy);
 

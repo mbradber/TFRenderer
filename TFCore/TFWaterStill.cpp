@@ -37,7 +37,7 @@ namespace TFCore
 			a_nGridDepth);
 
 		m_bUsingHeightmap = false;
-		GenerateGrid(a_nGridWidth, a_nGridDepth, 12.0f);
+		GenerateGrid(a_nGridWidth, a_nGridDepth, 20.0f);
 
 		// VERTS
 
@@ -176,7 +176,7 @@ namespace TFCore
 
 	void TFWaterStill::Update(float a_fDelta)
 	{
-		m_fWaterOffsetX += a_fDelta * 0.2f;
+		m_fWaterOffsetX += a_fDelta * 0.1f;
 		m_fWaterOffsetY += -a_fDelta * 0.1f;
 		//m_fWaterOffsetX = fmod(m_fWaterOffsetX, 12.0f);
 		//m_fWaterOffsetY += 0.1f * a_fDelta;

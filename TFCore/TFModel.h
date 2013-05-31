@@ -30,7 +30,6 @@ namespace TFCore
 
 		void Init(ID3D11Device* a_pDevice, 
 			ID3D11DeviceContext* a_pDeviceContext, 
-			float a_fScale, 
 			ID3D11VertexShader* a_pVertexShader,
 			ID3D11PixelShader* a_pPixelShader,
 			ID3D11InputLayout* a_pInputLayout,
@@ -49,7 +48,11 @@ namespace TFCore
 		void SetReflectionMap(ID3D11ShaderResourceView* a_pReflectionMap, size_t a_nIndex);
 		void UnloadShadowMap(size_t a_nIndex);
 		void ActivateShadowShaders();
-		void UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const XMMATRIX& a_matLightWVPT, const XMMATRIX& a_matTex, const XMFLOAT3& a_vEyePos);
+		void UpdateResources(const XMMATRIX& a_matWVP, 
+			const XMMATRIX& a_matWorld, 
+			const XMMATRIX& a_matLightWVPT, 
+			const XMMATRIX& a_matTex, 
+			const XMFLOAT3& a_vEyePos);
 		void UpdateShadowResources(const XMMATRIX& a_matWVP);
 		ID3D11ShaderResourceView* GetPrimaryTexture() { return m_vMeshTexturesColor[0]; }
 
@@ -88,29 +91,26 @@ namespace TFCore
 			void GenerateShaderResources();
 
 	private:
-		ID3D11Device*			  m_pd3dDevice;
-		ID3D11DeviceContext*	  m_pDeviceContext;
-		ID3D11Buffer*			  m_pVertexBuffer;
-		ID3D11Buffer*			  m_pIndexBuffer;
-		ID3D11InputLayout*		  m_pInputLayout;
-		ID3D11InputLayout*		  m_pInputLayoutShadows;
-		ID3D11Buffer*			  m_pCBPerObject;
-		ID3D11Buffer*             m_pCBPerObject_Shadow;
-		float					  m_fScale;
-		size_t                    m_nVertexCount;
-		size_t                    m_nIndexCount;
-		TFMaterial                m_material;
-		std::wstring              m_wsShaderPath;
-		std::string               m_sAssetPath;
-		ID3D11VertexShader*	      m_pVertexShader;
-		ID3D11PixelShader*		  m_pPixelShader;
-		ID3D11VertexShader*	      m_pVertexShaderShadows;
-		ID3D11PixelShader*		  m_pPixelShaderShadows;
-		ID3D11ShaderResourceView* m_pTextureSRV;
-		std::wstring              m_wsTexturePath;
-		std::vector<TFMesh>       m_meshes;
-		std::vector<ID3D11ShaderResourceView*> m_vMeshTexturesColor;
-		std::vector<ID3D11ShaderResourceView*> m_vMeshTexturesNormals;
+		ID3D11Device*							m_pd3dDevice;
+		ID3D11DeviceContext*					m_pDeviceContext;
+		ID3D11Buffer*							m_pVertexBuffer;
+		ID3D11Buffer*							m_pIndexBuffer;
+		ID3D11InputLayout*						m_pInputLayout;
+		ID3D11InputLayout*						m_pInputLayoutShadows;
+		ID3D11Buffer*							m_pCBPerObject;
+		ID3D11Buffer*							m_pCBPerObject_Shadow;
+		size_t									m_nVertexCount;
+		size_t									m_nIndexCount;
+		TFMaterial								m_material;
+		std::string								m_sAssetPath;
+		ID3D11VertexShader*						m_pVertexShader;
+		ID3D11PixelShader*						m_pPixelShader;
+		ID3D11VertexShader*						m_pVertexShaderShadows;
+		ID3D11PixelShader*						m_pPixelShaderShadows;
+		ID3D11ShaderResourceView*			    m_pTextureSRV;
+		std::vector<TFMesh>                     m_meshes;
+		std::vector<ID3D11ShaderResourceView*>  m_vMeshTexturesColor;
+		std::vector<ID3D11ShaderResourceView*>  m_vMeshTexturesNormals;
 	};
 
 }

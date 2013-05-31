@@ -72,7 +72,6 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 
 	m_box1.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
-		1.0f, 
 		_pShadowsVS,
 		_pShadowsPS,
 		_pShadowsInputLayout,
@@ -85,7 +84,6 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 
 	m_box2.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
-		1.0f, 
 		_pShadowsVS,
 		_pShadowsPS,
 		_pShadowsInputLayout,

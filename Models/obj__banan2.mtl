@@ -1,0 +1,14 @@
+# Wavefront MTL file
+# Creator: Ultimate Unwrap3D v2.24
+# Time: Fri Dec 30 02:01:27 2005
+# num_materials: 1
+newmtl banan2.png
+Ka 0.000000 0.000000 0.000000
+Kd 0.752941 0.752941 0.752941
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 0.312500
+map_Kd banan2.png
+
+# num_materials: 1
