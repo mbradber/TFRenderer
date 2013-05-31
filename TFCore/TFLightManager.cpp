@@ -8,7 +8,7 @@ namespace TFCore
 		:m_pDevice(NULL),
 		 m_pDeviceContext(NULL)
 	{
-
+		m_vPos = XMVectorSet(-146.0f, 141.0f, 62.0f, 0.0f);
 	}
 
 
@@ -55,9 +55,16 @@ namespace TFCore
 		_rotationZ += a_fDeltaTime / 5.0f;
 		
 		//m_directionalLight1.Direction.y = 0;
-		m_directionalLight1.Direction.x = cosf(_rotationX);
-		m_directionalLight1.Direction.z = sinf(_rotationZ);
+		//m_directionalLight1.Direction.x = cosf(_rotationX);
+		//m_directionalLight1.Direction.z = sinf(_rotationZ);
 
+		XMVECTOR _vLightDir = XMVectorZero() - m_vPos;
+		_vLightDir = XMVector4Normalize(_vLightDir);
+		XMFLOAT4 _f4LightDir;
+		XMStoreFloat4(&_f4LightDir, _vLightDir);
+		m_directionalLight1.Direction.x = _f4LightDir.x;
+		m_directionalLight1.Direction.y = _f4LightDir.y;
+		m_directionalLight1.Direction.z = _f4LightDir.z;
 
 		// UPDATE LIGHT RESOURCE
 		m_directionaLight1Buffer.DirLight = m_directionalLight1;
@@ -69,9 +76,9 @@ namespace TFCore
 		m_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pCBDirectionalLight);
 
 		// update light's position
-		XMVECTOR _vDir = XMVectorSet(m_directionalLight1.Direction.x, m_directionalLight1.Direction.y, m_directionalLight1.Direction.z, 0.0f);
+/*		XMVECTOR _vDir = XMVectorSet(m_directionalLight1.Direction.x, m_directionalLight1.Direction.y, m_directionalLight1.Direction.z, 0.0f);
 		XMVector4Normalize(_vDir);
-		m_vPos = -_vDir * 300;		
+		m_vPos = -_vDir * 300;	*/	
 	}
 
 	XMFLOAT3 TFLightManager::GetPosition() const
@@ -108,7 +115,7 @@ namespace TFCore
 	// TODO: Don't query this every frame
 	XMMATRIX TFLightManager::GetProjection()
 	{
-		return XMMatrixOrthographicOffCenterLH(-1000, 1000, -1000, 1000, 0, 1000.0f);
+		return XMMatrixOrthographicOffCenterLH(-150, 150, -100, 150, 0, 1000.0f);
 		//return XMMatrixPerspectiveFovLH(XM_PIDIV4, 1008.f / 730.f,  50, 100.0f);
 	}
 

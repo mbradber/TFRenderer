@@ -22,6 +22,7 @@ namespace TFCore
 		void RotateCameraPitch(float a_fDeltaTime, float a_fDeltaDistance);
 		XMMATRIX GetView();
 		XMFLOAT3 GetPosition() const;
+		XMVECTOR GetForward() const;
 		inline XMVECTOR& GetUpVector() { return m_xmvUp; }
 
 	private:

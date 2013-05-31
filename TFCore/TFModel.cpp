@@ -161,6 +161,16 @@ namespace TFCore
 		}
 	}
 
+	void TFModel::SetWorldMatrix(const XMMATRIX& a_matWorld)
+	{
+		m_matWorld = a_matWorld;
+	}
+
+	const XMMATRIX& TFModel::GetWorldMatrix() const
+	{
+		return m_matWorld;
+	}
+
 	void TFModel::ProcessNode(const aiScene* const a_pScene, 
 		aiNode* a_pNode, 
 		TFPosNormTexTan*& a_pVertices, 

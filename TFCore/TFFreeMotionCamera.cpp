@@ -5,13 +5,14 @@ namespace TFCore
 {
 
 	TFFreeMotionCamera::TFFreeMotionCamera()
-		:m_vPosition(0.0f, 100.0f, 0.0f, 1.0f),
+		:/*m_vPosition(-220.0f, 180.0f, -49.0f, 1.0f),*/
+		m_vPosition(0, 100, 0, 1.0f),
 		 m_vForward(0.0f, -0.4f, 1.0f, 0.0f),
 		 m_vUp(0.0f, 1.0f, 0.0f, 0.0f),
 		 m_xmvUp(XMLoadFloat4(&m_vUp)),
 		 m_vSide(1.0f, 0.0f, 0.0f, 0.0f),
 		 CAMERA_ROTATION_BUFFER_YAW(500.0f),
-		 CAMERA_MOVEMENT_BUFFER(15.0f)
+		 CAMERA_MOVEMENT_BUFFER(30.0f)
 	{
 		// normalize forward vector
 		XMVECTOR _vForward = XMLoadFloat4(&m_vForward);
@@ -142,6 +143,11 @@ namespace TFCore
 		_pos.z = m_vPosition.z;
 
 		return _pos;
+	}
+
+	XMVECTOR TFFreeMotionCamera::GetForward() const
+	{
+		return XMLoadFloat4(&m_vForward);
 	}
 
 	void TFFreeMotionCamera::RotateCameraYaw(float a_fDeltaTime, float a_fDeltaDistance)

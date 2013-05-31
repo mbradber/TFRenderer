@@ -32,7 +32,6 @@ private:
 	TFCore::TFLightManager m_lightManager;
 	TFCore::TFShaderManager m_shaderManager;
 	TFCore::TFModel m_box1;
-	TFCore::TFModel m_box2;
 	TFCore::TFModel m_house1;
 
 	XMMATRIX m_matView;

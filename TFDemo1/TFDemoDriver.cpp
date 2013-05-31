@@ -112,6 +112,8 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	m_pShadowMapFront = new TFRendering::TFShadowMap(m_pd3dDevice, m_pd3dImmDeviceContext, 2048, 2048);
 	m_pReflectionMap  = new TFRendering::TFReflectionMap(m_pd3dDevice, m_pd3dImmDeviceContext, 512, 512);
 
+	XMMATRIX _matWorld = XMMatrixIdentity();
+
 	// init models
 	m_box1.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
@@ -125,18 +127,6 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 		_pRenderDepthPS,
 		_pRenderDepthInputLayout);
 
-	m_box2.Init(m_pd3dDevice,
-		m_pd3dImmDeviceContext, 
-		_pShadowsVS,
-		_pShadowsPS,
-		_pShadowsInputLayout,
-		"..\\Models\\Crate_Fragile.obj");
-
-	// add support for shadows on box 2
-	m_box2.AddShadowShaders(_pRenderDepthVS,
-		_pRenderDepthPS,
-		_pRenderDepthInputLayout);
-
 	// house
 	m_house1.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
@@ -145,14 +135,25 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 		_pShadowsInputLayout,
 		"..\\Models\\house_obj.obj");
 
+	_matWorld  = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	_matWorld *= XMMatrixRotationAxis(m_fmCamera.GetUpVector(), XM_PIDIV2);
+	_matWorld *= XMMatrixTranslation(79.0f, 54.5, -70.0f);
+
+	m_house1.SetWorldMatrix(_matWorld);
+
 	// tree1
 	m_tree1.Init(m_pd3dDevice,
 		m_pd3dImmDeviceContext, 
 		_pFoliageVS,
 		_pFoliagePS,
 		_pFoliageInputLayout,
-		//"..\\Models\\firtree1.3ds");
 		"..\\Models\\palm4.obj");
+
+	_matWorld  = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	_matWorld *= XMMatrixRotationAxis(m_fmCamera.GetUpVector(), XM_PIDIV4 + XM_PIDIV2);
+	_matWorld *= XMMatrixTranslation(-55, 43, 35);
+
+	m_tree1.SetWorldMatrix(_matWorld);
 
 	// tree2
 	m_tree2.Init(m_pd3dDevice,
@@ -160,8 +161,13 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 		_pFoliageVS,
 		_pFoliagePS,
 		_pFoliageInputLayout,
-		//"..\\Models\\firtree1.3ds");
 		"..\\Models\\palm3.obj");
+
+	_matWorld  = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	_matWorld *= XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PIDIV2);
+	_matWorld *= XMMatrixTranslation(-51, 41.5, -12);
+
+	m_tree2.SetWorldMatrix(_matWorld);
 
 	// ellipse for bounding world
 	m_ellipsoid.Init(m_pd3dDevice,
@@ -183,6 +189,14 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 		257,
 		257);
 
+	_matWorld = XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PI);
+	m_terrain.SetWorldMatrix(_matWorld);
+
+	// add support for shadows on terrain
+	m_terrain.AddShadowShaders(_pRenderDepthVS,
+		_pRenderDepthPS,
+		_pRenderDepthInputLayout);
+
 	// init water body 1
 	m_waterBody1.Init(m_pd3dDevice, 
 		m_pd3dImmDeviceContext,
@@ -192,6 +206,9 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 		"", // this will not be using a heightmap
 		50,
 		50);
+
+	_matWorld = XMMatrixTranslation(-58.0f, 39.0f, 8.0f);
+	m_waterBody1.SetWorldMatrix(_matWorld);
 
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();
@@ -236,6 +253,9 @@ void TFDemoDriver::UpdateScene(float a_fDelta)
 	if(TFInput::Instance()->IsYPressed())
 	{
 		XMFLOAT3 _camPos = m_fmCamera.GetPosition();
+		//XMFLOAT4 _camPos;
+		//XMVECTOR _vCamDir = XMVector4Normalize(m_fmCamera.GetForward());
+		//XMStoreFloat4(&_camPos, _vCamDir);
 
 		stringstream _ss;
 		_ss << _camPos.x << ", " << _camPos.y << ", " << _camPos.z << endl;
@@ -247,6 +267,7 @@ void TFDemoDriver::UpdateScene(float a_fDelta)
 void TFDemoDriver::RenderToShadowMap()
 {
 	XMMATRIX _matWVP;
+	XMMATRIX _matViewProj = m_lightManager.GetView() * m_lightManager.GetProjection();
 
 	TFDepthBiasRender(m_pd3dDevice, m_pd3dImmDeviceContext);
 
@@ -254,16 +275,36 @@ void TFDemoDriver::RenderToShadowMap()
 	// and set the depth draws to shadow map depth stencil view
 	m_pShadowMapFront->SetRenderState();
 
-	// Update the geometry of box 1
-	m_matWorld = XMMatrixScaling(0.2f, 0.2f, 0.2f);
-	m_matWorld = m_matWorld * XMMatrixTranslation(0.0f, 0.0f, 0.0f);
-	
-	_matWVP = m_matWorld * m_lightManager.GetView() * m_lightManager.GetProjection();
 
-	// draw box 1
-	m_box1.UpdateShadowResources(_matWVP);
-	m_box1.ActivateShadowShaders();
-	m_box1.Draw();
+	//// Update the geometry of box 1
+	//m_matWorld = XMMatrixScaling(0.2f, 0.2f, 0.2f);
+	//m_matWorld = m_matWorld * XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+	//
+	//_matWVP = m_matWorld * m_lightManager.GetView() * m_lightManager.GetProjection();
+
+	//// draw box 1
+	//m_box1.UpdateShadowResources(_matWVP);
+	//m_box1.ActivateShadowShaders();
+	//m_box1.Draw();
+
+
+
+	/*** TERRAIN ***/
+	//XMFLOAT4 _f4ClipData;
+	//_f4ClipData.x = 0.0f; // height of this reflective surface in world space (set to 0 since not using)
+	//_f4ClipData.y = 0.0f;  // whether or not to use a clip plane in the VS
+	////m_terrain.UpdateFrameData(_f4ClipData);
+
+	m_matWorld = m_terrain.GetWorldMatrix();
+	_matWVP = m_matWorld * _matViewProj;
+
+	//m_terrain.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	//m_terrain.ActivateShaders();
+
+
+	m_terrain.UpdateShadowResources(_matWVP);
+	m_terrain.ActivateShadowShaders();
+	m_terrain.Draw();
 
 	// restore default render states
 	m_pd3dImmDeviceContext->RSSetState(0);
@@ -279,40 +320,39 @@ void TFDemoDriver::RenderToReflectionMap()
 
 	m_pReflectionMap->SetRenderTarget();
 
+	// compute view-proj matrix
+	XMMATRIX _matViewProj = m_matView * m_matProj;
+
 	TFRenderFrontFaceCull(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	XMMATRIX _matFlip = XMMatrixScaling(1.0f, -1.0f, 1.0f);
 	float _fPlaneVerticalOffset = 39.0f;
 
-	// draw tree 1
-	m_matWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
-	m_matWorld = m_matWorld * XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PIDIV4);
-	m_matWorld *= XMMatrixTranslation(50, 43, -34);
+	/*** TREE 1 ***/
+	m_matWorld = m_tree1.GetWorldMatrix();
 	m_matWorld *= _matFlip; // flip the object
 	m_matWorld *= XMMatrixTranslation(0, 2 * _fPlaneVerticalOffset, 0);
-	_matWVP = m_matWorld * m_matView * m_matProj;
+	_matWVP = m_matWorld * _matViewProj;
 
 	m_tree1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_tree1.ActivateShaders();
 	m_tree1.Draw();	
 
-	// tree 2
-	m_matWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
-	m_matWorld *= XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PIDIV2);
-	m_matWorld *= XMMatrixTranslation(66, 42, 14);
+	/*** TREE 2 ***/
+	m_matWorld = m_tree2.GetWorldMatrix();
 	m_matWorld *= _matFlip; // flip the object
 	m_matWorld *= XMMatrixTranslation(0, 2 * _fPlaneVerticalOffset, 0); // move the object up by 2 * reflection plane offset...
-	_matWVP = m_matWorld * m_matView * m_matProj;
+	_matWVP = m_matWorld * _matViewProj;
 
 	m_tree2.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_tree2.ActivateShaders();
 	m_tree2.Draw();	
 
-	// draw skybox
+	/*** SKY ***/
 	m_matWorld = XMMatrixScaling(1000.0f, 1000.0f, 1000.0f);
 	m_matWorld *= _matFlip; // flip the object
 	m_matWorld *= XMMatrixTranslation(0, 2 * _fPlaneVerticalOffset, 0); // move the object up by 2 * reflection plane offset...
-	_matWVP = m_matWorld * m_matView * m_matProj;
+	_matWVP = m_matWorld * _matViewProj;
 
 	// update render state and depth/stencil state for ellipsoid
 	TFRenderNoCull(m_pd3dDevice, m_pd3dImmDeviceContext);
@@ -324,16 +364,16 @@ void TFDemoDriver::RenderToReflectionMap()
 	m_ellipsoid.Draw();
 
 
-	// draw terrain
+	/*** TERRAIN ***/
 	XMFLOAT4 _f4ClipData;
 	_f4ClipData.x = 39.0f; // height of this reflective surface in world space
 	_f4ClipData.y = 1.0f;  // whether or not to use a clip plane in the VS
 	m_terrain.UpdateFrameData(_f4ClipData);
 
-	m_matWorld = XMMatrixIdentity();
+	m_matWorld = m_terrain.GetWorldMatrix();
 	m_matWorld *= _matFlip; // flip the object
 	m_matWorld *= XMMatrixTranslation(0, 2 * _fPlaneVerticalOffset, 0); // move the object up by 2 * reflection plane offset...
-	_matWVP = m_matWorld * m_matView * m_matProj;
+	_matWVP = m_matWorld * _matViewProj;
 
 	m_terrain.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_terrain.ActivateShaders();
@@ -352,41 +392,35 @@ void TFDemoDriver::RenderScene()
 	TFCore::TFWinBase::RenderScene();
 
 	// build shadow map
-	//RenderToShadowMap();
+	RenderToShadowMap();
 
 	RenderToReflectionMap();
 
 	//TFRenderWireframe(m_pd3dDevice, m_pd3dImmDeviceContext);
 
-	XMMATRIX _matFlip = XMMatrixScaling(1.0f, -1.0f, 1.0f);
-	float _fPlaneVerticalOffset = 39.0f;
+	// compute view-proj matrix
+	XMMATRIX _matViewProj = m_matView * m_matProj;
+	XMMATRIX _matWVP = XMMatrixIdentity();
 
-	// Set world matrix for first box
-	/*m_matWorld = XMMatrixScaling(0.2f, 0.2f, 0.2f);*/
+	/*** BOX 1 (light source) ***/
 	m_matWorld = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-
 	XMFLOAT3 _vLightPos = m_lightManager.GetPosition();
 
 	m_matWorld = m_matWorld * XMMatrixTranslation(_vLightPos.x, 
 		_vLightPos.y, 
 		_vLightPos.z);
 
-	// Update the geometry with their respective transforms
-	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
+	_matWVP = m_matWorld * _matViewProj;
 
 	m_box1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_box1.ActivateShaders();
 	// bind the shadow map to an input slot of the pixel shader
-	//m_box1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
+	m_box1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
 	m_box1.Draw();
 
-
-	// draw house 1
-	m_matWorld = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	m_matWorld = m_matWorld * XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PIDIV2);
-
-	m_matWorld = m_matWorld * XMMatrixTranslation(-82.0f, 54.5, 73.0f);
-	_matWVP = m_matWorld * m_matView * m_matProj;
+	/*** HOUSE ***/
+	m_matWorld = m_house1.GetWorldMatrix();
+	_matWVP = m_matWorld * _matViewProj;
 
 	m_house1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_house1.ActivateShaders();
@@ -395,12 +429,9 @@ void TFDemoDriver::RenderScene()
 
 	// TODO: dont calculate static object transform matrices every tick
 
-	// draw tree 1
-	m_matWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
-	m_matWorld = m_matWorld * XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PIDIV4);
-	m_matWorld *= XMMatrixTranslation(50, 43, -34);
-	
-	_matWVP = m_matWorld * m_matView * m_matProj;
+	/*** TREE 1 ***/
+	m_matWorld = m_tree1.GetWorldMatrix();
+	_matWVP = m_matWorld * _matViewProj;
 
 	m_tree1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_tree1.ActivateShaders();
@@ -408,12 +439,9 @@ void TFDemoDriver::RenderScene()
 	m_tree1.SetReflectionMap(m_pReflectionMap->GetReflectionMapSRV(), 2);
 	m_tree1.Draw();	
 
-	// tree 2
-	m_matWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
-	m_matWorld *= XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PIDIV2);
-	m_matWorld *= XMMatrixTranslation(66, 42, 14);
-
-	_matWVP = m_matWorld * m_matView * m_matProj;
+	/*** TREE 2 ***/
+	m_matWorld = m_tree2.GetWorldMatrix();
+	_matWVP = m_matWorld * _matViewProj;
 
 	m_tree2.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_tree2.ActivateShaders();
@@ -422,23 +450,22 @@ void TFDemoDriver::RenderScene()
 	m_tree2.Draw();	
 
 
-
-	// draw terrain
+	/*** TERRAIN ***/
 	XMFLOAT4 _f4ClipData;
-	_f4ClipData.x = 39.0f; // height of this reflective surface in world space
+	_f4ClipData.x = 0.0f; // height of this reflective surface in world space (set to 0 since not using)
 	_f4ClipData.y = 0.0f;  // whether or not to use a clip plane in the VS
 	m_terrain.UpdateFrameData(_f4ClipData);
 
-	m_matWorld = XMMatrixIdentity();
-	_matWVP = m_matWorld * m_matView * m_matProj;
+	m_matWorld = m_terrain.GetWorldMatrix();
+	_matWVP = m_matWorld * _matViewProj;
 
 	m_terrain.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_terrain.ActivateShaders();
 	m_terrain.Draw();
 
-	// draw water
-	m_matWorld *= XMMatrixTranslation(55.0f, 39.0f, -9.0f);
-	_matWVP = m_matWorld * m_matView * m_matProj;
+	/*** WATER ***/
+	m_matWorld = m_waterBody1.GetWorldMatrix();
+	_matWVP = m_matWorld * _matViewProj;
 
 	m_waterBody1.UpdateResources(_matWVP, m_matWorld, m_waterBody1.GetTextureTransformNeg(), m_waterBody1.GetTextureTransform(), m_fmCamera.GetPosition());
 	m_waterBody1.BindReflectionMap(m_pReflectionMap->GetReflectionMapSRV());
@@ -451,10 +478,9 @@ void TFDemoDriver::RenderScene()
 
 	m_pd3dImmDeviceContext->OMSetBlendState(NULL, blendFactors, 0xffffffff); // reset blend state
 
-
-	// draw skybox
+	/*** SKY ***/
 	m_matWorld = XMMatrixScaling(1000.0f, 1000.0f, 1000.0f);
-	_matWVP = m_matWorld * m_matView * m_matProj;
+	_matWVP = m_matWorld * _matViewProj;
 
 	// update render state and depth/stencil state for ellipsoid
 	TFRenderNoCull(m_pd3dDevice, m_pd3dImmDeviceContext);

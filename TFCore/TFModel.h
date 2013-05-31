@@ -54,6 +54,9 @@ namespace TFCore
 		void UpdateShadowResources(const XMMATRIX& a_matWVP);
 		ID3D11ShaderResourceView* GetPrimaryTexture() { return m_vMeshTexturesColor[0]; }
 
+		void SetWorldMatrix(const XMMATRIX& a_matWorld);
+		const XMMATRIX& GetWorldMatrix() const;
+
 	private:
 
 		struct TFMesh
@@ -108,6 +111,7 @@ namespace TFCore
 		std::vector<TFMesh>                     m_meshes;
 		std::vector<ID3D11ShaderResourceView*>  m_vMeshTexturesColor;
 		std::vector<ID3D11ShaderResourceView*>  m_vMeshTexturesNormals;
+		XMMATRIX                                m_matWorld;
 	};
 
 }
