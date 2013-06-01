@@ -34,6 +34,9 @@
     <None Include="RenderDepthCommon.hlsli">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="GnomeCommon.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ShadowsPS.hlsl">
@@ -46,6 +49,12 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="RenderDepthVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="GnomeVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="GnomePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

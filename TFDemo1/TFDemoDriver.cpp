@@ -60,6 +60,9 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	m_shaderManager.AddVertexShader(L"Foliage", L"FoliageVS.cso", TFPosNormTexTanLayout, 4);
 	m_shaderManager.AddPixelShader(L"Foliage",  L"FoliagePS.cso");
 
+	m_shaderManager.AddVertexShader(L"Gnome", L"GnomeVS.cso", TFPosNormTexTanLayout, 4);
+	m_shaderManager.AddPixelShader(L"Gnome",  L"GnomePS.cso");
+
 	// bind samplers
 	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler);
@@ -112,6 +115,10 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	ID3D11PixelShader*  _pFoliagePS              = m_shaderManager.GetPixelShaderByName( L"Foliage");
 	ID3D11InputLayout*  _pFoliageInputLayout     = m_shaderManager.GetInputLayoutByName( L"Foliage");
 
+	ID3D11VertexShader* _pGnomeVS                = m_shaderManager.GetVertexShaderByName(L"Gnome");
+	ID3D11PixelShader*  _pGnomePS                = m_shaderManager.GetPixelShaderByName( L"Gnome");
+	ID3D11InputLayout*  _pGnomeInputLayout       = m_shaderManager.GetInputLayoutByName( L"Gnome");
+
 	// create render to texture maps
 	m_pShadowMapFront = new TFRendering::TFShadowMap(m_pd3dDevice, m_pd3dImmDeviceContext, 2048, 2048);
 	m_pReflectionMap  = new TFRendering::TFReflectionMap(m_pd3dDevice, m_pd3dImmDeviceContext, 512, 512);
@@ -139,7 +146,7 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 		_pShadowsInputLayout,
 		"..\\Models\\house_obj.obj");
 
-	_matWorld  = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	_matWorld  = XMMatrixScaling(0.015f, 0.015f, 0.015f);
 	_matWorld *= XMMatrixRotationAxis(m_fmCamera.GetUpVector(), XM_PIDIV2);
 	_matWorld *= XMMatrixTranslation(79.0f, 54.5, -70.0f);
 
@@ -260,6 +267,20 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 
 	_matWorld = XMMatrixTranslation(-8.0f, 35.0f, -74.0f);
 	m_waterBody2.SetWorldMatrix(_matWorld);
+
+	// gnome
+	m_gnome.Init(m_pd3dDevice,
+		m_pd3dImmDeviceContext, 
+		_pGnomeVS,
+		_pGnomePS,
+		_pGnomeInputLayout,
+		"..\\Models\\gnome5.obj");
+
+	_matWorld  = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	_matWorld *= XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PI);
+	_matWorld *= XMMatrixTranslation(15.8f, 45.0f, 4.3f);
+
+	m_gnome.SetWorldMatrix(_matWorld);
 
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();
@@ -504,6 +525,14 @@ void TFDemoDriver::RenderScene()
 	m_house1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_house1.ActivateShaders();
 	m_house1.Draw();
+
+	/*** GNOME ***/
+	m_matWorld = m_gnome.GetWorldMatrix();
+	_matWVP = m_matWorld * _matViewProj;
+
+	m_gnome.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_gnome.ActivateShaders();
+	m_gnome.Draw();
 
 	/*** TREE 1 ***/
 	m_matWorld = m_tree1.GetWorldMatrix();

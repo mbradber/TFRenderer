@@ -59,6 +59,7 @@ private:
 	TFCore::TFModel m_ellipsoid;
 	ID3D11ShaderResourceView* m_cubeMapSRV;
 
-
+	// creature
+	TFCore::TFModel m_gnome;
 };
 
