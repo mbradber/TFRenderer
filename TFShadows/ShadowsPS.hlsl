@@ -71,14 +71,12 @@ float4 main( VertexOut pin ) : SV_TARGET
 
 	// Sample the diffuse map for the crate
 	float4 _texColor = DiffuseMap.Sample(samAnisotropic, pin.TexC);
-
-	//float4 _texColor = ShadowMapFront.Sample(samLinear, pin.ProjTex.xy);
 	//float4 _texColor = ShadowMapFront.Sample(samLinear, pin.TexC);
 
 	// calculate color based on light direction against normal 
 	float4 _lightVec     = float4(LightObj.Direction, 0.0f) * -1.0f;
-	float  _lambert      = max(0, dot(_lightVec, pin.NormW));
-	//float _lambert = max(0, dot(_lightVec, float4(_bumpedNormal, 0.0f)));
+	//float  _lambert      = max(0, dot(_lightVec, pin.NormW));
+	float _lambert = max(0, dot(_lightVec, float4(_bumpedNormal, 0.0f)));
 	float4 _diffuseLight = _lambert * LightObj.Diffuse;
 	float4 _ambientLight = LightObj.Ambient;
 

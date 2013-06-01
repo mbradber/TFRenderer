@@ -160,7 +160,6 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 
 	_matWorld  = XMMatrixScaling(0.1f, 0.1f, 0.1f);
 	_matWorld *= XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PIDIV2 + XM_PIDIV4);
-	//_matWorld *= XMMatrixTranslation(-55, 43, 35);
 	_matWorld *= XMMatrixTranslation(-51.0f, 42.0f, -14.0f);
 
 	m_tree1.SetWorldMatrix(_matWorld);
@@ -180,13 +179,31 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 
 	_matWorld  = XMMatrixScaling(0.1f, 0.1f, 0.1f);
 	_matWorld *= XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PIDIV2);
-	//_matWorld *= XMMatrixTranslation(-51, 41.5, -12);
 	_matWorld *= XMMatrixTranslation(-55, 43, 35);
 
 	m_tree2.SetWorldMatrix(_matWorld);
 
-	// add support for shadows on tree 1
+	// add support for shadows on tree 2
 	m_tree2.AddShadowShaders(_pRenderDepthVS,
+		_pRenderDepthPS,
+		_pRenderDepthInputLayout);
+
+	// tree3
+	m_tree3.Init(m_pd3dDevice,
+		m_pd3dImmDeviceContext, 
+		_pFoliageVS,
+		_pFoliagePS,
+		_pFoliageInputLayout,
+		"..\\Models\\obj__plamt2.obj"); 
+
+	_matWorld  = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	_matWorld *= XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PIDIV2);
+	_matWorld *= XMMatrixTranslation(18.0f, 37.0f, -76.6f);
+
+	m_tree3.SetWorldMatrix(_matWorld);
+
+	// add support for shadows on tree 1
+	m_tree3.AddShadowShaders(_pRenderDepthVS,
 		_pRenderDepthPS,
 		_pRenderDepthInputLayout);
 
@@ -231,6 +248,19 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	_matWorld = XMMatrixTranslation(-58.0f, 39.0f, 8.0f);
 	m_waterBody1.SetWorldMatrix(_matWorld);
 
+	// init water body 2
+	m_waterBody2.Init(m_pd3dDevice, 
+		m_pd3dImmDeviceContext,
+		_pStillWaterVS,
+		_pStillWaterPS,
+		_pStillWaterInputLayout,
+		"", // this will not be using a heightmap
+		50,
+		50);
+
+	_matWorld = XMMatrixTranslation(-8.0f, 35.0f, -74.0f);
+	m_waterBody2.SetWorldMatrix(_matWorld);
+
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();
 	m_matProj  = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 1.0f, 1000.0f);
@@ -271,6 +301,7 @@ void TFDemoDriver::UpdateScene(float a_fDelta)
 
 	// Update water sim
 	m_waterBody1.Update(a_fDelta);
+	m_waterBody2.Update(a_fDelta);
 
 	if(TFInput::Instance()->IsYPressed())
 	{
@@ -322,6 +353,14 @@ void TFDemoDriver::RenderToShadowMap()
 	m_tree2.ActivateShadowShaders();
 	m_tree2.Draw();	
 
+	/*** TREE 3 ***/
+	m_matWorld = m_tree3.GetWorldMatrix();
+	_matWVP = m_matWorld * _matViewProj;
+
+	m_tree3.UpdateShadowResources(_matWVP);
+	m_tree3.ActivateShadowShaders();
+	m_tree3.Draw();	
+
 
 	/*** TERRAIN ***/
 	//XMFLOAT4 _f4ClipData;
@@ -336,9 +375,9 @@ void TFDemoDriver::RenderToShadowMap()
 	//m_terrain.ActivateShadowShaders();
 	//m_terrain.Draw();
 
-	// restore default render states
-	m_pd3dImmDeviceContext->RSSetState(0);
-	m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
+	//// restore default render states
+	//m_pd3dImmDeviceContext->RSSetState(0);
+	//m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
 
 	// reset render target
 	ResetRenderTarget();
@@ -377,6 +416,16 @@ void TFDemoDriver::RenderToReflectionMap()
 	m_tree2.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_tree2.ActivateShaders();
 	m_tree2.Draw();	
+
+	/*** TREE 3 ***/
+	m_matWorld = m_tree3.GetWorldMatrix();
+	m_matWorld *= _matFlip; // flip the object
+	m_matWorld *= XMMatrixTranslation(0, 2 * _fPlaneVerticalOffset, 0); // move the object up by 2 * reflection plane offset...
+	_matWVP = m_matWorld * _matViewProj;
+
+	m_tree3.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_tree3.ActivateShaders();
+	m_tree3.Draw();	
 
 	/*** SKY ***/
 	m_matWorld = XMMatrixScaling(1000.0f, 1000.0f, 1000.0f);
@@ -454,7 +503,6 @@ void TFDemoDriver::RenderScene()
 
 	m_house1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_house1.ActivateShaders();
-	m_house1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
 	m_house1.Draw();
 
 	/*** TREE 1 ***/
@@ -463,8 +511,6 @@ void TFDemoDriver::RenderScene()
 
 	m_tree1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_tree1.ActivateShaders();
-	//m_tree1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
-	m_tree1.SetReflectionMap(m_pReflectionMap->GetReflectionMapSRV(), 2);
 	m_tree1.Draw();	
 
 	/*** TREE 2 ***/
@@ -473,10 +519,15 @@ void TFDemoDriver::RenderScene()
 
 	m_tree2.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_tree2.ActivateShaders();
-	//m_tree1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
-	m_tree2.SetReflectionMap(m_pReflectionMap->GetReflectionMapSRV(), 2);
 	m_tree2.Draw();	
 
+	/*** TREE 3 ***/
+	m_matWorld = m_tree3.GetWorldMatrix();
+	_matWVP = m_matWorld * _matViewProj;
+
+	m_tree3.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_tree3.ActivateShaders();
+	m_tree3.Draw();	
 
 	/*** TERRAIN ***/
 	XMFLOAT4 _f4ClipData;
@@ -492,7 +543,7 @@ void TFDemoDriver::RenderScene()
 	m_terrain.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 6); // bind shadow map
 	m_terrain.Draw();
 
-	/*** WATER ***/
+	/*** WATER 1 ***/
 	m_matWorld = m_waterBody1.GetWorldMatrix();
 	_matWVP = m_matWorld * _matViewProj;
 
@@ -504,6 +555,18 @@ void TFDemoDriver::RenderScene()
 	m_pd3dImmDeviceContext->OMSetBlendState(m_pBlendState1, blendFactors, 0xffffffff);
 
 	m_waterBody1.Draw();
+
+	/*** WATER 2 ***/
+	m_matWorld = m_waterBody2.GetWorldMatrix();
+	_matWVP = m_matWorld * _matViewProj;
+
+	m_waterBody2.UpdateResources(_matWVP, m_matWorld, m_waterBody2.GetTextureTransform(), m_waterBody2.GetTextureTransformNeg());
+	m_waterBody2.BindReflectionMap(m_pReflectionMap->GetReflectionMapSRV());
+	m_waterBody2.ActivateShaders();
+
+	m_pd3dImmDeviceContext->OMSetBlendState(m_pBlendState1, blendFactors, 0xffffffff);
+
+	m_waterBody2.Draw();
 
 	m_pd3dImmDeviceContext->OMSetBlendState(NULL, blendFactors, 0xffffffff); // reset blend state
 

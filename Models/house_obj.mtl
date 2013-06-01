@@ -15,5 +15,5 @@ map_Kd house_diffuse.bmp
 
 map_Ks house_spec.bmp
 
-map_bump house_normal.bmp
-bump house_normal.bmp
+map_bump house_normal_NRM.jpg
+bump house_normal_NRM.jpg

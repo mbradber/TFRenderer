@@ -47,10 +47,12 @@ private:
 	// trees
 	TFCore::TFModel m_tree1;
 	TFCore::TFModel m_tree2;
+	TFCore::TFModel m_tree3;
 
 	// landscape
 	TFCore::TFTerrain    m_terrain;
 	TFCore::TFWaterStill m_waterBody1;
+	TFCore::TFWaterStill m_waterBody2;
 	ID3D11BlendState*    m_pBlendState1;
 
 	// sky
