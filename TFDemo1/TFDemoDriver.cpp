@@ -282,6 +282,11 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 
 	m_gnome.SetWorldMatrix(_matWorld);
 
+	// add support for shadows from gnome
+	m_gnome.AddShadowShaders(_pRenderDepthVS,
+		_pRenderDepthPS,
+		_pRenderDepthInputLayout);
+
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();
 	m_matProj  = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 1.0f, 1000.0f);
@@ -381,6 +386,14 @@ void TFDemoDriver::RenderToShadowMap()
 	m_tree3.UpdateShadowResources(_matWVP);
 	m_tree3.ActivateShadowShaders();
 	m_tree3.Draw();	
+
+	/*** GNOME ***/
+	m_matWorld = m_gnome.GetWorldMatrix();
+	_matWVP = m_matWorld * _matViewProj;
+
+	m_gnome.UpdateShadowResources(_matWVP);
+	m_gnome.ActivateShadowShaders();
+	m_gnome.Draw();	
 
 
 	/*** TERRAIN ***/
