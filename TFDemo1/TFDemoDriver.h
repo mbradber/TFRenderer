@@ -56,5 +56,7 @@ private:
 	// sky
 	TFCore::TFModel m_ellipsoid;
 	ID3D11ShaderResourceView* m_cubeMapSRV;
+
+
 };
 

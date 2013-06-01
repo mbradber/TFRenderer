@@ -5,6 +5,7 @@
 #include "TFUtils.h"
 #include "TFModel.h"
 #include <sstream>
+#include <string>
 
 using namespace TFCore;
 using namespace std;
@@ -29,29 +30,35 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	// init components
 	m_lightManager.Init(m_pd3dDevice, m_pd3dImmDeviceContext);
 	m_shaderManager.Init(m_pd3dDevice);
+	
+#ifdef _DEBUG
+	wstring _wsShaderPrefix = L"..\\Debug\\";
+
+#else
+	wstring _wsShaderPrefix = L"..\\Release\\";
+#endif
 
 	// register shaders 
 	// TODO: don't always use the debug shaders...
-	m_shaderManager.AddVertexShader(L"NormalMapping", L"..\\Debug\\NormalMapVS.cso", TFPosNormTexTanLayout, 4);
-	m_shaderManager.AddPixelShader(L"NormalMapping", L"..\\Debug\\NormalMapPS.cso");
+	m_shaderManager.SetShaderPrefix(_wsShaderPrefix);
 
-	m_shaderManager.AddVertexShader(L"RenderDepth", L"..\\Debug\\RenderDepthVS.cso", TFPosNormTexTanLayout, 4);
-	m_shaderManager.AddPixelShader(L"RenderDepth", L"..\\Debug\\RenderDepthPS.cso");
+	m_shaderManager.AddVertexShader(L"RenderDepth", L"RenderDepthVS.cso", TFPosNormTexTanLayout, 4);
+	m_shaderManager.AddPixelShader(L"RenderDepth",  L"RenderDepthPS.cso");
 
-	m_shaderManager.AddVertexShader(L"Shadows", L"..\\Debug\\ShadowsVS.cso", TFPosNormTexTanLayout, 4);
-	m_shaderManager.AddPixelShader(L"Shadows", L"..\\Debug\\ShadowsPS.cso");
+	m_shaderManager.AddVertexShader(L"Shadows", L"ShadowsVS.cso", TFPosNormTexTanLayout, 4);
+	m_shaderManager.AddPixelShader(L"Shadows",  L"ShadowsPS.cso");
 
-	m_shaderManager.AddVertexShader(L"Terrain", L"..\\Debug\\TerrainVS.cso", TFPosNormTex4TanLayout, 4);
-	m_shaderManager.AddPixelShader(L"Terrain", L"..\\Debug\\TerrainPS.cso");
+	m_shaderManager.AddVertexShader(L"Terrain", L"TerrainVS.cso", TFPosNormTex4TanLayout, 4);
+	m_shaderManager.AddPixelShader(L"Terrain",  L"TerrainPS.cso");
 
-	m_shaderManager.AddVertexShader(L"StillWater", L"..\\Debug\\StillWaterVS.cso", TFPosNormTex4TanLayout, 4);
-	m_shaderManager.AddPixelShader(L"StillWater", L"..\\Debug\\StillWaterPS.cso");
+	m_shaderManager.AddVertexShader(L"StillWater", L"StillWaterVS.cso", TFPosNormTex4TanLayout, 4);
+	m_shaderManager.AddPixelShader(L"StillWater",  L"StillWaterPS.cso");
 
-	m_shaderManager.AddVertexShader(L"Sky", L"..\\Debug\\SkyVS.cso", TFPosNormTexTanLayout, 4);
-	m_shaderManager.AddPixelShader(L"Sky", L"..\\Debug\\SkyPS.cso");
+	m_shaderManager.AddVertexShader(L"Sky", L"SkyVS.cso", TFPosNormTexTanLayout, 4);
+	m_shaderManager.AddPixelShader(L"Sky",  L"SkyPS.cso");
 
-	m_shaderManager.AddVertexShader(L"Foliage", L"..\\Debug\\FoliageVS.cso", TFPosNormTexTanLayout, 4);
-	m_shaderManager.AddPixelShader(L"Foliage", L"..\\Debug\\FoliagePS.cso");
+	m_shaderManager.AddVertexShader(L"Foliage", L"FoliageVS.cso", TFPosNormTexTanLayout, 4);
+	m_shaderManager.AddPixelShader(L"Foliage",  L"FoliagePS.cso");
 
 	// bind samplers
 	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
@@ -80,9 +87,6 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	m_pd3dDevice->CreateBlendState(&blendDesc1, &m_pBlendState1);
 
 	// get handles to shaders and input layouts
-	ID3D11VertexShader* _pNormalMapVS            = m_shaderManager.GetVertexShaderByName(L"NormalMapping");
-	ID3D11PixelShader*  _pNormalMapPS            = m_shaderManager.GetPixelShaderByName(L"NormalMapping");
-	ID3D11InputLayout*  _pNormalMapInputLayout   = m_shaderManager.GetInputLayoutByName(L"NormalMapping");
 
 	ID3D11VertexShader* _pRenderDepthVS          = m_shaderManager.GetVertexShaderByName(L"RenderDepth");
 	ID3D11PixelShader*  _pRenderDepthPS          = m_shaderManager.GetPixelShaderByName(L"RenderDepth");
@@ -180,6 +184,11 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	_matWorld *= XMMatrixTranslation(-55, 43, 35);
 
 	m_tree2.SetWorldMatrix(_matWorld);
+
+	// add support for shadows on tree 1
+	m_tree2.AddShadowShaders(_pRenderDepthVS,
+		_pRenderDepthPS,
+		_pRenderDepthInputLayout);
 
 	// ellipse for bounding world
 	m_ellipsoid.Init(m_pd3dDevice,
@@ -287,18 +296,6 @@ void TFDemoDriver::RenderToShadowMap()
 	// and set the depth draws to shadow map depth stencil view
 	m_pShadowMapFront->SetRenderState();
 
-
-	//// Update the geometry of box 1
-	//m_matWorld = XMMatrixScaling(0.2f, 0.2f, 0.2f);
-	//m_matWorld = m_matWorld * XMMatrixTranslation(0.0f, 0.0f, 0.0f);
-	//
-	//_matWVP = m_matWorld * m_lightManager.GetView() * m_lightManager.GetProjection();
-
-	//// draw box 1
-	//m_box1.UpdateShadowResources(_matWVP);
-	//m_box1.ActivateShadowShaders();
-	//m_box1.Draw();
-
 	/*** HOUSE ***/
 	m_matWorld = m_house1.GetWorldMatrix();
 	_matWVP = m_matWorld * _matViewProj;
@@ -315,6 +312,14 @@ void TFDemoDriver::RenderToShadowMap()
 	m_tree1.UpdateShadowResources(_matWVP);
 	m_tree1.ActivateShadowShaders();
 	m_tree1.Draw();	
+
+	/*** TREE 2 ***/
+	m_matWorld = m_tree2.GetWorldMatrix();
+	_matWVP = m_matWorld * _matViewProj;
+
+	m_tree2.UpdateShadowResources(_matWVP);
+	m_tree2.ActivateShadowShaders();
+	m_tree2.Draw();	
 
 
 	/*** TERRAIN ***/
@@ -450,8 +455,6 @@ void TFDemoDriver::RenderScene()
 	m_house1.ActivateShaders();
 	m_house1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
 	m_house1.Draw();
-
-	// TODO: dont calculate static object transform matrices every tick
 
 	/*** TREE 1 ***/
 	m_matWorld = m_tree1.GetWorldMatrix();

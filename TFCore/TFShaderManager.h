@@ -41,6 +41,7 @@ namespace TFCore
 		ID3D11InputLayout*  GetActiveInputLayout() const;
 		ID3D11InputLayout*  GetSimplePosInputLayout() const { return m_pSimplePosInputLayout; }
 		ID3D11SamplerState* GetSamplerState(TFSamplerIndex a_nSamplerIndex) const;
+		void                SetShaderPrefix(const std::wstring& a_wsShaderPrefix);
 
 	private:
 
@@ -60,6 +61,7 @@ namespace TFCore
 		std::map<std::wstring, ID3D11PixelShader*>  m_mapPixelShaders;
 		std::map<std::wstring, ID3D11InputLayout*>  m_mapInputLayouts;
 		std::vector<ID3D11SamplerState*>            m_vSamplers;
+		std::wstring                                m_wsShaderPrefix;
 	};
 
 }

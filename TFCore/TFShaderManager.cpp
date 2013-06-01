@@ -14,7 +14,8 @@ namespace TFCore
 		 m_pActivePixelShader(NULL),
 		 m_pActiveInputLayout(NULL),
 		 m_pSamplerStateAniso(NULL),
-		 m_pSamplerStateTriLinear(NULL)
+		 m_pSamplerStateTriLinear(NULL),
+		 m_wsShaderPrefix(L"")
 	{
 	}
 
@@ -29,6 +30,11 @@ namespace TFCore
 		m_pd3dDevice = a_pDevice;
 
 		BuildSamplerStates();
+	}
+
+	void TFShaderManager::SetShaderPrefix(const std::wstring& a_wsShaderPrefix)
+	{
+		m_wsShaderPrefix = a_wsShaderPrefix;
 	}
 
 	void TFShaderManager::SetActiveVertexShader(const std::wstring& a_sFilePathShader, const D3D11_INPUT_ELEMENT_DESC* a_inputLayout, size_t a_nComponents)
@@ -112,9 +118,12 @@ namespace TFCore
 		const D3D11_INPUT_ELEMENT_DESC* a_inputLayout, 
 		size_t a_nComponents)
 	{
+		std::wstring _wsShaderPrefix = m_wsShaderPrefix;
+		_wsShaderPrefix.append(a_sFilePathShader);
+
 		// Open compiled shader file and read it...
 		ULONG _nFileSize = 0;
-		ifstream _reader(a_sFilePathShader.c_str(), ios::in | ios::binary | ios::ate);
+		ifstream _reader(_wsShaderPrefix.c_str(), ios::in | ios::binary | ios::ate);
 		UCHAR* _cbBuffer;
 		ID3D11VertexShader* _pVertexShader;
 		ID3D11InputLayout*  _pInputLayout;
@@ -158,9 +167,12 @@ namespace TFCore
 
 	void TFShaderManager::AddPixelShader(const std::wstring& a_sName, const std::wstring& a_sFilePathShader)
 	{
+		std::wstring _wsShaderPrefix = m_wsShaderPrefix;
+		_wsShaderPrefix.append(a_sFilePathShader);
+
 		// Open compiled shader file and read it...
 		ULONG _nFileSize = 0;
-		ifstream _reader(a_sFilePathShader.c_str(), ios::in | ios::binary | ios::ate);
+		ifstream _reader(_wsShaderPrefix.c_str(), ios::in | ios::binary | ios::ate);
 		UCHAR* _cbBuffer;
 		ID3D11PixelShader* _pPixelShader;
 
