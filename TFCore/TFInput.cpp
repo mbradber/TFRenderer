@@ -18,13 +18,22 @@ namespace TFCore
 	TFInput* TFInput::m_pInstance = NULL;
 
 	TFInput::TFInput()
-		:m_bLeftMouseDown(false),
-		 m_nOriginalX(0),
-		 m_nOriginalY(0),
-		 m_nDeltaX(0),
-		 m_nDeltaY(0)
 	{
-		memset(m_aKeyDown, 0, 256 * sizeof(bool));
+	}
+
+	// Init DirectInput
+	void TFInput::InitInput(HINSTANCE hi, HWND hWnd)
+	{
+		DirectInput8Create(hi, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_pDirecInput, NULL);
+		//create keyboard device and mouse device
+		m_pDirecInput->CreateDevice(GUID_SysKeyboard, &m_pDirectInputDeviceKeyboard, NULL);
+		m_pDirecInput->CreateDevice(GUID_SysMouse, &m_pDirectInputDeviceMouse, NULL);
+		//set data format for keyboard and mouse
+		m_pDirectInputDeviceKeyboard->SetDataFormat(&c_dfDIKeyboard);
+		m_pDirectInputDeviceMouse->SetDataFormat(&c_dfDIMouse);
+		//set cooperative levels for keyboard and mouse
+		m_pDirectInputDeviceKeyboard->SetCooperativeLevel(hWnd, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
+		m_pDirectInputDeviceMouse->SetCooperativeLevel(hWnd, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
 	}
 
 	TFInput* TFInput::Instance()
@@ -42,46 +51,21 @@ namespace TFCore
 		delete m_pInstance;
 	}
 
-
-	void TFInput::InitializeMouse()
+	void TFInput::DetectInput()
 	{
+		m_pDirectInputDeviceKeyboard->Acquire();
+		m_pDirectInputDeviceMouse->Acquire();
+
+		m_pDirectInputDeviceKeyboard->GetDeviceState(256, (LPVOID)m_keystate);
+		m_pDirectInputDeviceMouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&m_mouseState);
 	}
 
-	void TFInput::SetLeftMouseDown(LPARAM lMouseCoords)
-	{
-		POINTS _points = MAKEPOINTS(lMouseCoords);
-		m_nOriginalX = _points.x;
-		m_nOriginalY = _points.y;
-
-		m_bLeftMouseDown = true;
-	}
-
-	void TFInput::SetLeftMouseUp()
-	{
-		m_bLeftMouseDown = false;
-	}
-
-	void TFInput::TrackMouseMove(LPARAM lMouseCoords)
-	{
-		if(m_bLeftMouseDown)
-		{
-			POINTS _points = MAKEPOINTS(lMouseCoords);
-			m_nDeltaX = _points.x - m_nOriginalX;
-			m_nDeltaY = _points.y - m_nOriginalY;
-		}
-	}
 
 	int TFInput::GetMouseDeltaX()
 	{
-		if(m_bLeftMouseDown)
+		if(m_mouseState.rgbButtons[0] & 0x80)
 		{
-			// store the delta since last check
-			int _delta    = m_nDeltaX; 
-			// Update the original position to the current position and reset the delta field
-			m_nOriginalX += m_nDeltaX; 
-			m_nDeltaX     = 0;
-
-			return _delta;
+			return m_mouseState.lX;
 		}
 
 		return 0;
@@ -89,62 +73,54 @@ namespace TFCore
 
 	int TFInput::GetMouseDeltaY()
 	{
-		if(m_bLeftMouseDown)
+		if(m_mouseState.rgbButtons[0] & 0x80)
 		{
-			int _delta = m_nDeltaY;
-
-			m_nOriginalY += m_nDeltaY;
-			m_nDeltaY = 0;
-
-			return _delta;
+			return m_mouseState.lY;
 		}
 
 		return 0;
 	}
 
-	void TFInput::SetKeyDown(WPARAM wKeyPress)
-	{
-		m_aKeyDown[wKeyPress] = true;
-	}
-
-	void TFInput::SetKeyUp(WPARAM wKeyPress)
-	{
-		m_aKeyDown[wKeyPress] = false;
-	}
-
 	bool TFInput::IsRightPressed() const
 	{
-		return m_aKeyDown[D_KEY];
+		int _nKeyState = m_keystate[DIK_D] & 0x80;
+		return _nKeyState > 0;
 	}
 
 	bool TFInput::IsLeftPressed() const
 	{
-		return m_aKeyDown[A_KEY];
+		int _nKeyState = m_keystate[DIK_A] & 0x80;
+		return _nKeyState > 0;
 	}
 
 	bool TFInput::IsForwardPressed() const
 	{
-		return m_aKeyDown[W_KEY];
+		int _nKeyState = m_keystate[DIK_W] & 0x80;
+		return _nKeyState > 0;
 	}
 
 	bool TFInput::IsBackPressed() const
 	{
-		return m_aKeyDown[S_KEY];
+		int _nKeyState = m_keystate[DIK_S] & 0x80;
+		return _nKeyState > 0;
 	}
 
 	bool TFInput::IsUpPressed() const
 	{
-		return m_aKeyDown[E_KEY];
+		int _nKeyState = m_keystate[DIK_E] & 0x80;
+		return _nKeyState > 0;
 	}
 
 	bool TFInput::IsDownPressed() const
 	{
-		return m_aKeyDown[Q_KEY];
+		int _nKeyState = m_keystate[DIK_Q] & 0x80;
+		return _nKeyState > 0;
 	}
 
 	bool TFInput::IsYPressed() const
 	{
-		return m_aKeyDown[Y_KEY];
+		int _nKeyState = m_keystate[DIK_Y] & 0x80;
+		return _nKeyState > 0;
 	}
 
 }

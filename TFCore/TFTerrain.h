@@ -5,6 +5,15 @@
 namespace TFCore
 {
 
+	// Layout of the buffer for vertex attribute properties
+	struct TFBufferPerObjectTerrain
+	{
+		XMMATRIX   worldMatrix;
+		XMMATRIX   worldInvTransposeMatrix;
+		XMMATRIX   wvpMatrix;
+		XMMATRIX   lightVPT;
+	};
+
 	class TFTerrain : public TFGrid
 	{
 	public:
@@ -19,6 +28,12 @@ namespace TFCore
 		const std::string& a_sHeightmap,
 		int a_nGridWidth,
 		int a_nGridDepth);
+
+
+	void UpdateResources(const XMMATRIX& a_matWVP, 
+		const XMMATRIX& a_matWorld, 
+		const XMMATRIX& a_matLightWVPT, 
+		const XMFLOAT3& a_vEyePos);
 
 	void Draw();
 

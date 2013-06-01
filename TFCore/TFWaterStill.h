@@ -5,6 +5,16 @@
 namespace TFCore
 {
 
+	// Layout of the buffer for vertex attribute properties
+	struct TFBufferPerObjectWater
+	{
+		XMMATRIX   worldMatrix;
+		XMMATRIX   worldInvTransposeMatrix;
+		XMMATRIX   wvpMatrix;
+		XMMATRIX   TexTransform;
+		XMMATRIX   TexTransformNeg;
+	};
+
 	class TFWaterStill : public TFGrid
 	{
 	public:
@@ -25,6 +35,12 @@ namespace TFCore
 		void ActivateShaders();
 		XMMATRIX GetTextureTransform() const;
 		XMMATRIX GetTextureTransformNeg() const;
+
+
+	void UpdateResources(const XMMATRIX& a_matWVP, 
+		const XMMATRIX& a_matWorld, 
+		const XMMATRIX& a_matTexTransform,
+		const XMMATRIX& a_matTexTransformNeg);
 
 	private:
 		ID3D11ShaderResourceView* m_pNormalMapSRV;

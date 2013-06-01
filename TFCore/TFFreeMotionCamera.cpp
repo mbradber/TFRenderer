@@ -6,11 +6,12 @@ namespace TFCore
 
 	TFFreeMotionCamera::TFFreeMotionCamera()
 		:/*m_vPosition(-220.0f, 180.0f, -49.0f, 1.0f),*/
-		m_vPosition(0, 100, 0, 1.0f),
-		 m_vForward(0.0f, -0.4f, 1.0f, 0.0f),
+		//m_vPosition(0, 100, 0, 1.0f),
+		 m_vPosition(-102.281f, 84.5717f, 94.1944f, 1.0f),
+		 m_vForward(1.0f, 0.0f, 0.0f, 0.0f),
 		 m_vUp(0.0f, 1.0f, 0.0f, 0.0f),
 		 m_xmvUp(XMLoadFloat4(&m_vUp)),
-		 m_vSide(1.0f, 0.0f, 0.0f, 0.0f),
+		 m_vSide(0.0f, 0.0f, -1.0f, 0.0f),
 		 CAMERA_ROTATION_BUFFER_YAW(500.0f),
 		 CAMERA_MOVEMENT_BUFFER(30.0f)
 	{

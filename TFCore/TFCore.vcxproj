@@ -64,7 +64,7 @@
     </Link>
     <Lib>
       <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
-      <AdditionalDependencies>d3d11.lib;dxerr.lib;d3dx11.lib;assimp.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxerr.lib;d3dx11.lib;assimp.lib;dinput8.lib;dxguid.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4221</AdditionalOptions>
     </Lib>
     <FxCompile>
@@ -90,7 +90,7 @@
     </Link>
     <Lib>
       <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
-      <AdditionalDependencies>d3d11.lib;dxerr.lib;d3dx11.lib;assimp.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxerr.lib;d3dx11.lib;assimp.lib;dinput8.lib;dxguid.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4221</AdditionalOptions>
     </Lib>
     <FxCompile>

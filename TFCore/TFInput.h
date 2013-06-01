@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include <dinput.h>
 
 namespace TFCore
 {
@@ -9,12 +10,6 @@ namespace TFCore
 		static TFInput* Instance();
 		~TFInput();
 
-		void InitializeMouse();
-		void SetLeftMouseDown(LPARAM lMouseCoords);
-		void SetLeftMouseUp();
-		void SetKeyDown(WPARAM wKeyPress);
-		void SetKeyUp(WPARAM wKeyRelease);
-		void TrackMouseMove(LPARAM lMouseCoords);
 		int GetMouseDeltaX();
 		int GetMouseDeltaY();
 		bool IsRightPressed()   const;
@@ -24,6 +19,8 @@ namespace TFCore
 		bool IsDownPressed()    const;
 		bool IsUpPressed()      const;
 		bool IsYPressed()       const;
+		void DetectInput();
+		void InitInput(HINSTANCE hi, HWND hWnd);
 
 	private:
 		TFInput();
@@ -31,13 +28,12 @@ namespace TFCore
 		TFInput& operator=(const TFInput&) {}
 		static TFInput* m_pInstance;
 
-		bool m_bLeftMouseDown;
-		int m_nOriginalX;
-		int m_nOriginalY;
-		int m_nDeltaX;
-		int m_nDeltaY;
-
-		bool m_aKeyDown[256];
+		// Direct Input vars
+		LPDIRECTINPUT8 m_pDirecInput;
+		LPDIRECTINPUTDEVICE8 m_pDirectInputDeviceKeyboard;
+		LPDIRECTINPUTDEVICE8 m_pDirectInputDeviceMouse;
+		BYTE m_keystate[256];
+		DIMOUSESTATE m_mouseState;
 	};
 
 }

@@ -39,130 +39,6 @@ namespace TFCore
 		m_bUsingHeightmap = false;
 		GenerateGrid(a_nGridWidth, a_nGridDepth, 20.0f);
 
-		// VERTS
-
-		//std::vector<TFPosNormTex4Tan> _vVertices(4);
-
-		//// first vert of quad
-		//_vVertices[0].Pos.x = -1.0f; // pos
-		//_vVertices[0].Pos.y = 0.0f;
-		//_vVertices[0].Pos.z = -1.0f;
-		//
-		//_vVertices[0].Norm.x = 0.0f; // normal
-		//_vVertices[0].Norm.y = 1.0f;
-		//_vVertices[0].Norm.z = 0.0f;
-
-		//_vVertices[0].TanU.x = 1.0f; // tangents
-		//_vVertices[0].TanU.y = 0.0f;
-		//_vVertices[0].TanU.z = 0.0f;
-
-		//_vVertices[0].TexC.x = 0.0f; // tex coords
-		//_vVertices[0].TexC.y = 1.0f;
-
-		//// second vert
-		//_vVertices[1].Pos.x = 1.0f; // pos
-		//_vVertices[1].Pos.y = 0.0f;
-		//_vVertices[1].Pos.z = -1.0f;
-
-		//_vVertices[1].Norm.x = 0.0f; // normal
-		//_vVertices[1].Norm.y = 1.0f;
-		//_vVertices[1].Norm.z = 0.0f;
-
-		//_vVertices[1].TanU.x = 1.0f; // tangents
-		//_vVertices[1].TanU.y = 0.0f;
-		//_vVertices[1].TanU.z = 0.0f;
-
-		//_vVertices[1].TexC.x = 1.0f; // tex coords
-		//_vVertices[1].TexC.y = 1.0f;
-
-		//// third vert
-		//_vVertices[2].Pos.x = 1.0f;
-		//_vVertices[2].Pos.y = 0.0f;
-		//_vVertices[2].Pos.z = 1.0f;
-
-		//_vVertices[2].Norm.x = 0.0f; // normal
-		//_vVertices[2].Norm.y = 1.0f;
-		//_vVertices[2].Norm.z = 0.0f;
-
-		//_vVertices[2].TanU.x = 1.0f; // tangents
-		//_vVertices[2].TanU.y = 0.0f;
-		//_vVertices[2].TanU.z = 0.0f;
-
-		//_vVertices[2].TexC.x = 1.0f; // tex coords
-		//_vVertices[2].TexC.y = 0.0f;
-
-		////fourth vert
-		//_vVertices[3].Pos.x = -1.0f;
-		//_vVertices[3].Pos.y = 0.0f;
-		//_vVertices[3].Pos.z = 1.0f;
-
-		//_vVertices[3].Norm.x = 0.0f; // normal
-		//_vVertices[3].Norm.y = 1.0f;
-		//_vVertices[3].Norm.z = 0.0f;
-
-		//_vVertices[3].TanU.x = 1.0f; // tangents
-		//_vVertices[3].TanU.y = 0.0f;
-		//_vVertices[3].TanU.z = 0.0f;
-
-		//_vVertices[3].TexC.x = 0.0f; // tex coords
-		//_vVertices[3].TexC.y = 0.0f;
-
-		//// INDICES
-
-		//std::vector<int> _vIndices;
-
-		//_vIndices.push_back(3);
-		//_vIndices.push_back(2);
-		//_vIndices.push_back(0);
-		//_vIndices.push_back(0);
-		//_vIndices.push_back(2);
-		//_vIndices.push_back(1);
-
-		//m_nIndexCount = 6;
-
-		//// BUFFERS
-
-		//// describe this buffer
-		//D3D11_BUFFER_DESC bd;
-		//ZeroMemory( &bd, sizeof(bd) );
-		//bd.Usage          = D3D11_USAGE_DEFAULT;
-		//bd.ByteWidth      = sizeof( TFPosNormTex4Tan ) * _vVertices.size();
-		//bd.BindFlags      = D3D11_BIND_VERTEX_BUFFER;
-		//bd.CPUAccessFlags = 0; // No cpu access
-		//bd.MiscFlags      = 0; // Unused
-
-		//D3D11_SUBRESOURCE_DATA InitData;
-		//ZeroMemory( &InitData, sizeof(InitData) );
-		//InitData.pSysMem = &_vVertices[0];
-
-		//// Create a buffer to hold this cube's vert data in video memory
-		//HR(m_pd3dDevice->CreateBuffer(&bd, &InitData, &m_pVertexBuffer));
-
-		//D3D11_BUFFER_DESC ibd;
-		//ZeroMemory(&ibd, sizeof(ibd));
-		//ibd.Usage = D3D11_USAGE_IMMUTABLE;
-		//ibd.ByteWidth = sizeof(int) * _vIndices.size();
-		//ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		//ibd.CPUAccessFlags = 0;
-		//ibd.MiscFlags = 0;
-		//D3D11_SUBRESOURCE_DATA iinitData;
-		//iinitData.pSysMem = &_vIndices[0];
-
-		//HR(m_pd3dDevice->CreateBuffer(&ibd, &iinitData, &m_pIndexBuffer));
-
-		//// GENERATE SHADER RESOURCES
-
-		//// describe the cb for the WVP matrix
-		//D3D11_BUFFER_DESC sbd;
-		//ZeroMemory(&sbd, sizeof(sbd));
-		//sbd.Usage          = D3D11_USAGE_DEFAULT;
-		//sbd.ByteWidth      = sizeof(TFBufferPerObject);
-		//sbd.BindFlags      = D3D11_BIND_CONSTANT_BUFFER;
-		//sbd.CPUAccessFlags = 0;
-		//sbd.MiscFlags      = 0;
-
-		//// Create the constant buffer with the device
-		//HR(m_pd3dDevice->CreateBuffer(&sbd, NULL, &m_pCBPerObject));
 
 		// Bind normal map
 		HR(D3DX11CreateShaderResourceViewFromFile(
@@ -172,21 +48,58 @@ namespace TFCore
 			NULL, 
 			&m_pNormalMapSRV, 
 			NULL));
+
+		// describe the cb for the WVP matrix
+		D3D11_BUFFER_DESC sbd;
+		ZeroMemory(&sbd, sizeof(sbd));
+		sbd.Usage          = D3D11_USAGE_DEFAULT;
+		sbd.ByteWidth      = sizeof(TFBufferPerObjectWater);
+		sbd.BindFlags      = D3D11_BIND_CONSTANT_BUFFER;
+		sbd.CPUAccessFlags = 0;
+		sbd.MiscFlags      = 0;
+
+		// Create the constant buffer with the device
+		HR(m_pd3dDevice->CreateBuffer(&sbd, NULL, &m_pCBPerObject));
 	}
 
 	void TFWaterStill::Update(float a_fDelta)
 	{
 		m_fWaterOffsetX += a_fDelta * 0.1f;
 		m_fWaterOffsetY += -a_fDelta * 0.1f;
-		//m_fWaterOffsetX = fmod(m_fWaterOffsetX, 12.0f);
-		//m_fWaterOffsetY += 0.1f * a_fDelta;
-		//m_fWaterOffsetX = 0.25f * sinf(12.0f * m_fWaterOffsetY);
 
 		m_matTexTransform = XMMatrixTranslation(fmod(m_fWaterOffsetX, 12.0f), 0, 0);
 
-
 		m_matTexTransformNeg = XMMatrixTranslation(fmod(m_fWaterOffsetY, 12.0f), 0, 0);
 		m_matTexTransformNeg *= XMMatrixScaling(0.5f, 0.5f, 0.5f);
+	}
+
+	void TFWaterStill::UpdateResources(const XMMATRIX& a_matWVP, 
+		const XMMATRIX& a_matWorld, 
+		const XMMATRIX& a_matTexTransform,
+		const XMMATRIX& a_matTexTransformNeg)
+	{
+		//UPDATE TRANSFORM RESOURCE
+		TFCore::TFBufferPerObjectWater cb;
+
+		// update world matrix
+		cb.worldMatrix = XMMatrixTranspose(a_matWorld);
+
+		// Update world inverse transpose matrix (used to transform normals as it will be distorted 
+		// with non uniform scaling transforms, see pg. 277 of Luna...
+		XMMATRIX _wit = a_matWorld;
+		_wit.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+		XMVECTOR _witDet = XMMatrixDeterminant(_wit);
+
+		cb.worldInvTransposeMatrix = XMMatrixInverse(&_witDet, _wit);
+
+		// update wvp of buffer
+		cb.wvpMatrix = XMMatrixTranspose(a_matWVP);
+
+		// update matrix to transform from object to projective texture coords
+		cb.TexTransform = XMMatrixTranspose(a_matTexTransform);
+		cb.TexTransformNeg = XMMatrixTranspose(a_matTexTransformNeg);
+
+		m_pDeviceContext->UpdateSubresource(m_pCBPerObject , 0, NULL, &cb, 0, 0);
 	}
 
 	XMMATRIX TFWaterStill::GetTextureTransform() const

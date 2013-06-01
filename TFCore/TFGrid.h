@@ -9,6 +9,8 @@
 namespace TFCore
 {
 
+
+
 	class TFGrid
 	{
 	public:
@@ -24,11 +26,6 @@ namespace TFCore
 			int a_nGridWidth,
 			int a_nGridDepth);
 
-		void UpdateResources(const XMMATRIX& a_matWVP, 
-			const XMMATRIX& a_matWorld, 
-			const XMMATRIX& a_matLightWVPT, 
-			const XMMATRIX& a_matTex, 
-			const XMFLOAT3& a_vEyePos);
 
 		void Draw();
 		void ActivateShaders();

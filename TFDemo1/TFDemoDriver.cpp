@@ -258,6 +258,7 @@ void TFDemoDriver::Run()
 void TFDemoDriver::UpdateScene(float a_fDelta)
 {
 	TFCore::TFWinBase::UpdateScene(a_fDelta);
+	TFInput::Instance()->DetectInput();
 
 	// Update camera (process user input)
 	m_fmCamera.Update(a_fDelta);
@@ -404,7 +405,7 @@ void TFDemoDriver::RenderToReflectionMap()
 	m_matWorld *= XMMatrixTranslation(0, 2 * _fPlaneVerticalOffset, 0); // move the object up by 2 * reflection plane offset...
 	_matWVP = m_matWorld * _matViewProj;
 
-	m_terrain.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_terrain.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), m_fmCamera.GetPosition());
 	m_terrain.ActivateShaders();
 	m_terrain.Draw();
 
@@ -486,7 +487,7 @@ void TFDemoDriver::RenderScene()
 	m_matWorld = m_terrain.GetWorldMatrix();
 	_matWVP = m_matWorld * _matViewProj;
 
-	m_terrain.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_terrain.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), m_fmCamera.GetPosition());
 	m_terrain.ActivateShaders();
 	m_terrain.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 6); // bind shadow map
 	m_terrain.Draw();
@@ -495,7 +496,7 @@ void TFDemoDriver::RenderScene()
 	m_matWorld = m_waterBody1.GetWorldMatrix();
 	_matWVP = m_matWorld * _matViewProj;
 
-	m_waterBody1.UpdateResources(_matWVP, m_matWorld, m_waterBody1.GetTextureTransformNeg(), m_waterBody1.GetTextureTransform(), m_fmCamera.GetPosition());
+	m_waterBody1.UpdateResources(_matWVP, m_matWorld, m_waterBody1.GetTextureTransform(), m_waterBody1.GetTextureTransformNeg());
 	m_waterBody1.BindReflectionMap(m_pReflectionMap->GetReflectionMapSRV());
 	m_waterBody1.ActivateShaders();
 

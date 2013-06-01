@@ -82,42 +82,6 @@ namespace TFCore
 			return 0;
 		case WM_DESTROY:
 			PostQuitMessage(0);
-
-		// User input messages
-
-		// Mouse...
-		case WM_MOUSEACTIVATE:
-			TFInput::Instance()->InitializeMouse();
-			return 0;
-		case WM_LBUTTONDOWN:
-			TFInput::Instance()->SetLeftMouseDown(lParam);
-			return 0;
-		case WM_LBUTTONUP:
-			TFInput::Instance()->SetLeftMouseUp();
-			return 0;
-		case WM_MOUSEMOVE:
-			TFInput::Instance()->TrackMouseMove(lParam);
-			return 0;
-		// Keyboard ...
-		case WM_KEYDOWN:
-			if(wParam == VK_ESCAPE)
-				DestroyWindow(m_hMainWnd);
-			else
-			{
-				if ((wParam >= 0) && (wParam <= 255))
-				{
-					TFInput::Instance()->SetKeyDown(wParam);
-				}
-			}
-
-			return 0;
-
-		case WM_KEYUP:
-			if ((wParam >= 0) && (wParam <= 255))
-			{
-				TFInput::Instance()->SetKeyUp(wParam);
-			}
-			return 0;
 		}
 
 		return DefWindowProc(hWnd, msg, wParam, lParam);
@@ -166,6 +130,9 @@ namespace TFCore
 
 		ShowWindow(m_hMainWnd, show);
 		UpdateWindow(m_hMainWnd);
+
+		// Init input
+		TFInput::Instance()->InitInput(instanceHandle, m_hMainWnd);
 
 		return true;
 	}
@@ -372,8 +339,6 @@ namespace TFCore
 		float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
 		m_pd3dImmDeviceContext->ClearRenderTargetView( m_pRenderTargetView, ClearColor );
 		m_pd3dImmDeviceContext->ClearDepthStencilView( m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-
 	}
 
 }

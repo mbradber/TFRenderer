@@ -15,10 +15,8 @@ VertexOut main( VertexIn vin )
 
 	// per vertex transforms
 	vout.PosH    = mul(float4(vin.PosL, 1.0f), WorldViewProjectionMatrix);
-	vout.PosW    = mul(float4(vin.PosL, 1.0f), WorldMatrix);
 	vout.NormW   = mul(float4(vin.NormL, 0.0f), WorldInverseTransposeMatrix);
 	vout.TexC    = vin.TexC;
-	vout.TanW    = mul(float4(vin.TanU, 0.0f), WorldMatrix);
 	vout.ProjTex = mul(float4(vin.PosL, 1.0f), LightWVPT);
 
 	// ClipData.x holds the reflection surface world position Y value (height).
@@ -29,7 +27,8 @@ VertexOut main( VertexIn vin )
 	// We do not want to render anything "below" this surface in the reflection so we will clip
 	// all reversed geometry that is ABOVE the reflective surface in world space (which means its actually
 	// below it).
-	vout.ClipD = (ClipData.x - vout.PosW.y) * ClipData.y;
+	float4 _f4WorldPos = mul(float4(vin.PosL, 1.0f), WorldMatrix);
+	vout.ClipD = (ClipData.x - _f4WorldPos.y) * ClipData.y;
 
 	return vout;
 }

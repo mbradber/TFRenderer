@@ -52,6 +52,17 @@ namespace TFCore
 
 		// Create the constant buffer with the device
 		HR(m_pd3dDevice->CreateBuffer(&sbd, NULL, &m_pCBPerFrame));
+
+		// describe the cb for the WVP matrix
+		ZeroMemory(&sbd, sizeof(sbd));
+		sbd.Usage          = D3D11_USAGE_DEFAULT;
+		sbd.ByteWidth      = sizeof(TFBufferPerObjectTerrain);
+		sbd.BindFlags      = D3D11_BIND_CONSTANT_BUFFER;
+		sbd.CPUAccessFlags = 0;
+		sbd.MiscFlags      = 0;
+
+		// Create the constant buffer with the device
+		HR(m_pd3dDevice->CreateBuffer(&sbd, NULL, &m_pCBPerObject));
 	}
 
 	void TFTerrain::GenerateGrid(int a_nWidth, int a_nDepth, float a_fTextureScale)
@@ -121,6 +132,34 @@ namespace TFCore
 
 		// bind to vertex shader for terrain
 		m_pDeviceContext->VSSetConstantBuffers(1, 1, &m_pCBPerFrame);
+	}
+
+	void TFTerrain::UpdateResources(const XMMATRIX& a_matWVP, 
+		const XMMATRIX& a_matWorld, 
+		const XMMATRIX& a_matLightWVPT, 
+		const XMFLOAT3& a_vEyePos)
+	{
+		//UPDATE TRANSFORM RESOURCE
+		TFCore::TFBufferPerObjectTerrain cb;
+
+		// update world matrix
+		cb.worldMatrix = XMMatrixTranspose(a_matWorld);
+
+		// Update world inverse transpose matrix (used to transform normals as it will be distorted 
+		// with non uniform scaling transforms, see pg. 277 of Luna...
+		XMMATRIX _wit = a_matWorld;
+		_wit.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+		XMVECTOR _witDet = XMMatrixDeterminant(_wit);
+
+		cb.worldInvTransposeMatrix = XMMatrixInverse(&_witDet, _wit);
+
+		// update wvp of buffer
+		cb.wvpMatrix = XMMatrixTranspose(a_matWVP);
+
+		// update matrix to transform from object to projective texture coords
+		cb.lightVPT = XMMatrixTranspose(a_matLightWVPT);
+
+		m_pDeviceContext->UpdateSubresource(m_pCBPerObject , 0, NULL, &cb, 0, 0);
 	}
 
 	// TODO: Its inefficient to be setting all these states per draw call, should 
