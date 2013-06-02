@@ -287,6 +287,20 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 		_pRenderDepthPS,
 		_pRenderDepthInputLayout);
 
+	// door
+	m_door.Init(m_pd3dDevice,
+		m_pd3dImmDeviceContext, 
+		_pShadowsVS,
+		_pShadowsPS,
+		_pShadowsInputLayout,
+		"..\\Models\\door.obj");
+
+	_matWorld  = XMMatrixScaling(0.15f, 0.15f, 0.15f);
+	_matWorld *= XMMatrixRotationAxis(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), XM_PI / 5.0f);
+	_matWorld *= XMMatrixTranslation(48.0f, 43.0f, 90.0f);
+
+	m_door.SetWorldMatrix(_matWorld);
+
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();
 	m_matProj  = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 1.0f, 1000.0f);
@@ -516,20 +530,20 @@ void TFDemoDriver::RenderScene()
 	XMMATRIX _matWVP = XMMatrixIdentity();
 
 	/*** BOX 1 (light source) ***/
-	m_matWorld = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-	XMFLOAT3 _vLightPos = m_lightManager.GetPosition();
+	//m_matWorld = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	//XMFLOAT3 _vLightPos = m_lightManager.GetPosition();
 
-	m_matWorld = m_matWorld * XMMatrixTranslation(_vLightPos.x, 
-		_vLightPos.y, 
-		_vLightPos.z);
+	//m_matWorld = m_matWorld * XMMatrixTranslation(_vLightPos.x, 
+	//	_vLightPos.y, 
+	//	_vLightPos.z);
 
-	_matWVP = m_matWorld * _matViewProj;
+	//_matWVP = m_matWorld * _matViewProj;
 
-	m_box1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
-	m_box1.ActivateShaders();
-	// bind the shadow map to an input slot of the pixel shader
-	m_box1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
-	m_box1.Draw();
+	//m_box1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	//m_box1.ActivateShaders();
+	//// bind the shadow map to an input slot of the pixel shader
+	//m_box1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2);
+	//m_box1.Draw();
 
 	/*** HOUSE ***/
 	m_matWorld = m_house1.GetWorldMatrix();
@@ -611,6 +625,14 @@ void TFDemoDriver::RenderScene()
 	m_waterBody2.Draw();
 
 	m_pd3dImmDeviceContext->OMSetBlendState(NULL, blendFactors, 0xffffffff); // reset blend state
+
+	/*** DOOR ***/
+	m_matWorld = m_door.GetWorldMatrix();
+	_matWVP = m_matWorld * _matViewProj;
+
+	m_door.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
+	m_door.ActivateShaders();
+	m_door.Draw();	
 
 	/*** SKY ***/
 	m_matWorld = XMMatrixScaling(1000.0f, 1000.0f, 1000.0f);

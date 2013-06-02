@@ -59,7 +59,10 @@ private:
 	TFCore::TFModel m_ellipsoid;
 	ID3D11ShaderResourceView* m_cubeMapSRV;
 
-	// creature
+	// gnome
 	TFCore::TFModel m_gnome;
+
+	// door
+	TFCore::TFModel m_door;
 };
 
