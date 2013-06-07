@@ -423,7 +423,7 @@ namespace TFCore
 		// Bind constant buffers to VS and PS
 		m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pCBPerObject);
 		m_pDeviceContext->PSSetConstantBuffers(0, 1, &m_pCBPerObject);
-		// Set the input layout
+		// Set the IL
 		m_pDeviceContext->IASetInputLayout(m_pInputLayout);
 	}
 

@@ -39,7 +39,6 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 #endif
 
 	// register shaders 
-	// TODO: don't always use the debug shaders...
 	m_shaderManager.SetShaderPrefix(_wsShaderPrefix);
 
 	m_shaderManager.AddVertexShader(L"RenderDepth", L"RenderDepthVS.cso", TFPosNormTexTanLayout, 4);
@@ -310,7 +309,7 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	m_matLightView = XMMatrixIdentity();
 
 	// Update the lights
-	m_lightManager.Update(1.0f, m_fmCamera.GetPosition());
+	m_lightManager.Update(1.0f, m_fmCamera.GetPosition(), true);
 }
 
 void TFDemoDriver::OnResize()
@@ -337,7 +336,10 @@ void TFDemoDriver::UpdateScene(float a_fDelta)
 	m_matView = m_fmCamera.GetView();
 
 	// Update the lights
-	//m_lightManager.Update(a_fDelta, m_fmCamera.GetPosition());
+	if(TFInput::Instance()->IsRPressed())
+	{
+		m_lightManager.Update(a_fDelta, m_fmCamera.GetPosition(), false);
+	}
 
 	// Update water sim
 	m_waterBody1.Update(a_fDelta);

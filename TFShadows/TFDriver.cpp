@@ -104,7 +104,7 @@ void TFApplication::Init(HINSTANCE hInstance, int nCmdShow)
 	m_matLightView = XMMatrixIdentity();
 
 	// Update the lights
-	m_lightManager.Update(1.0f, m_fmCamera.GetPosition());
+	m_lightManager.Update(1.0f, m_fmCamera.GetPosition(), true);
 }
 
 void TFApplication::OnResize()
@@ -130,7 +130,7 @@ void TFApplication::UpdateScene(float a_fDelta)
 	m_matView = m_fmCamera.GetView();
 
 	//// Update the lights
-	m_lightManager.Update(a_fDelta, m_fmCamera.GetPosition());
+	m_lightManager.Update(a_fDelta, m_fmCamera.GetPosition(), false);
 }
 
 void TFApplication::RenderToShadowMap()

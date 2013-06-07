@@ -19,6 +19,7 @@ namespace TFCore
 		bool IsDownPressed()    const;
 		bool IsUpPressed()      const;
 		bool IsYPressed()       const;
+		bool IsRPressed()       const;
 		void DetectInput();
 		void InitInput(HINSTANCE hi, HWND hWnd);
 

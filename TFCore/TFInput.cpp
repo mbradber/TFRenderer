@@ -123,4 +123,10 @@ namespace TFCore
 		return _nKeyState > 0;
 	}
 
+	bool TFInput::IsRPressed() const
+	{
+		int _nKeyState = m_keystate[DIK_R] & 0x80;
+		return _nKeyState > 0;
+	}
+
 }

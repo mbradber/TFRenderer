@@ -10,6 +10,11 @@ namespace TFCore
 	{
 		//m_vPos = XMVectorSet(-146.0f, 141.0f, 62.0f, 0.0f);
 		m_vPos = XMVectorSet(-111, 99, 48, 0);
+		XMVECTOR _vLightDistance = XMVector4Length(m_vPos);
+		XMFLOAT4 _f4LightDistance;
+		XMStoreFloat4(&_f4LightDistance, _vLightDistance);
+
+		m_fLightDistance = _f4LightDistance.x;
 	}
 
 
@@ -46,18 +51,25 @@ namespace TFCore
 
 	// TODO: Should probably move the updating of the light away from here, its kind of weird that
 	// this file is externally assuming the constant buffer for the light will be at slot 1
-	void TFLightManager::Update(float a_fDeltaTime, const XMFLOAT3& a_vEyePos)
+	void TFLightManager::Update(float a_fDeltaTime, const XMFLOAT3& a_vEyePos, bool a_bInitialTick)
 	{
 		// Rotate the light over time
-		static float _rotationX = 0.0f;
-		static float _rotationZ = 0.0f;
+		static float _rotationX = 0;
+		static float _rotationZ = 0;
 
-		_rotationX += a_fDeltaTime / 5.0f;
-		_rotationZ += a_fDeltaTime / 5.0f;
-		
-		//m_directionalLight1.Direction.y = 0;
-		//m_directionalLight1.Direction.x = cosf(_rotationX);
-		//m_directionalLight1.Direction.z = sinf(_rotationZ);
+		if(!a_bInitialTick)
+		{
+			_rotationX += a_fDeltaTime / 5.0f;
+			_rotationZ += a_fDeltaTime / 5.0f;
+
+			XMFLOAT4 _f4NewPos;
+			XMStoreFloat4(&_f4NewPos, m_vPos);
+
+			_f4NewPos.x = cosf(_rotationX) * m_fLightDistance;
+			_f4NewPos.z = sinf(_rotationZ) * m_fLightDistance;
+
+			m_vPos = XMLoadFloat4(&_f4NewPos);
+		}
 
 		XMVECTOR _vLightDir = XMVectorZero() - m_vPos;
 		_vLightDir = XMVector4Normalize(_vLightDir);

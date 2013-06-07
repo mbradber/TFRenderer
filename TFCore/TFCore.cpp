@@ -234,6 +234,8 @@ namespace TFCore
 
 		OnResize();
 
+		//ShowCursor(false);
+
 		return true;
 	}
 
@@ -329,7 +331,7 @@ namespace TFCore
 	void TFWinBase::UpdateScene(float a_fDelta)
 	{
 		std::stringstream _ss;
-		_ss << "TreeFrog Engine 1.0" << "    " << "MPF:" << a_fDelta * 1000.0f;
+		_ss << "TreeFrog Engine 1.1" << " MPF:" << a_fDelta * 1000.0f;
 		SetWindowTextA(m_hMainWnd, _ss.str().c_str());
 	}
 

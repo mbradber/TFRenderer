@@ -40,23 +40,23 @@ float CalcShadow(float4 a_vShadowPosH)
 	float _fDepth = a_vShadowPosH.z;
 	float _fShadowFactor = 0.0f;
 
-	float2 _pcfGrid[6] = 
+	float2 _pcfGrid[9] = 
 	{
-		//float2(-dx, -dx),  float2(0.0f, -dx), float2(dx, -dx),
-		//float2(-dx, 0.0f), float2(0.0f, 0),   float2(dx, 0.0f),
-		//float2(-dx, dx),   float2(0.0f, dx),  float2(dx, dx),
+		float2(-dx, -dx),  float2(0.0f, -dx), float2(dx, -dx),
+		float2(-dx, 0.0f), float2(0.0f, 0),   float2(dx, 0.0f),
+		float2(-dx, dx),   float2(0.0f, dx),  float2(dx, dx),
 
-		float2(-dx, -dx), float2(0.0f, -dx), float2(dx, -dx),
-		float2(-dx, dx), float2(0.0f, dx), float2(dx, dx)
+		//float2(-dx, -dx), float2(0.0f, -dx), float2(dx, -dx),
+		//float2(-dx, dx), float2(0.0f, dx), float2(dx, dx)
 	};
 	 
 	[unroll]
-	for(int i = 0; i < 6; ++i)
+	for(int i = 0; i < 9; ++i)
 	{
 		_fShadowFactor += ShadowMapFront.SampleCmpLevelZero(samShadowPCF, a_vShadowPosH.xy + _pcfGrid[i], _fDepth);
 	}
 
-	return _fShadowFactor / 6.0f;
+	return _fShadowFactor / 9.0f;
 }
 
 float4 main(VertexOut pin) : SV_TARGET

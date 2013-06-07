@@ -13,7 +13,7 @@ namespace TFCore
 		~TFLightManager();
 
 		void Init(ID3D11Device* a_pDevice, ID3D11DeviceContext* a_pDeviceContext);
-		void Update(float a_fDeltaTime, const XMFLOAT3& a_vEyePos);
+		void Update(float a_fDeltaTime, const XMFLOAT3& a_vEyePos, bool a_bInitialTick);
 
 		// Nested directional light structure
 		struct TFDirectionalLight
@@ -50,6 +50,7 @@ namespace TFCore
 		TFBufferDirectionalLight m_directionaLight1Buffer;
 		ID3D11Buffer* m_pCBDirectionalLight;
 		XMVECTOR m_vPos;
+		float m_fLightDistance;
 	};
 
 }
