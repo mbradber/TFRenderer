@@ -2,6 +2,7 @@
 #include <fstream>
 #include "TFUtils.h"
 #include <D3Dcompiler.h>
+#include "TFIRenderable.h"
 
 namespace TFRendering
 {
@@ -12,14 +13,17 @@ namespace TFRendering
 		 m_pDeviceContext(NULL),
 		 m_pInputLayout(NULL),
 		 m_pVertexShader(NULL),
-		 m_pPixelShader(NULL)
+		 m_pPixelShader(NULL),
+		 m_nStartSlotVB(0),
+		 m_nNumVertexBuffers(0),
+		 m_pVertexBuffers(0)
 	{
 
 	}
 
 	TFEffect::~TFEffect()
 	{
-
+		delete[] m_pVertexBuffers;
 	}
 
 	void TFEffect::Initialize(ID3D11Device* a_pDevice,
@@ -81,7 +85,14 @@ namespace TFRendering
 		D3D11_SHADER_DESC _vsDesc;
 		_pReflection->GetDesc(&_vsDesc);
 		size_t _nInputArgs = _vsDesc.InputParameters;
+		m_nNumVertexBuffers = _nInputArgs; // each input arg will be in a different vertex buffer
 		size_t _nOutputArgs = _vsDesc.OutputParameters;
+
+		// set offsets to 0
+		for(size_t i = 0; i < m_nNumVertexBuffers; ++i)
+		{
+			m_vOffsets.push_back(0);
+		}
 
 		// build input layout
 		D3D11_INPUT_ELEMENT_DESC* _pElementDescriptions = new D3D11_INPUT_ELEMENT_DESC[_nInputArgs];
@@ -100,14 +111,22 @@ namespace TFRendering
 				if(_spInputDesc.Mask == 3) // 2 components of 4 component register are being used
 				{
 					_pElementDescriptions[i].Format = DXGI_FORMAT_R32G32_FLOAT;
+					m_vStrides.push_back(sizeof(float) * 2);
 				}
 				else if(_spInputDesc.Mask == 7) // 3 components are being used
 				{
 					_pElementDescriptions[i].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+					m_vStrides.push_back(sizeof(float) * 3);
 				}
 				else if(_spInputDesc.Mask == 15) // all 4 components are being used
 				{
 					_pElementDescriptions[i].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+					m_vStrides.push_back(sizeof(float) * 4);
+				}
+				else
+				{
+					// format unsupported
+					TF_ASSERT(false, FILE_NAME, LINE_NO);
 				}
 			}
 
@@ -140,6 +159,9 @@ namespace TFRendering
 			_pElementDescriptions[i].InstanceDataStepRate = 0;
 		}
 
+		// alloc space for vertex buffers
+		m_pVertexBuffers = new ID3D11Buffer*[m_nNumVertexBuffers];
+
 		// Create input layout from shader object
 		HR(m_pDevice->CreateInputLayout(_pElementDescriptions, _nInputArgs, _cbBuffer, _nFileSize, &m_pInputLayout));
 
@@ -148,8 +170,63 @@ namespace TFRendering
 		delete[] _pElementDescriptions;
 	}
 
+	void TFEffect::AddPixelShader(const std::wstring& a_sFilePathShader)
+	{
+		std::wstring _wsShaderPrefix = m_wsShaderPrefix;
+		_wsShaderPrefix.append(a_sFilePathShader);
+
+		// Open compiled shader file and read it...
+		ULONG _nFileSize = 0;
+		ifstream _reader(_wsShaderPrefix.c_str(), ios::in | ios::binary | ios::ate);
+		UCHAR* _cbBuffer;
+
+		if(_reader.is_open())
+		{
+			_nFileSize = static_cast<ULONG>(_reader.tellg());
+			_cbBuffer  = new UCHAR[_nFileSize];
+		}
+		else
+		{
+			// File could not be opened
+			TF_ASSERT(false, FILE_NAME, LINE_NO);
+		}
+
+		// Load the file into memory
+		_reader.seekg(0, ios::beg); // return the get pointer to beginning of file
+		_reader.read(reinterpret_cast<char*>(_cbBuffer), _nFileSize);
+
+		if(_reader.is_open())
+		{
+			_reader.close();
+		}
+
+		TF_ASSERT(m_pDevice != NULL, FILE_NAME, LINE_NO);
+		// Create pixel shader
+		HR(m_pDevice->CreatePixelShader(_cbBuffer, _nFileSize, NULL, &m_pPixelShader));
+
+		// Free buffer
+		delete[] _cbBuffer;
+	}
+
 	void TFEffect::QueryVertexShader()
 	{
 
+	}
+
+	void TFEffect::AddRenderable(TFIRenderable* a_pRenderable)
+	{
+		m_vRenderables.push_back(a_pRenderable);
+	}
+
+	void TFEffect::BatchDraw()
+	{
+		// set vertex shader for this effect
+		m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
+		// set pixel shader for this effect
+		m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
+		// set input layout for this effect
+		m_pDeviceContext->IASetInputLayout(m_pInputLayout);
+		// set primitive topology
+		m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 }

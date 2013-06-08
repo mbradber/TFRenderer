@@ -19,6 +19,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Performance1.psess = Performance1.psess
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TFDemo2", "TFDemo2\TFDemo2.vcxproj", "{2E086E8C-7EA3-4629-8210-123831FD1A54}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A579FCC6-46CB-436D-AB08-06BA3915275C} = {A579FCC6-46CB-436D-AB08-06BA3915275C}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -37,6 +42,10 @@ Global
 		{156C63BB-A0AE-45D0-BF98-36AF5679E6CA}.Debug|Win32.Build.0 = Debug|Win32
 		{156C63BB-A0AE-45D0-BF98-36AF5679E6CA}.Release|Win32.ActiveCfg = Release|Win32
 		{156C63BB-A0AE-45D0-BF98-36AF5679E6CA}.Release|Win32.Build.0 = Release|Win32
+		{2E086E8C-7EA3-4629-8210-123831FD1A54}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2E086E8C-7EA3-4629-8210-123831FD1A54}.Debug|Win32.Build.0 = Debug|Win32
+		{2E086E8C-7EA3-4629-8210-123831FD1A54}.Release|Win32.ActiveCfg = Release|Win32
+		{2E086E8C-7EA3-4629-8210-123831FD1A54}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

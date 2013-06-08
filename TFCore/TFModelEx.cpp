@@ -7,13 +7,17 @@
 
 namespace TFRendering
 {
-	TFModelEx::TFModelEx()
-		:m_pDevice(NULL),
-		 m_pDeviceContext(NULL),
+	TFModelEx::TFModelEx(ID3D11Device* a_pDevice, 
+		ID3D11DeviceContext* a_pDeviceContext,
+		const std::string& a_sAssetPath)
+		:
 		 m_nVertexCount(0),
 		 m_nIndexCount(0)
 	{
+		m_pDevice = a_pDevice;
+		m_pDeviceContext = a_pDeviceContext;
 
+		Init(a_sAssetPath);
 	}
 
 	TFModelEx::~TFModelEx()
@@ -21,13 +25,8 @@ namespace TFRendering
 
 	}
 
-	void TFModelEx::Init(ID3D11Device* a_pDevice, 
-		ID3D11DeviceContext* a_pDeviceContext,
-		const std::string& a_sAssetPath)
+	void TFModelEx::Init(const std::string& a_sAssetPath)
 	{
-		m_pDevice = a_pDevice;
-		m_pDeviceContext = a_pDeviceContext;
-
 		// Asset importing
 		Assimp::Importer importer;
 
@@ -145,6 +144,31 @@ namespace TFRendering
 			// Create a buffer to hold this model's vert data in video memory
 			HR(m_pDevice->CreateBuffer(&_tangentBufferDesc, &_tangentInitData, &m_pTangentVertexBuffer));
 		}
+
+		// INDEX BUFFER
+		{
+			D3D11_BUFFER_DESC _indexBufferDesc;
+			ZeroMemory(&_indexBufferDesc, sizeof(_indexBufferDesc));
+
+			_indexBufferDesc.Usage          = D3D11_USAGE_DEFAULT;
+			_indexBufferDesc.ByteWidth      = sizeof(UINT) * m_nIndexCount;
+			_indexBufferDesc.BindFlags      = D3D11_BIND_INDEX_BUFFER;
+			_indexBufferDesc.CPUAccessFlags = 0;
+			_indexBufferDesc.MiscFlags      = 0; // Unused
+
+			D3D11_SUBRESOURCE_DATA _indexData;
+			ZeroMemory(&_indexData, sizeof(_indexData));
+			_indexData.pSysMem  = _pIndices;
+
+			HR(m_pDevice->CreateBuffer(&_indexBufferDesc, &_indexData, &m_pIndexBuffer));
+		}
+
+		// deallocate data buffers
+		delete[] _pPositionBuffer;
+		delete[] _pNormalBuffer;
+		delete[] _pTexCoordBuffer;
+		delete[] _pTangentBuffer;
+		delete[] _pIndices;  
 	}
 
 	void TFModelEx::SurveyNode(const aiScene* const a_pScene, aiNode* a_pNode, size_t* a_pNumVerts, size_t* a_pNumIndices)
@@ -339,5 +363,26 @@ namespace TFRendering
 		}
 	}
 
+	void TFModelEx::Draw()
+	{
+		// draw each mesh of the model
+		for(std::vector<TFMesh>::iterator _itr = m_meshes.begin();
+			_itr != m_meshes.end(); 
+			++_itr)
+		{
+			// Bind texture for diffuse map and normal map if they exist for this mesh
+			if(_itr->TextureIndexColor != UINT_MAX)
+			{
+				m_pDeviceContext->PSSetShaderResources(0, 1, &m_vMeshTexturesColor[_itr->TextureIndexColor]);
+			}
+			if(_itr->TextureIndexNormal != UINT_MAX)
+			{
+				m_pDeviceContext->PSSetShaderResources(1, 1, &m_vMeshTexturesNormals[_itr->TextureIndexNormal]);
+			}
+
+			// Draw the indices of this mesh
+			m_pDeviceContext->DrawIndexed(_itr->NumIndices, _itr->StartIndex, 0);
+		}
+	}
 
 }

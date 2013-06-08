@@ -10,12 +10,12 @@
 using namespace TFCore;
 using namespace std;
 
-TFDemoDriver::TFDemoDriver(void)
+TFDemoDriver::TFDemoDriver()
 {
 }
 
 
-TFDemoDriver::~TFDemoDriver(void)
+TFDemoDriver::~TFDemoDriver()
 {
 	// Delete renderable objects
 	delete m_pShadowMapFront;
@@ -62,11 +62,6 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	m_shaderManager.AddVertexShader(L"Gnome", L"GnomeVS.cso", TFPosNormTexTanLayout, 4);
 	m_shaderManager.AddPixelShader(L"Gnome",  L"GnomePS.cso");
 
-	// build effects from shaders
-	m_effect1.Initialize(m_pd3dDevice,
-		m_pd3dImmDeviceContext,
-		L"StillWaterVS.cso",
-		_wsShaderPrefix);
 
 	// bind samplers
 	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
@@ -176,10 +171,6 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 
 	m_tree1.SetWorldMatrix(_matWorld);
 
-	// model Ex test
-	m_modelEx1.Init(m_pd3dDevice,
-		m_pd3dImmDeviceContext,
-		"..\\Models\\palm4.obj");
 
 	// add support for shadows on tree 1
 	m_tree1.AddShadowShaders(_pRenderDepthVS,

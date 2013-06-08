@@ -66,9 +66,5 @@ private:
 
 	// door
 	TFCore::TFModel m_door;
-
-	// Effects
-	TFRendering::TFEffect m_effect1;
-	TFRendering::TFModelEx m_modelEx1;
 };
 

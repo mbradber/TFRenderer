@@ -4,22 +4,28 @@
 #include <string>
 #include <xnamath.h>
 #include <vector>
+#include "TFIRenderable.h"
 
 struct aiScene;
 struct aiNode;
 
 namespace TFRendering
 {
-	class TFModelEx
+	class TFModelEx : public TFIRenderable
 	{
 	public:
 
-		TFModelEx();
-		~TFModelEx();
+		friend class TFEffect;
 
-		void Init(ID3D11Device* a_pDevice, 
+		TFModelEx(ID3D11Device* a_pDevice, 
 			ID3D11DeviceContext* a_pDeviceContext,
 			const std::string& a_sAssetPath);
+
+		void Init(const std::string& a_sAssetPath);
+		void Draw();
+
+
+		~TFModelEx();
 
 	private:
 		TFModelEx(TFModelEx&); // disable copying
@@ -58,19 +64,12 @@ namespace TFRendering
 		};
 
 	private:
-		ID3D11Device*							m_pDevice;
-		ID3D11DeviceContext*					m_pDeviceContext;
+
 		UINT									m_nVertexCount;
 		UINT									m_nIndexCount;
 		std::vector<ID3D11ShaderResourceView*>  m_vMeshTexturesColor;
 		std::vector<ID3D11ShaderResourceView*>  m_vMeshTexturesNormals;
 		XMMATRIX                                m_matWorld;
 		std::vector<TFMesh>                     m_meshes;
-
-		// buffers
-		ID3D11Buffer* m_pPositionVertexBuffer;
-		ID3D11Buffer* m_pNormalVertexBuffer;
-		ID3D11Buffer* m_pTexCoordVertexBuffer;
-		ID3D11Buffer* m_pTangentVertexBuffer;
 	};
 }

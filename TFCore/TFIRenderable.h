@@ -4,29 +4,37 @@
 #include <string>
 #include <xnamath.h>
 
-namespace TFCore
+namespace TFRendering
 {
 	class TFIRenderable
 	{
 	public:
-		virtual const wchar_t* const GetShaderPath() const = 0;
-		virtual const D3D11_INPUT_ELEMENT_DESC* const GetInputLayout() const = 0;
-		virtual void SetShaderPath(const std::wstring& a_sFilePath) = 0;
-		virtual void Draw() = 0;
-		virtual void Init(ID3D11Device* a_pDevice, ID3D11DeviceContext* a_pDeviceContext, float a_fScale, const std::wstring& a_sFilePath) = 0;
-		virtual ID3D11VertexShader* GetVertexShader() const = 0;
-		virtual ID3D11PixelShader*  GetPixelShader()  const = 0;
-		virtual void UpdateTransform(const XMMATRIX& a_matWVP) = 0;
-		virtual void ActivateShaders() = 0;
 
-		// Renderable object utility function
-		void CompileShaderFromFile(const wchar_t* a_cbFileName, LPCSTR a_pEntryPoint, LPCSTR a_pShaderModel, ID3DBlob** a_ppBlobOut);
-
+		TFIRenderable();
 		virtual ~TFIRenderable() {};
 
-	private:
-		// Enforce that each renderable object is responsible for their own shaders
-		virtual void GenerateShaders() = 0;
-		virtual void GenerateShaderResources() = 0;
+		virtual void SetWorldMatrix(const XMMATRIX& a_matWorld);
+		virtual XMMATRIX& GetWorldMatrix();
+
+		virtual void Draw() = 0;
+
+		// buffer access
+		ID3D11Buffer* GetPositionBuffer() const { return m_pPositionVertexBuffer; }
+		ID3D11Buffer* GetNormalBuffer()   const { return m_pNormalVertexBuffer;   }
+		ID3D11Buffer* GetTexCoordBuffer() const { return m_pTexCoordVertexBuffer; }
+		ID3D11Buffer* GetTangentBuffer()  const { return m_pTangentVertexBuffer;  }
+		ID3D11Buffer* GetIndexBuffer()    const { return m_pIndexBuffer;          }
+
+	protected:
+		ID3D11Device*			m_pDevice;
+		ID3D11DeviceContext*	m_pDeviceContext;
+		XMMATRIX                m_matWorld;
+
+		// buffers
+		ID3D11Buffer* m_pPositionVertexBuffer;
+		ID3D11Buffer* m_pNormalVertexBuffer;
+		ID3D11Buffer* m_pTexCoordVertexBuffer;
+		ID3D11Buffer* m_pTangentVertexBuffer;
+		ID3D11Buffer* m_pIndexBuffer;
 	};
 }

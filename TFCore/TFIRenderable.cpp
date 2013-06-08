@@ -1,32 +1,26 @@
 #include "TFIRenderable.h"
-#include <d3dcompiler.h>
-#include "TFUtils.h"
 
-namespace TFCore
+
+namespace TFRendering
 {
-	void TFIRenderable::CompileShaderFromFile(const wchar_t* a_cbFileName, LPCSTR a_pEntryPoint, LPCSTR a_pShaderModel, ID3DBlob** a_ppBlobOut)
+	TFIRenderable::TFIRenderable()
+		:m_pDevice(NULL),
+		 m_pDeviceContext(NULL),
+		 m_pPositionVertexBuffer(NULL),
+		 m_pNormalVertexBuffer(NULL),
+		 m_pTexCoordVertexBuffer(NULL),
+		 m_pTangentVertexBuffer(NULL)
 	{
-		DWORD _dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 
-#if defined(DEBUG) || defined(_DEBUG)
-		_dwShaderFlags |= D3DCOMPILE_DEBUG;
-#endif
+	}
 
-		ID3DBlob* _pErrorBlob = NULL;
-		HRESULT _hr = D3DX11CompileFromFile(a_cbFileName, NULL, NULL, a_pEntryPoint, a_pShaderModel, 
-			_dwShaderFlags, 0, NULL, a_ppBlobOut, &_pErrorBlob, NULL);
+	void TFIRenderable::SetWorldMatrix(const XMMATRIX& a_matWorld)
+	{
+		m_matWorld = a_matWorld;
+	}
 
-		// Output debug info if compilation failed
-		if(FAILED(_hr))
-		{
-			if(_pErrorBlob != NULL)
-			{
-				OutputDebugStringA((char*)_pErrorBlob->GetBufferPointer());
-			}
-
-			HR(_hr);
-		}
-
-		ReleaseCOM(_pErrorBlob);
+	XMMATRIX& TFIRenderable::GetWorldMatrix()
+	{
+		return m_matWorld;
 	}
 }
