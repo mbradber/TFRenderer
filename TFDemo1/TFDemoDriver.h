@@ -10,6 +10,8 @@
 #include "TFReflectionMap.h"
 #include "TFTerrain.h"
 #include "TFWaterStill.h"
+#include "TFEffect.h"
+#include "TFModelEx.h"
 
 class TFDemoDriver : public TFCore::TFWinBase
 {
@@ -64,5 +66,9 @@ private:
 
 	// door
 	TFCore::TFModel m_door;
+
+	// Effects
+	TFRendering::TFEffect m_effect1;
+	TFRendering::TFModelEx m_modelEx1;
 };
 

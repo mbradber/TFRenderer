@@ -64,7 +64,7 @@
     </Link>
     <Lib>
       <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
-      <AdditionalDependencies>d3d11.lib;dxerr.lib;d3dx11.lib;assimp.lib;dinput8.lib;dxguid.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxerr.lib;d3dx11.lib;assimp.lib;dinput8.lib;dxguid.lib;d3dcompiler.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4221</AdditionalOptions>
     </Lib>
     <FxCompile>
@@ -90,7 +90,7 @@
     </Link>
     <Lib>
       <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
-      <AdditionalDependencies>d3d11.lib;dxerr.lib;d3dx11.lib;assimp.lib;dinput8.lib;dxguid.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxerr.lib;d3dx11.lib;assimp.lib;dinput8.lib;dxguid.lib;d3dcompiler.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4221</AdditionalOptions>
     </Lib>
     <FxCompile>
@@ -101,6 +101,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="TFEffect.h" />
     <ClInclude Include="TFGrid.h" />
     <ClInclude Include="TFLightManager.h" />
     <ClInclude Include="TFCore.h" />
@@ -110,6 +111,7 @@
     <ClInclude Include="TFIRenderable.h" />
     <ClInclude Include="TFMath.h" />
     <ClInclude Include="TFModel.h" />
+    <ClInclude Include="TFModelEx.h" />
     <ClInclude Include="TFReflectionMap.h" />
     <ClInclude Include="TFShaderManager.h" />
     <ClInclude Include="TFShadowMap.h" />
@@ -122,6 +124,7 @@
     <ClInclude Include="TFWaterStill.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="TFEffect.cpp" />
     <ClCompile Include="TFGrid.cpp" />
     <ClCompile Include="TFLightManager.cpp" />
     <ClCompile Include="TFCore.cpp" />
@@ -130,6 +133,7 @@
     <ClCompile Include="TFInput.cpp" />
     <ClCompile Include="TFIRenderable.cpp" />
     <ClCompile Include="TFModel.cpp" />
+    <ClCompile Include="TFModelEx.cpp" />
     <ClCompile Include="TFReflectionMap.cpp" />
     <ClCompile Include="TFShaderManager.cpp" />
     <ClCompile Include="TFShadowMap.cpp" />

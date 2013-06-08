@@ -62,6 +62,12 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	m_shaderManager.AddVertexShader(L"Gnome", L"GnomeVS.cso", TFPosNormTexTanLayout, 4);
 	m_shaderManager.AddPixelShader(L"Gnome",  L"GnomePS.cso");
 
+	// build effects from shaders
+	m_effect1.Initialize(m_pd3dDevice,
+		m_pd3dImmDeviceContext,
+		L"StillWaterVS.cso",
+		_wsShaderPrefix);
+
 	// bind samplers
 	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
 	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler);
@@ -169,6 +175,11 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	_matWorld *= XMMatrixTranslation(-51.0f, 42.0f, -14.0f);
 
 	m_tree1.SetWorldMatrix(_matWorld);
+
+	// model Ex test
+	m_modelEx1.Init(m_pd3dDevice,
+		m_pd3dImmDeviceContext,
+		"..\\Models\\palm4.obj");
 
 	// add support for shadows on tree 1
 	m_tree1.AddShadowShaders(_pRenderDepthVS,

@@ -4,9 +4,9 @@
 #include "TFVertices.h"
 #include <string>
 #include <vector>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+
+struct aiScene;
+struct aiNode;
 
 namespace TFCore
 {
@@ -64,8 +64,6 @@ namespace TFCore
 			size_t NumIndices;
 			size_t TextureIndexColor;
 			size_t TextureIndexNormal;
-			std::wstring TexturePathColor;
-			std::wstring TexturePathNormal;
 
 			TFMesh():
 				TextureIndexColor(UINT_MAX),
@@ -76,6 +74,8 @@ namespace TFCore
 		};
 
 	private:
+
+
 			void SurveyNode(const aiScene* const a_pScene, 
 				aiNode* a_pNode, 
 				size_t* a_pNumVerts, 
@@ -106,7 +106,6 @@ namespace TFCore
 		ID3D11PixelShader*						m_pPixelShader;
 		ID3D11VertexShader*						m_pVertexShaderShadows;
 		ID3D11PixelShader*						m_pPixelShaderShadows;
-		ID3D11ShaderResourceView*			    m_pTextureSRV;
 		std::vector<TFMesh>                     m_meshes;
 		std::vector<ID3D11ShaderResourceView*>  m_vMeshTexturesColor;
 		std::vector<ID3D11ShaderResourceView*>  m_vMeshTexturesNormals;

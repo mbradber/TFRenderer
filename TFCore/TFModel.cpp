@@ -1,8 +1,10 @@
 #include "TFModel.h"
 #include "TFUtils.h"
 #include "TFVertices.h"
-#include <vector>
-#include <assimp\vector3.h>
+#include <assimp/vector3.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 
 namespace TFCore
@@ -24,8 +26,7 @@ namespace TFCore
 		m_pVertexShader(NULL),
 		m_pPixelShader(NULL),
 		m_pVertexShaderShadows(NULL),
-		m_pPixelShaderShadows(NULL),
-		m_pTextureSRV(NULL)
+		m_pPixelShaderShadows(NULL)
 	{
 
 	}
@@ -36,8 +37,6 @@ namespace TFCore
 		ReleaseCOM(m_pIndexBuffer);
 		ReleaseCOM(m_pCBPerObject);
 		ReleaseCOM(m_pCBPerObject_Shadow);
-		ReleaseCOM(m_pTextureSRV);
-		ReleaseCOM(m_pTextureSRV);
 	}
 
 	void TFModel::Init(ID3D11Device* a_pDevice, 
@@ -214,7 +213,7 @@ namespace TFCore
 				{
 					a_pVertices[_nVertexIndex].TanU.x = _mesh->mTangents[j].x;
 					a_pVertices[_nVertexIndex].TanU.y = _mesh->mTangents[j].y;
-					a_pVertices[_nVertexIndex].TanU.y = _mesh->mTangents[j].z;
+					a_pVertices[_nVertexIndex].TanU.z = _mesh->mTangents[j].z;
 				}
 			}
 
@@ -273,8 +272,6 @@ namespace TFCore
 
 			// Build mesh data
 			TFMesh _tfMesh;
-			_tfMesh.TexturePathColor  = _wsTexturePathColor;
-			_tfMesh.TexturePathNormal = _wsTexturePathNormal;
 			_tfMesh.StartIndex        = *a_pIndexOffset; // the offset in the index buffer where this mesh starts
 			_tfMesh.NumIndices        = _mesh->mNumFaces * 3;
 
@@ -283,8 +280,9 @@ namespace TFCore
 			// Create Shader resource view from texture path and store it for binding later when drawing this mesh
 			if(_nNumDiffuseTextures > 0)
 			{
-				HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _wsTexturePathColor.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
-				m_vMeshTexturesColor.push_back(m_pTextureSRV);
+				ID3D11ShaderResourceView* _pTextureSRV;
+				HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _wsTexturePathColor.c_str(), NULL, NULL, &_pTextureSRV, NULL));
+				m_vMeshTexturesColor.push_back(_pTextureSRV);
 
 				// save the index in the diffuse textures vector (m_vMeshTexturesColor) that this meshes diffuse
 				// texture is stored
@@ -293,8 +291,9 @@ namespace TFCore
 
 			if(_nNumBumpTextures > 0)
 			{
-				HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _wsTexturePathNormal.c_str(), NULL, NULL, &m_pTextureSRV, NULL));
-				m_vMeshTexturesNormals.push_back(m_pTextureSRV);
+				ID3D11ShaderResourceView* _pTextureSRV;
+				HR(D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _wsTexturePathNormal.c_str(), NULL, NULL, &_pTextureSRV, NULL));
+				m_vMeshTexturesNormals.push_back(_pTextureSRV);
 
 				// save the index in the normal map textures vector (m_vMeshTexturesNormals) that this meshes normal
 				// map is stored
@@ -436,7 +435,7 @@ namespace TFCore
 		
 		m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pCBPerObject_Shadow);
 
-		//set the input layout
+		//set the IL
 		m_pDeviceContext->IASetInputLayout(m_pInputLayoutShadows);
 	}
 
