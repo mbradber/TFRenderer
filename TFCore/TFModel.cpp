@@ -9,6 +9,8 @@
 
 namespace TFCore
 {
+	using namespace DirectX;
+
 	//TODO: initialize members when they become more stable
 	TFModel::TFModel()
 		:
@@ -89,10 +91,10 @@ namespace TFCore
 		//TFPosNormTexTan* _pVertices = new TFPosNormTexTan[m_nVertexCount];
 
 		// allocate data buffers
-		XMFLOAT3* _pPositionBuffer = new XMFLOAT3[m_nVertexCount];
-		XMFLOAT3* _pNormalBuffer   = new XMFLOAT3[m_nVertexCount];
-		XMFLOAT2* _pTexCoordBuffer = new XMFLOAT2[m_nVertexCount];
-		XMFLOAT3* _pTangentBuffer  = new XMFLOAT3[m_nVertexCount];
+		tfFloat3* _pPositionBuffer = new tfFloat3[m_nVertexCount];
+		tfFloat3* _pNormalBuffer   = new tfFloat3[m_nVertexCount];
+		tfFloat2* _pTexCoordBuffer = new tfFloat2[m_nVertexCount];
+		tfFloat3* _pTangentBuffer  = new tfFloat3[m_nVertexCount];
 		UINT*            _pIndices = new UINT[m_nIndexCount];
 
 		// Traverse the scene nodes and parse vertex and index data
@@ -140,7 +142,7 @@ namespace TFCore
 			D3D11_BUFFER_DESC _posBufferDesc;
 			ZeroMemory(&_posBufferDesc, sizeof(_posBufferDesc));
 			_posBufferDesc.Usage          = D3D11_USAGE_DEFAULT;
-			_posBufferDesc.ByteWidth      = sizeof(XMFLOAT3) * m_nVertexCount;
+			_posBufferDesc.ByteWidth      = sizeof(tfFloat3) * m_nVertexCount;
 			_posBufferDesc.BindFlags      = D3D11_BIND_VERTEX_BUFFER;
 			_posBufferDesc.CPUAccessFlags = 0; // No cpu access
 			_posBufferDesc.MiscFlags      = 0; // Unused
@@ -158,7 +160,7 @@ namespace TFCore
 			D3D11_BUFFER_DESC _normBufferDesc;
 			ZeroMemory(&_normBufferDesc, sizeof(_normBufferDesc));
 			_normBufferDesc.Usage          = D3D11_USAGE_DEFAULT;
-			_normBufferDesc.ByteWidth      = sizeof(XMFLOAT3) * m_nVertexCount;
+			_normBufferDesc.ByteWidth      = sizeof(tfFloat3) * m_nVertexCount;
 			_normBufferDesc.BindFlags      = D3D11_BIND_VERTEX_BUFFER;
 			_normBufferDesc.CPUAccessFlags = 0; // No cpu access
 			_normBufferDesc.MiscFlags      = 0; // Unused
@@ -176,7 +178,7 @@ namespace TFCore
 			D3D11_BUFFER_DESC _texcoordBufferDesc;
 			ZeroMemory(&_texcoordBufferDesc, sizeof(_texcoordBufferDesc));
 			_texcoordBufferDesc.Usage          = D3D11_USAGE_DEFAULT;
-			_texcoordBufferDesc.ByteWidth      = sizeof(XMFLOAT2) * m_nVertexCount;
+			_texcoordBufferDesc.ByteWidth      = sizeof(tfFloat2) * m_nVertexCount;
 			_texcoordBufferDesc.BindFlags      = D3D11_BIND_VERTEX_BUFFER;
 			_texcoordBufferDesc.CPUAccessFlags = 0; // No cpu access
 			_texcoordBufferDesc.MiscFlags      = 0; // Unused
@@ -194,7 +196,7 @@ namespace TFCore
 			D3D11_BUFFER_DESC _tangentBufferDesc;
 			ZeroMemory(&_tangentBufferDesc, sizeof(_tangentBufferDesc));
 			_tangentBufferDesc.Usage          = D3D11_USAGE_DEFAULT;
-			_tangentBufferDesc.ByteWidth      = sizeof(XMFLOAT3) * m_nVertexCount;
+			_tangentBufferDesc.ByteWidth      = sizeof(tfFloat3) * m_nVertexCount;
 			_tangentBufferDesc.BindFlags      = D3D11_BIND_VERTEX_BUFFER;
 			_tangentBufferDesc.CPUAccessFlags = 0; // No cpu access
 			_tangentBufferDesc.MiscFlags      = 0; // Unused
@@ -267,22 +269,22 @@ namespace TFCore
 		}
 	}
 
-	void TFModel::SetWorldMatrix(const XMMATRIX& a_matWorld)
+	void TFModel::SetWorldMatrix(const tfMatrix& a_matWorld)
 	{
 		m_matWorld = a_matWorld;
 	}
 
-	const XMMATRIX& TFModel::GetWorldMatrix() const
+	const tfMatrix& TFModel::GetWorldMatrix() const
 	{
 		return m_matWorld;
 	}
 
 	void TFModel::ProcessNode(const aiScene* const a_pScene,
 		aiNode*	   a_pNode,
-		XMFLOAT3*& a_pPositionBuffer,
-		XMFLOAT3*& a_pNormalBuffer,
-		XMFLOAT2*& a_pTexCoordBuffer,
-		XMFLOAT3*& a_pTangentBuffer,
+		tfFloat3*& a_pPositionBuffer,
+		tfFloat3*& a_pNormalBuffer,
+		tfFloat2*& a_pTexCoordBuffer,
+		tfFloat3*& a_pTangentBuffer,
 		UINT*&     a_pIndices,
 		UINT*      a_pVertexOffset,
 		UINT*      a_pIndexOffset)
@@ -620,7 +622,7 @@ namespace TFCore
 		// describe the cb for the WVP matrix for shadow mapping
 		ZeroMemory(&bd, sizeof(bd));
 		bd.Usage          = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth      = sizeof(XMMATRIX);
+		bd.ByteWidth      = sizeof(tfMatrix);
 		bd.BindFlags      = D3D11_BIND_CONSTANT_BUFFER;
 		bd.CPUAccessFlags = 0;
 		bd.MiscFlags      = 0;
@@ -645,7 +647,7 @@ namespace TFCore
 	}
 
 	// TODO: Address tedious type changing issue...
-	void TFModel::UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const XMMATRIX& a_matLightWVPT, const XMMATRIX& a_matTex, const XMFLOAT3& a_vEyePos)
+	void TFModel::UpdateResources(const tfMatrix& a_matWVP, const tfMatrix& a_matWorld, const tfMatrix& a_matLightWVPT, const tfMatrix& a_matTex, const tfFloat3& a_vEyePos)
 	{
 		//UPDATE TRANSFORM RESOURCE
 		TFCore::TFBufferPerObject cb;
@@ -655,9 +657,9 @@ namespace TFCore
 
 		// Update world inverse transpose matrix (used to transform normals as it will be distorted 
 		// with non uniform scaling transforms, see pg. 277 of Luna...
-		XMMATRIX _wit = a_matWorld;
+		tfMatrix _wit = a_matWorld;
 		_wit.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-		XMVECTOR _witDet = XMMatrixDeterminant(_wit);
+		tfVector _witDet = XMMatrixDeterminant(_wit);
 
 		cb.worldInvTransposeMatrix = XMMatrixTranspose(XMMatrixInverse(&_witDet, _wit));
 
@@ -672,9 +674,9 @@ namespace TFCore
 		m_pDeviceContext->UpdateSubresource(m_pCBPerObject , 0, NULL, &cb, 0, 0);
 	}
 
-	void TFModel::UpdateShadowResources(const XMMATRIX& a_matWVP)
+	void TFModel::UpdateShadowResources(const tfMatrix& a_matWVP)
 	{
-		XMMATRIX _matWVP = XMMatrixTranspose(a_matWVP);
+		tfMatrix _matWVP = XMMatrixTranspose(a_matWVP);
 		m_pDeviceContext->UpdateSubresource(m_pCBPerObject_Shadow, 0, NULL, &_matWVP, 0, 0);
 	}
 

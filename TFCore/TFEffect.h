@@ -3,7 +3,7 @@
 #include <d3d11.h>
 #include <string>
 #include <vector>
-#include <xnamath.h>
+#include "TFTypes.h"
 
 namespace TFRendering
 {
@@ -23,7 +23,8 @@ namespace TFRendering
 
 		void AddPixelShader(const std::wstring& a_sFilePathShader);
 		void AddRenderable(class TFIRenderable* a_pRenderable);
-		virtual void BatchDraw(const XMMATRIX& a_matViewProj, const XMMATRIX& a_matLightVPT);
+		virtual void BatchDraw(const tfMatrix& a_matViewProj, 
+			const tfMatrix& a_matLightVPT);
 
 	private:
 		// no copying

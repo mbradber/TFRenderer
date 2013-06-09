@@ -4,6 +4,8 @@
 
 #define TF_PIDIV2 XM_PIDIV2
 
+using namespace DirectX;
+
 inline tfMatrix TFGetMatrixIdentity()
 {
 	return XMMatrixIdentity();

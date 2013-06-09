@@ -8,6 +8,7 @@ using namespace std;
 
 namespace TFCore
 {
+	using namespace DirectX;
 
 	TFTerrain::TFTerrain()
 	{
@@ -45,7 +46,7 @@ namespace TFCore
 		D3D11_BUFFER_DESC sbd;
 		ZeroMemory(&sbd, sizeof(sbd));
 		sbd.Usage          = D3D11_USAGE_DEFAULT;
-		sbd.ByteWidth      = sizeof(XMFLOAT4); // must be multiple of 16 for constant buffer
+		sbd.ByteWidth      = sizeof(tfFloat4); // must be multiple of 16 for constant buffer
 		sbd.BindFlags      = D3D11_BIND_CONSTANT_BUFFER;
 		sbd.CPUAccessFlags = 0;
 		sbd.MiscFlags      = 0;
@@ -125,7 +126,7 @@ namespace TFCore
 			NULL));
 	}
 
-	void TFTerrain::UpdateFrameData(XMFLOAT4 a_f4Data)
+	void TFTerrain::UpdateFrameData(tfFloat4 a_f4Data)
 	{
 		// update resource
 		m_pDeviceContext->UpdateSubresource(m_pCBPerFrame , 0, NULL, &a_f4Data, 0, 0);
@@ -134,10 +135,10 @@ namespace TFCore
 		m_pDeviceContext->VSSetConstantBuffers(1, 1, &m_pCBPerFrame);
 	}
 
-	void TFTerrain::UpdateResources(const XMMATRIX& a_matWVP, 
-		const XMMATRIX& a_matWorld, 
-		const XMMATRIX& a_matLightWVPT, 
-		const XMFLOAT3& a_vEyePos)
+	void TFTerrain::UpdateResources(const tfMatrix& a_matWVP, 
+		const tfMatrix& a_matWorld, 
+		const tfMatrix& a_matLightWVPT, 
+		const tfFloat3& a_vEyePos)
 	{
 		//UPDATE TRANSFORM RESOURCE
 		TFCore::TFBufferPerObjectTerrain cb;
@@ -147,9 +148,9 @@ namespace TFCore
 
 		// Update world inverse transpose matrix (used to transform normals as it will be distorted 
 		// with non uniform scaling transforms, see pg. 277 of Luna...
-		XMMATRIX _wit = a_matWorld;
+		tfMatrix _wit = a_matWorld;
 		_wit.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-		XMVECTOR _witDet = XMMatrixDeterminant(_wit);
+		tfVector _witDet = XMMatrixDeterminant(_wit);
 
 		cb.worldInvTransposeMatrix = XMMatrixInverse(&_witDet, _wit);
 

@@ -5,6 +5,8 @@
 namespace TFRendering
 {
 
+	using namespace DirectX;
+
 	TFBlinnPhong::TFBlinnPhong()
 	{
 
@@ -31,7 +33,7 @@ namespace TFRendering
 		HR(m_pDevice->CreateBuffer(&bd, NULL, &m_pCBPerObject));
 	}
 
-	void TFBlinnPhong::BatchDraw(const XMMATRIX& a_matViewProj, const XMMATRIX& a_matLightVPT)
+	void TFBlinnPhong::BatchDraw(const tfMatrix& a_matViewProj, const tfMatrix& a_matLightVPT)
 	{
 		// set state for this effect
 		TFEffect::BatchDraw(a_matViewProj, a_matLightVPT);
@@ -71,9 +73,9 @@ namespace TFRendering
 
 		// Update world inverse transpose matrix (used to transform normals as it will be distorted 
 		// with non uniform scaling transforms, see pg. 277 of Luna...
-		XMMATRIX _wit = a_matWorld;
+		tfMatrix _wit = a_matWorld;
 		_wit.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-		XMVECTOR _witDet = XMMatrixDeterminant(_wit);
+		tfVector _witDet = XMMatrixDeterminant(_wit);
 
 		cb.worldInvTransposeMatrix = XMMatrixTranspose(XMMatrixInverse(&_witDet, _wit));
 

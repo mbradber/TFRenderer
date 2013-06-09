@@ -11,6 +11,7 @@
 using namespace TFCore;
 using namespace TFRendering;
 using namespace std;
+using namespace DirectX;
 
 TFDemo2Driver::TFDemo2Driver(void)
 {
@@ -58,7 +59,7 @@ void TFDemo2Driver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_POINT);
 	m_pd3dImmDeviceContext->PSSetSamplers(3, 1, &_defaultSampler);
 
-	XMMATRIX _matWorld = XMMatrixIdentity();
+	tfMatrix _matWorld = XMMatrixIdentity();
 	
 	// init renderables
 	m_pModelEx1 = new TFModelEx(m_pd3dDevice, m_pd3dImmDeviceContext, "..\\Models\\house_obj.obj");
@@ -125,7 +126,7 @@ void TFDemo2Driver::RenderScene()
 	//TFRenderWireframe(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	// compute view-proj matrix
-	XMMATRIX _matViewProj = m_matView * m_matProj;
+	tfMatrix _matViewProj = m_matView * m_matProj;
 
 	///*** HOUSE ***/
 	//m_matWorld = m_house1.GetWorldMatrix();

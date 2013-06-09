@@ -8,10 +8,10 @@ namespace TFCore
 	// Layout of the buffer for vertex attribute properties
 	struct TFBufferPerObjectTerrain
 	{
-		XMMATRIX   worldMatrix;
-		XMMATRIX   worldInvTransposeMatrix;
-		XMMATRIX   wvpMatrix;
-		XMMATRIX   lightVPT;
+		tfMatrix   worldMatrix;
+		tfMatrix   worldInvTransposeMatrix;
+		tfMatrix   wvpMatrix;
+		tfMatrix   lightVPT;
 	};
 
 	class TFTerrain : public TFGrid
@@ -30,14 +30,14 @@ namespace TFCore
 		int a_nGridDepth);
 
 
-	void UpdateResources(const XMMATRIX& a_matWVP, 
-		const XMMATRIX& a_matWorld, 
-		const XMMATRIX& a_matLightWVPT, 
-		const XMFLOAT3& a_vEyePos);
+	void UpdateResources(const tfMatrix& a_matWVP, 
+		const tfMatrix& a_matWorld, 
+		const tfMatrix& a_matLightWVPT, 
+		const tfFloat3& a_vEyePos);
 
 	void Draw();
 
-	void UpdateFrameData(XMFLOAT4 a_f4Data);
+	void UpdateFrameData(tfFloat4 a_f4Data);
 
 	// TODO: CLEANUP COM CRAP IN DTOR
 	private:

@@ -7,6 +7,7 @@
 
 
 using namespace TFCore;
+using namespace DirectX;
 
 TFApplication::TFApplication()
 {
@@ -135,7 +136,7 @@ void TFApplication::UpdateScene(float a_fDelta)
 
 void TFApplication::RenderToShadowMap()
 {
-	XMMATRIX _matWVP;
+	tfMatrix _matWVP;
 
 	TFDepthBiasRender(m_pd3dDevice, m_pd3dImmDeviceContext);
 
@@ -186,7 +187,7 @@ void TFApplication::RenderScene()
 	m_matWorld = m_matWorld * XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 
 	// Update the geometry with their respective transforms
-	XMMATRIX _matWVP = m_matWorld * m_matView * m_matProj;
+	tfMatrix _matWVP = m_matWorld * m_matView * m_matProj;
 
 	m_box1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_box1.ActivateShaders();

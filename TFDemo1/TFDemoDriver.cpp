@@ -9,6 +9,7 @@
 
 using namespace TFCore;
 using namespace std;
+using namespace DirectX;
 
 TFDemoDriver::TFDemoDriver()
 {
@@ -123,7 +124,7 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	m_pShadowMapFront = new TFRendering::TFShadowMap(m_pd3dDevice, m_pd3dImmDeviceContext, 2048, 2048);
 	m_pReflectionMap  = new TFRendering::TFReflectionMap(m_pd3dDevice, m_pd3dImmDeviceContext, 512, 512);
 
-	XMMATRIX _matWorld = XMMatrixIdentity();
+	tfMatrix _matWorld = XMMatrixIdentity();
 
 	// init models
 	m_box1.Init(m_pd3dDevice,
@@ -349,9 +350,9 @@ void TFDemoDriver::UpdateScene(float a_fDelta)
 
 	if(TFInput::Instance()->IsYPressed())
 	{
-		XMFLOAT3 _camPos = m_fmCamera.GetPosition();
-		//XMFLOAT4 _camPos;
-		//XMVECTOR _vCamDir = XMVector4Normalize(m_fmCamera.GetForward());
+		tfFloat3 _camPos = m_fmCamera.GetPosition();
+		//tfFloat4 _camPos;
+		//tfVector _vCamDir = XMVector4Normalize(m_fmCamera.GetForward());
 		//XMStoreFloat4(&_camPos, _vCamDir);
 
 		stringstream _ss;
@@ -363,8 +364,8 @@ void TFDemoDriver::UpdateScene(float a_fDelta)
 
 void TFDemoDriver::RenderToShadowMap()
 {
-	XMMATRIX _matWVP;
-	XMMATRIX _matViewProj = m_lightManager.GetView() * m_lightManager.GetProjection();
+	tfMatrix _matWVP;
+	tfMatrix _matViewProj = m_lightManager.GetView() * m_lightManager.GetProjection();
 
 	TFDepthBiasRender(m_pd3dDevice, m_pd3dImmDeviceContext);
 
@@ -415,7 +416,7 @@ void TFDemoDriver::RenderToShadowMap()
 
 
 	/*** TERRAIN ***/
-	//XMFLOAT4 _f4ClipData;
+	//tfFloat4 _f4ClipData;
 	//_f4ClipData.x = 0.0f; // height of this reflective surface in world space (set to 0 since not using)
 	//_f4ClipData.y = 0.0f;  // whether or not to use a clip plane in the VS
 	////m_terrain.UpdateFrameData(_f4ClipData);
@@ -437,16 +438,16 @@ void TFDemoDriver::RenderToShadowMap()
 
 void TFDemoDriver::RenderToReflectionMap()
 {
-	XMMATRIX _matWVP;
+	tfMatrix _matWVP;
 
 	m_pReflectionMap->SetRenderTarget();
 
 	// compute view-proj matrix
-	XMMATRIX _matViewProj = m_matView * m_matProj;
+	tfMatrix _matViewProj = m_matView * m_matProj;
 
 	TFRenderFrontFaceCull(m_pd3dDevice, m_pd3dImmDeviceContext);
 
-	XMMATRIX _matFlip = XMMatrixScaling(1.0f, -1.0f, 1.0f);
+	tfMatrix _matFlip = XMMatrixScaling(1.0f, -1.0f, 1.0f);
 	float _fPlaneVerticalOffset = 39.0f;
 
 	/*** TREE 1 ***/
@@ -496,7 +497,7 @@ void TFDemoDriver::RenderToReflectionMap()
 
 
 	/*** TERRAIN ***/
-	XMFLOAT4 _f4ClipData;
+	tfFloat4 _f4ClipData;
 	_f4ClipData.x = 39.0f; // height of this reflective surface in world space
 	_f4ClipData.y = 1.0f;  // whether or not to use a clip plane in the VS
 	m_terrain.UpdateFrameData(_f4ClipData);
@@ -530,12 +531,12 @@ void TFDemoDriver::RenderScene()
 	//TFRenderWireframe(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	// compute view-proj matrix
-	XMMATRIX _matViewProj = m_matView * m_matProj;
-	XMMATRIX _matWVP = XMMatrixIdentity();
+	tfMatrix _matViewProj = m_matView * m_matProj;
+	tfMatrix _matWVP = XMMatrixIdentity();
 
 	/*** BOX 1 (light source) ***/
 	//m_matWorld = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-	//XMFLOAT3 _vLightPos = m_lightManager.GetPosition();
+	//tfFloat3 _vLightPos = m_lightManager.GetPosition();
 
 	//m_matWorld = m_matWorld * XMMatrixTranslation(_vLightPos.x, 
 	//	_vLightPos.y, 
@@ -590,7 +591,7 @@ void TFDemoDriver::RenderScene()
 	m_tree3.Draw();	
 
 	/*** TERRAIN ***/
-	XMFLOAT4 _f4ClipData;
+	tfFloat4 _f4ClipData;
 	_f4ClipData.x = 0.0f; // height of this reflective surface in world space (set to 0 since not using)
 	_f4ClipData.y = 0.0f;  // whether or not to use a clip plane in the VS
 	m_terrain.UpdateFrameData(_f4ClipData);

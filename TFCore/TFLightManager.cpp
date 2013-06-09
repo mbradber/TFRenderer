@@ -3,6 +3,7 @@
 
 namespace TFCore
 {
+	using namespace DirectX;
 
 	TFLightManager::TFLightManager()
 		:m_pDevice(NULL),
@@ -10,8 +11,8 @@ namespace TFCore
 	{
 		//m_vPos = XMVectorSet(-146.0f, 141.0f, 62.0f, 0.0f);
 		m_vPos = XMVectorSet(-111, 99, 48, 0);
-		XMVECTOR _vLightDistance = XMVector4Length(m_vPos);
-		XMFLOAT4 _f4LightDistance;
+		tfVector _vLightDistance = XMVector4Length(m_vPos);
+		tfFloat4 _f4LightDistance;
 		XMStoreFloat4(&_f4LightDistance, _vLightDistance);
 
 		m_fLightDistance = _f4LightDistance.x;
@@ -51,7 +52,7 @@ namespace TFCore
 
 	// TODO: Should probably move the updating of the light away from here, its kind of weird that
 	// this file is externally assuming the constant buffer for the light will be at slot 1
-	void TFLightManager::Update(float a_fDeltaTime, const XMFLOAT3& a_vEyePos, bool a_bInitialTick)
+	void TFLightManager::Update(float a_fDeltaTime, const tfFloat3& a_vEyePos, bool a_bInitialTick)
 	{
 		// Rotate the light over time
 		static float _rotationX = 0;
@@ -62,7 +63,7 @@ namespace TFCore
 			_rotationX += a_fDeltaTime / 5.0f;
 			_rotationZ += a_fDeltaTime / 5.0f;
 
-			XMFLOAT4 _f4NewPos;
+			tfFloat4 _f4NewPos;
 			XMStoreFloat4(&_f4NewPos, m_vPos);
 
 			_f4NewPos.x = cosf(_rotationX) * m_fLightDistance;
@@ -71,9 +72,9 @@ namespace TFCore
 			m_vPos = XMLoadFloat4(&_f4NewPos);
 		}
 
-		XMVECTOR _vLightDir = XMVectorZero() - m_vPos;
+		tfVector _vLightDir = XMVectorZero() - m_vPos;
 		_vLightDir = XMVector4Normalize(_vLightDir);
-		XMFLOAT4 _f4LightDir;
+		tfFloat4 _f4LightDir;
 		XMStoreFloat4(&_f4LightDir, _vLightDir);
 		m_directionalLight1.Direction.x = _f4LightDir.x;
 		m_directionalLight1.Direction.y = _f4LightDir.y;
@@ -89,14 +90,14 @@ namespace TFCore
 		m_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pCBDirectionalLight);
 
 		// update light's position
-/*		XMVECTOR _vDir = XMVectorSet(m_directionalLight1.Direction.x, m_directionalLight1.Direction.y, m_directionalLight1.Direction.z, 0.0f);
+/*		tfVector _vDir = XMVectorSet(m_directionalLight1.Direction.x, m_directionalLight1.Direction.y, m_directionalLight1.Direction.z, 0.0f);
 		XMVector4Normalize(_vDir);
 		m_vPos = -_vDir * 300;	*/	
 	}
 
-	XMFLOAT3 TFLightManager::GetPosition() const
+	tfFloat3 TFLightManager::GetPosition() const
 	{
-		XMFLOAT3 _vPos;
+		tfFloat3 _vPos;
 		XMStoreFloat3(&_vPos, m_vPos);
 		
 		return _vPos;
@@ -115,27 +116,27 @@ namespace TFCore
 
 	// TODO: Look into the "At" vector calculation, the Luna book says it should be the center of the scene, not the
 	// position + forward vector
-	XMMATRIX TFLightManager::GetView()
+	tfMatrix TFLightManager::GetView()
 	{
-		//XMVECTOR _vAt  = _vPos + _vDir;
-		XMVECTOR _vAt = XMVectorZero();
-		XMVECTOR _vUp  = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+		//tfVector _vAt  = _vPos + _vDir;
+		tfVector _vAt = XMVectorZero();
+		tfVector _vUp  = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 		return XMMatrixLookAtLH(m_vPos, _vAt, _vUp);
 	}
 
 	// TODO: Do a more formal calculation of the dimensions of this orthographic viewing volume
 	// TODO: Don't query this every frame
-	XMMATRIX TFLightManager::GetProjection()
+	tfMatrix TFLightManager::GetProjection()
 	{
 		return XMMatrixOrthographicOffCenterLH(-140, 140, -70, 150, 0, 250);
 		//return XMMatrixPerspectiveFovLH(XM_PIDIV4, 1008.f / 730.f,  0, 1000.0f);
 	}
 
-	XMMATRIX TFLightManager::GetVPT()
+	tfMatrix TFLightManager::GetVPT()
 	{
 		// Transform NDC space to texture space (Taken from Luna DX 11 book).
-		XMMATRIX T( 
+		tfMatrix T( 
 			0.5f, 0.0f, 0.0f, 0.0f,
 			0.0f, -0.5f, 0.0f, 0.0f,
 			0.0f, 0.0f, 1.0f, 0.0f,

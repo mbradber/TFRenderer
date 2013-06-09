@@ -1,6 +1,7 @@
 #pragma once
+
 #include "TFEffect.h"
-#include <xnamath.h>
+#include "TFTypes.h"
 
 namespace TFRendering
 {
@@ -12,22 +13,24 @@ namespace TFRendering
 		~TFBlinnPhong();
 
 		void Init();
-		void BatchDraw(const XMMATRIX& a_matViewProj, const XMMATRIX& a_matLightVPT);
+		void BatchDraw(const tfMatrix& a_matViewProj, 
+			const tfMatrix& a_matLightVPT);
 
 	private:
 
+		// only allocate this type on the stack (xmmatrix is 16 byte aligned, causes problems on x86 heap)
 		struct BufferPerObject
 		{
-			XMMATRIX   worldMatrix;
-			XMMATRIX   worldInvTransposeMatrix;
-			XMMATRIX   wvpMatrix;
-			XMMATRIX   lightVPT;
+			tfMatrix   worldMatrix;
+			tfMatrix   worldInvTransposeMatrix;
+			tfMatrix   wvpMatrix;
+			tfMatrix   lightVPT;
 		};
 
 	private:
-		void UpdateBuffers(const XMMATRIX& a_matWorld, 
-			const XMMATRIX& a_matViewProj,
-			const XMMATRIX& a_matLightVP);
+		void UpdateBuffers(const tfMatrix& a_matWorld, 
+			const tfMatrix& a_matViewProj,
+			const tfMatrix& a_matLightVP);
 	};
 
 }

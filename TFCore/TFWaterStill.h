@@ -8,11 +8,11 @@ namespace TFCore
 	// Layout of the buffer for vertex attribute properties
 	struct TFBufferPerObjectWater
 	{
-		XMMATRIX   worldMatrix;
-		XMMATRIX   worldInvTransposeMatrix;
-		XMMATRIX   wvpMatrix;
-		XMMATRIX   TexTransform;
-		XMMATRIX   TexTransformNeg;
+		tfMatrix   worldMatrix;
+		tfMatrix   worldInvTransposeMatrix;
+		tfMatrix   wvpMatrix;
+		tfMatrix   TexTransform;
+		tfMatrix   TexTransformNeg;
 	};
 
 	class TFWaterStill : public TFGrid
@@ -33,19 +33,19 @@ namespace TFCore
 		void Update(float a_fDelta);
 		void BindReflectionMap(ID3D11ShaderResourceView*);
 		void ActivateShaders();
-		XMMATRIX GetTextureTransform() const;
-		XMMATRIX GetTextureTransformNeg() const;
+		tfMatrix GetTextureTransform() const;
+		tfMatrix GetTextureTransformNeg() const;
 
 
-	void UpdateResources(const XMMATRIX& a_matWVP, 
-		const XMMATRIX& a_matWorld, 
-		const XMMATRIX& a_matTexTransform,
-		const XMMATRIX& a_matTexTransformNeg);
+	void UpdateResources(const tfMatrix& a_matWVP, 
+		const tfMatrix& a_matWorld, 
+		const tfMatrix& a_matTexTransform,
+		const tfMatrix& a_matTexTransformNeg);
 
 	private:
 		ID3D11ShaderResourceView* m_pNormalMapSRV;
-		XMMATRIX m_matTexTransform;
-		XMMATRIX m_matTexTransformNeg;
+		tfMatrix m_matTexTransform;
+		tfMatrix m_matTexTransformNeg;
 		float m_fWaterOffsetX;
 		float m_fWaterOffsetY;
 	};

@@ -2,7 +2,7 @@
 
 #include <d3d11.h>
 #include <string>
-#include <xnamath.h>
+#include "TFTypes.h"
 
 namespace TFRendering
 {
@@ -13,8 +13,8 @@ namespace TFRendering
 		TFIRenderable();
 		virtual ~TFIRenderable() {};
 
-		virtual void SetWorldMatrix(const XMMATRIX& a_matWorld);
-		virtual XMMATRIX GetWorldMatrix();
+		virtual void SetWorldMatrix(const tfMatrix& a_matWorld);
+		virtual tfMatrix GetWorldMatrix();
 
 		virtual void Draw() = 0;
 
@@ -28,7 +28,7 @@ namespace TFRendering
 	protected:
 		ID3D11Device*			m_pDevice;
 		ID3D11DeviceContext*	m_pDeviceContext;
-		XMFLOAT4X4              m_matWorld;
+		tfFloat4x4              m_matWorld;
 
 		// buffers
 		ID3D11Buffer* m_pPositionVertexBuffer;

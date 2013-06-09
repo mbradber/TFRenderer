@@ -1,7 +1,7 @@
 #pragma once
 
 #include <d3d11.h>
-#include <xnamath.h>
+#include "TFTypes.h"
 
 namespace TFCore
 {
@@ -13,25 +13,25 @@ namespace TFCore
 		~TFLightManager();
 
 		void Init(ID3D11Device* a_pDevice, ID3D11DeviceContext* a_pDeviceContext);
-		void Update(float a_fDeltaTime, const XMFLOAT3& a_vEyePos, bool a_bInitialTick);
+		void Update(float a_fDeltaTime, const tfFloat3& a_vEyePos, bool a_bInitialTick);
 
 		// Nested directional light structure
 		struct TFDirectionalLight
 		{
 			TFDirectionalLight();
 
-			XMFLOAT4 Ambient;
-			XMFLOAT4 Diffuse;
-			XMFLOAT4 Specular;
-			XMFLOAT3 Direction;
+			tfFloat4 Ambient;
+			tfFloat4 Diffuse;
+			tfFloat4 Specular;
+			tfFloat3 Direction;
 			float    _pad;
 		};
 
 		TFDirectionalLight& GetActiveDirectionalLight() const;
-		XMMATRIX GetView();
-		XMMATRIX GetProjection();
-		XMMATRIX GetVPT();
-		XMFLOAT3 GetPosition() const;
+		tfMatrix GetView();
+		tfMatrix GetProjection();
+		tfMatrix GetVPT();
+		tfFloat3 GetPosition() const;
 
 	private:
 
@@ -39,7 +39,7 @@ namespace TFCore
 		struct TFBufferDirectionalLight
 		{
 			TFDirectionalLight DirLight;
-			XMFLOAT3 EyePos;
+			tfFloat3 EyePos;
 			float    _pad;
 		};
 
@@ -49,7 +49,7 @@ namespace TFCore
 		TFDirectionalLight m_directionalLight1;
 		TFBufferDirectionalLight m_directionaLight1Buffer;
 		ID3D11Buffer* m_pCBDirectionalLight;
-		XMVECTOR m_vPos;
+		tfVector m_vPos; // TODO: dont use tfVector as class member
 		float m_fLightDistance;
 	};
 

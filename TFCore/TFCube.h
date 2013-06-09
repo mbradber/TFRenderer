@@ -8,10 +8,10 @@ namespace TFCore
 	// Layout of the buffer for world-view-projection matrix
 	struct TFBufferWVP
 	{
-		XMMATRIX   worldMatrix;
-		XMMATRIX   worldInvTransposeMatrix;
-		XMMATRIX   wvpMatrix;
-		XMMATRIX   texMatrix;
+		tfMatrix   worldMatrix;
+		tfMatrix   worldInvTransposeMatrix;
+		tfMatrix   wvpMatrix;
+		tfMatrix   texMatrix;
 	};
 
 	class TFCube
@@ -35,7 +35,7 @@ namespace TFCore
 		virtual void SetShaderPath(const std::wstring& a_sFilePath);
 		virtual ID3D11VertexShader* GetVertexShader() const; 
 		virtual ID3D11PixelShader*  GetPixelShader()  const;
-		virtual void UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const XMMATRIX& a_matTex, const XMFLOAT3& a_vEyePos);
+		virtual void UpdateResources(const tfMatrix& a_matWVP, const tfMatrix& a_matWorld, const tfMatrix& a_matTex, const tfFloat3& a_vEyePos);
 		virtual void ActivateShaders();
 
 	private:

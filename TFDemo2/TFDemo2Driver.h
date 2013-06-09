@@ -30,11 +30,11 @@ private:
 	TFCore::TFLightManager m_lightManager;
 	TFCore::TFShaderManager m_shaderManager;
 
-	XMMATRIX m_matView;
-	XMMATRIX m_matProj;
-	XMMATRIX m_matWorld;
+	tfMatrix m_matView;
+	tfMatrix m_matProj;
+	tfMatrix m_matWorld;
 
-	XMMATRIX m_matLightView;
+	tfMatrix m_matLightView;
 
 	// render to texture views
 	//TFRendering::TFShadowMap* m_pShadowMapFront;

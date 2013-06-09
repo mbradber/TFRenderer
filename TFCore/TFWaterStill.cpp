@@ -4,6 +4,7 @@
 
 namespace TFCore
 {
+	using namespace DirectX;
 
 	TFWaterStill::TFWaterStill()
 		:m_fWaterOffsetX(0),
@@ -73,10 +74,10 @@ namespace TFCore
 		m_matTexTransformNeg *= XMMatrixScaling(0.5f, 0.5f, 0.5f);
 	}
 
-	void TFWaterStill::UpdateResources(const XMMATRIX& a_matWVP, 
-		const XMMATRIX& a_matWorld, 
-		const XMMATRIX& a_matTexTransform,
-		const XMMATRIX& a_matTexTransformNeg)
+	void TFWaterStill::UpdateResources(const tfMatrix& a_matWVP, 
+		const tfMatrix& a_matWorld, 
+		const tfMatrix& a_matTexTransform,
+		const tfMatrix& a_matTexTransformNeg)
 	{
 		//UPDATE TRANSFORM RESOURCE
 		TFCore::TFBufferPerObjectWater cb;
@@ -86,9 +87,9 @@ namespace TFCore
 
 		// Update world inverse transpose matrix (used to transform normals as it will be distorted 
 		// with non uniform scaling transforms, see pg. 277 of Luna...
-		XMMATRIX _wit = a_matWorld;
+		tfMatrix _wit = a_matWorld;
 		_wit.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-		XMVECTOR _witDet = XMMatrixDeterminant(_wit);
+		tfVector _witDet = XMMatrixDeterminant(_wit);
 
 		cb.worldInvTransposeMatrix = XMMatrixInverse(&_witDet, _wit);
 
@@ -102,12 +103,12 @@ namespace TFCore
 		m_pDeviceContext->UpdateSubresource(m_pCBPerObject , 0, NULL, &cb, 0, 0);
 	}
 
-	XMMATRIX TFWaterStill::GetTextureTransform() const
+	tfMatrix TFWaterStill::GetTextureTransform() const
 	{
 		return m_matTexTransform;
 	}
 
-	XMMATRIX TFWaterStill::GetTextureTransformNeg() const
+	tfMatrix TFWaterStill::GetTextureTransformNeg() const
 	{
 		return m_matTexTransformNeg;
 	}

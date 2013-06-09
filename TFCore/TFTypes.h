@@ -1,6 +1,8 @@
-#include <xnamath.h>
+#include <DirectXMath.h>
 
-typedef XMFLOAT3 tfFloat3;
-typedef XMFLOAT4 tfFloat4;
-typedef XMMATRIX tfMatrix;
-typedef XMVECTOR tfVector;
+typedef DirectX::XMFLOAT2	tfFloat2;
+typedef DirectX::XMFLOAT3	tfFloat3;
+typedef DirectX::XMFLOAT4	tfFloat4;
+typedef DirectX::XMMATRIX	tfMatrix;
+typedef DirectX::XMVECTOR	tfVector;
+typedef DirectX::XMFLOAT4X4 tfFloat4x4;

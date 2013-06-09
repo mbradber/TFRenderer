@@ -13,8 +13,8 @@ namespace TFCore
 	/*** Simple vertex structure holding position and color ***/
 	struct TFSimpleVertex
 	{
-		XMFLOAT3 Pos;
-		XMFLOAT4 Col;
+		tfFloat3 Pos;
+		tfFloat4 Col;
 	};
 
 	/*** Default input layout for TFSimpleVertex ***/
@@ -27,8 +27,8 @@ namespace TFCore
 	/*** Vertex structure holding position and normals ***/
 	struct TFPosNormVertex
 	{
-		XMFLOAT3 Pos;
-		XMFLOAT3 Norm;
+		tfFloat3 Pos;
+		tfFloat3 Norm;
 	};
 
 	/*** Default input layout for TFSimpleVertex ***/
@@ -41,9 +41,9 @@ namespace TFCore
 	/*** Vertex structure holding position, normals, and texture coordinates ***/
 	struct TFPosNormTex
 	{
-		XMFLOAT3 Pos;
-		XMFLOAT3 Norm;
-		XMFLOAT2 TexC;
+		tfFloat3 Pos;
+		tfFloat3 Norm;
+		tfFloat2 TexC;
 	};
 
 	/*** Vertex structure holding position, normal, and texture coordinate data ***/
@@ -56,17 +56,17 @@ namespace TFCore
 
 	struct TFPosNormTexTan
 	{
-		XMFLOAT3 Pos;
-		XMFLOAT3 Norm;
-		XMFLOAT2 TexC;
-		XMFLOAT3 TanU;
+		tfFloat3 Pos;
+		tfFloat3 Norm;
+		tfFloat2 TexC;
+		tfFloat3 TanU;
 
 		TFPosNormTexTan()
 			:
-			Pos(XMFLOAT3(0, 0, 0)),
-			Norm(XMFLOAT3(0, 0, 0)),
-			TexC(XMFLOAT2(0, 0)),
-			TanU(XMFLOAT3(0, 0, 0))
+			Pos(tfFloat3(0, 0, 0)),
+			Norm(tfFloat3(0, 0, 0)),
+			TexC(tfFloat2(0, 0)),
+			TanU(tfFloat3(0, 0, 0))
 		{
 		}
 	};
@@ -81,17 +81,17 @@ namespace TFCore
 
 	struct TFPosNormTex4Tan
 	{
-		XMFLOAT3 Pos;
-		XMFLOAT3 Norm;
-		XMFLOAT4 TexC;
-		XMFLOAT3 TanU;
+		tfFloat3 Pos;
+		tfFloat3 Norm;
+		tfFloat4 TexC;
+		tfFloat3 TanU;
 
 		TFPosNormTex4Tan()
 			:
-			Pos(XMFLOAT3(0, 0, 0)),
-			Norm(XMFLOAT3(0, 0, 0)),
-			TexC(XMFLOAT4(0, 0, 0, 0)),
-			TanU(XMFLOAT3(0, 0, 0))
+			Pos(tfFloat3(0, 0, 0)),
+			Norm(tfFloat3(0, 0, 0)),
+			TexC(tfFloat4(0, 0, 0, 0)),
+			TanU(tfFloat3(0, 0, 0))
 		{
 		}
 	};

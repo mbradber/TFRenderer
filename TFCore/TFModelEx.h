@@ -2,7 +2,7 @@
 
 #include <d3d11.h>
 #include <string>
-#include <xnamath.h>
+#include "TFTypes.h"
 #include <vector>
 #include "TFIRenderable.h"
 
@@ -38,10 +38,10 @@ namespace TFRendering
 
 		void ProcessNode(const aiScene* const a_pScene,
 			aiNode* a_pNode,
-			XMFLOAT3*& a_pPositionBuffer,
-			XMFLOAT3*& a_pNormalBuffer,
-			XMFLOAT2*& a_pTexCoordBuffer,
-			XMFLOAT3*& a_pTangentBuffer,
+			tfFloat3*& a_pPositionBuffer,
+			tfFloat3*& a_pNormalBuffer,
+			tfFloat2*& a_pTexCoordBuffer,
+			tfFloat3*& a_pTangentBuffer,
 			UINT*&     a_pIndices,
 			UINT*      a_pVertexOffset,
 			UINT*      a_pIndexOffset);

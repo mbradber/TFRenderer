@@ -29,10 +29,10 @@ namespace TFCore
 
 		void Draw();
 		void ActivateShaders();
-		void SetWorldMatrix(const XMMATRIX& a_matWorld);
-		const XMMATRIX& GetWorldMatrix() const;
+		void SetWorldMatrix(const tfMatrix& a_matWorld);
+		const tfMatrix& GetWorldMatrix() const;
 		void ActivateShadowShaders();
-		void UpdateShadowResources(const XMMATRIX& a_matWVP);
+		void UpdateShadowResources(const tfMatrix& a_matWVP);
 		void AddShadowShaders(ID3D11VertexShader* a_pVertexShader,
 			ID3D11PixelShader* a_pPixelShader,
 			ID3D11InputLayout* a_pInputLayout);
@@ -61,7 +61,7 @@ namespace TFCore
 		ID3D11PixelShader*		   m_pPixelShader;
 		ID3D11InputLayout*		   m_pInputLayout;
 		bool                       m_bUsingHeightmap;
-		XMMATRIX                   m_matWorld;
+		tfMatrix                   m_matWorld;
 		ID3D11VertexShader*		   m_pVertexShaderShadows;
 		ID3D11PixelShader*		   m_pPixelShaderShadows;
 		ID3D11InputLayout*         m_pInputLayoutShadows;

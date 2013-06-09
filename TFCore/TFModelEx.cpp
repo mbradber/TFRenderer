@@ -57,10 +57,10 @@ namespace TFRendering
 		SurveyNode(scene, _root, &m_nVertexCount, &m_nIndexCount); 
 
 		// allocate data buffers
-		XMFLOAT3* _pPositionBuffer = new XMFLOAT3[m_nVertexCount];
-		XMFLOAT3* _pNormalBuffer   = new XMFLOAT3[m_nVertexCount];
-		XMFLOAT2* _pTexCoordBuffer = new XMFLOAT2[m_nVertexCount];
-		XMFLOAT3* _pTangentBuffer  = new XMFLOAT3[m_nVertexCount];
+		tfFloat3* _pPositionBuffer = new tfFloat3[m_nVertexCount];
+		tfFloat3* _pNormalBuffer   = new tfFloat3[m_nVertexCount];
+		tfFloat2* _pTexCoordBuffer = new tfFloat2[m_nVertexCount];
+		tfFloat3* _pTangentBuffer  = new tfFloat3[m_nVertexCount];
 		UINT*     _pIndices        = new UINT[m_nIndexCount];
 
 		// Traverse the scene nodes and parse vertex and index data
@@ -78,7 +78,7 @@ namespace TFRendering
 			D3D11_BUFFER_DESC _posBufferDesc;
 			ZeroMemory(&_posBufferDesc, sizeof(_posBufferDesc));
 			_posBufferDesc.Usage          = D3D11_USAGE_DEFAULT;
-			_posBufferDesc.ByteWidth      = sizeof(XMFLOAT3) * m_nVertexCount;
+			_posBufferDesc.ByteWidth      = sizeof(tfFloat3) * m_nVertexCount;
 			_posBufferDesc.BindFlags      = D3D11_BIND_VERTEX_BUFFER;
 			_posBufferDesc.CPUAccessFlags = 0; // No cpu access
 			_posBufferDesc.MiscFlags      = 0; // Unused
@@ -96,7 +96,7 @@ namespace TFRendering
 			D3D11_BUFFER_DESC _normBufferDesc;
 			ZeroMemory(&_normBufferDesc, sizeof(_normBufferDesc));
 			_normBufferDesc.Usage          = D3D11_USAGE_DEFAULT;
-			_normBufferDesc.ByteWidth      = sizeof(XMFLOAT3) * m_nVertexCount;
+			_normBufferDesc.ByteWidth      = sizeof(tfFloat3) * m_nVertexCount;
 			_normBufferDesc.BindFlags      = D3D11_BIND_VERTEX_BUFFER;
 			_normBufferDesc.CPUAccessFlags = 0; // No cpu access
 			_normBufferDesc.MiscFlags      = 0; // Unused
@@ -114,7 +114,7 @@ namespace TFRendering
 			D3D11_BUFFER_DESC _texcoordBufferDesc;
 			ZeroMemory(&_texcoordBufferDesc, sizeof(_texcoordBufferDesc));
 			_texcoordBufferDesc.Usage          = D3D11_USAGE_DEFAULT;
-			_texcoordBufferDesc.ByteWidth      = sizeof(XMFLOAT2) * m_nVertexCount;
+			_texcoordBufferDesc.ByteWidth      = sizeof(tfFloat2) * m_nVertexCount;
 			_texcoordBufferDesc.BindFlags      = D3D11_BIND_VERTEX_BUFFER;
 			_texcoordBufferDesc.CPUAccessFlags = 0; // No cpu access
 			_texcoordBufferDesc.MiscFlags      = 0; // Unused
@@ -132,7 +132,7 @@ namespace TFRendering
 			D3D11_BUFFER_DESC _tangentBufferDesc;
 			ZeroMemory(&_tangentBufferDesc, sizeof(_tangentBufferDesc));
 			_tangentBufferDesc.Usage          = D3D11_USAGE_DEFAULT;
-			_tangentBufferDesc.ByteWidth      = sizeof(XMFLOAT3) * m_nVertexCount;
+			_tangentBufferDesc.ByteWidth      = sizeof(tfFloat3) * m_nVertexCount;
 			_tangentBufferDesc.BindFlags      = D3D11_BIND_VERTEX_BUFFER;
 			_tangentBufferDesc.CPUAccessFlags = 0; // No cpu access
 			_tangentBufferDesc.MiscFlags      = 0; // Unused
@@ -205,10 +205,10 @@ namespace TFRendering
 
 	void TFModelEx::ProcessNode(const aiScene* const a_pScene,
 		aiNode*	   a_pNode,
-		XMFLOAT3*& a_pPositionBuffer,
-		XMFLOAT3*& a_pNormalBuffer,
-		XMFLOAT2*& a_pTexCoordBuffer,
-		XMFLOAT3*& a_pTangentBuffer,
+		tfFloat3*& a_pPositionBuffer,
+		tfFloat3*& a_pNormalBuffer,
+		tfFloat2*& a_pTexCoordBuffer,
+		tfFloat3*& a_pTangentBuffer,
 		UINT*&     a_pIndices,
 		UINT*      a_pVertexOffset,
 		UINT*      a_pIndexOffset)

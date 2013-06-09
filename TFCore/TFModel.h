@@ -13,11 +13,11 @@ namespace TFCore
 	// Layout of the buffer for vertex attribute properties
 	struct TFBufferPerObject
 	{
-		XMMATRIX   worldMatrix;
-		XMMATRIX   worldInvTransposeMatrix;
-		XMMATRIX   wvpMatrix;
-		XMMATRIX   texMatrix;
-		XMMATRIX   lightVPT;
+		tfMatrix   worldMatrix;
+		tfMatrix   worldInvTransposeMatrix;
+		tfMatrix   wvpMatrix;
+		tfMatrix   texMatrix;
+		tfMatrix   lightVPT;
 	};
 
 	class TFModel
@@ -45,16 +45,16 @@ namespace TFCore
 		void SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap, size_t a_nIndex);
 		void UnloadShadowMap(size_t a_nIndex);
 		void ActivateShadowShaders();
-		void UpdateResources(const XMMATRIX& a_matWVP, 
-			const XMMATRIX& a_matWorld, 
-			const XMMATRIX& a_matLightWVPT, 
-			const XMMATRIX& a_matTex, 
-			const XMFLOAT3& a_vEyePos);
-		void UpdateShadowResources(const XMMATRIX& a_matWVP);
+		void UpdateResources(const tfMatrix& a_matWVP, 
+			const tfMatrix& a_matWorld, 
+			const tfMatrix& a_matLightWVPT, 
+			const tfMatrix& a_matTex, 
+			const tfFloat3& a_vEyePos);
+		void UpdateShadowResources(const tfMatrix& a_matWVP);
 		ID3D11ShaderResourceView* GetPrimaryTexture() { return m_vMeshTexturesColor[0]; }
 
-		void SetWorldMatrix(const XMMATRIX& a_matWorld);
-		const XMMATRIX& GetWorldMatrix() const;
+		void SetWorldMatrix(const tfMatrix& a_matWorld);
+		const tfMatrix& GetWorldMatrix() const;
 
 	private:
 
@@ -90,10 +90,10 @@ namespace TFCore
 
 			void ProcessNode(const aiScene* const a_pScene,
 				aiNode* a_pNode,
-				XMFLOAT3*& a_pPositionBuffer,
-				XMFLOAT3*& a_pNormalBuffer,
-				XMFLOAT2*& a_pTexCoordBuffer,
-				XMFLOAT3*& a_pTangentBuffer,
+				tfFloat3*& a_pPositionBuffer,
+				tfFloat3*& a_pNormalBuffer,
+				tfFloat2*& a_pTexCoordBuffer,
+				tfFloat3*& a_pTangentBuffer,
 				UINT*&     a_pIndices,
 				UINT*      a_pVertexOffset,
 				UINT*      a_pIndexOffset);
@@ -119,7 +119,7 @@ namespace TFCore
 		std::vector<TFMesh>                     m_meshes;
 		std::vector<ID3D11ShaderResourceView*>  m_vMeshTexturesColor;
 		std::vector<ID3D11ShaderResourceView*>  m_vMeshTexturesNormals;
-		XMMATRIX                                m_matWorld;
+		tfMatrix                                m_matWorld;
 
 
 		ID3D11Buffer* m_pPositionVertexBuffer;

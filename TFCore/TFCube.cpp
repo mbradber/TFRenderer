@@ -11,6 +11,7 @@
 
 namespace TFCore
 {
+	using namespace DirectX;
 
 	TFCube::TFCube()
 		:m_pd3dDevice(NULL),
@@ -131,35 +132,35 @@ namespace TFCore
 		// Fill in the front face vertex data.
 		TFPosNormTex vertices[] = 
 		{
-	        {XMFLOAT3(-1, -1, -1), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT2( 0.0f, 1.0f)},
-	        {XMFLOAT3(-1, +1, -1), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT2( 0.0f, 0.0f)},
-	        {XMFLOAT3(+1, +1, -1), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT2( 1.0f, 0.0f)},
-	        {XMFLOAT3(+1, -1, -1), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT2( 1.0f, 1.0f)},
+	        {tfFloat3(-1, -1, -1), tfFloat3(0.0f, 0.0f, -1.0f), tfFloat2( 0.0f, 1.0f)},
+	        {tfFloat3(-1, +1, -1), tfFloat3(0.0f, 0.0f, -1.0f), tfFloat2( 0.0f, 0.0f)},
+	        {tfFloat3(+1, +1, -1), tfFloat3(0.0f, 0.0f, -1.0f), tfFloat2( 1.0f, 0.0f)},
+	        {tfFloat3(+1, -1, -1), tfFloat3(0.0f, 0.0f, -1.0f), tfFloat2( 1.0f, 1.0f)},
 
-			{XMFLOAT3(-1, -1, +1), XMFLOAT3(0.0f, 0.0f, 1.0f),  XMFLOAT2( 1.0f, 1.0f)},
-	        {XMFLOAT3(+1, -1, +1), XMFLOAT3(0.0f, 0.0f, 1.0f),  XMFLOAT2( 0.0f, 1.0f)},
-	        {XMFLOAT3(+1, +1, +1), XMFLOAT3(0.0f, 0.0f, 1.0f),  XMFLOAT2( 0.0f, 0.0f)},
-	        {XMFLOAT3(-1, +1, +1), XMFLOAT3(0.0f, 0.0f, 1.0f),  XMFLOAT2( 1.0f, 0.0f)},
+			{tfFloat3(-1, -1, +1), tfFloat3(0.0f, 0.0f, 1.0f),  tfFloat2( 1.0f, 1.0f)},
+	        {tfFloat3(+1, -1, +1), tfFloat3(0.0f, 0.0f, 1.0f),  tfFloat2( 0.0f, 1.0f)},
+	        {tfFloat3(+1, +1, +1), tfFloat3(0.0f, 0.0f, 1.0f),  tfFloat2( 0.0f, 0.0f)},
+	        {tfFloat3(-1, +1, +1), tfFloat3(0.0f, 0.0f, 1.0f),  tfFloat2( 1.0f, 0.0f)},
 
-			{XMFLOAT3(-1, +1, -1), XMFLOAT3(0.0f, 1.0f, 0.0f),  XMFLOAT2( 0.0f, 1.0f)},
-	        {XMFLOAT3(-1, +1, +1), XMFLOAT3(0.0f, 1.0f, 0.0f),  XMFLOAT2( 0.0f, 0.0f)},
-	        {XMFLOAT3(+1, +1, +1), XMFLOAT3(0.0f, 1.0f, 0.0f),  XMFLOAT2( 1.0f, 0.0f)},
-	        {XMFLOAT3(+1, +1, -1), XMFLOAT3(0.0f, 1.0f, 0.0f),  XMFLOAT2( 1.0f, 1.0f)},
+			{tfFloat3(-1, +1, -1), tfFloat3(0.0f, 1.0f, 0.0f),  tfFloat2( 0.0f, 1.0f)},
+	        {tfFloat3(-1, +1, +1), tfFloat3(0.0f, 1.0f, 0.0f),  tfFloat2( 0.0f, 0.0f)},
+	        {tfFloat3(+1, +1, +1), tfFloat3(0.0f, 1.0f, 0.0f),  tfFloat2( 1.0f, 0.0f)},
+	        {tfFloat3(+1, +1, -1), tfFloat3(0.0f, 1.0f, 0.0f),  tfFloat2( 1.0f, 1.0f)},
 
-			{XMFLOAT3(-1, -1, -1), XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2( 1.0f, 1.0f)},
-	        {XMFLOAT3(+1, -1, -1), XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2( 0.0f, 1.0f)},
-	        {XMFLOAT3(+1, -1, +1), XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2( 0.0f, 0.0f)},
-	        {XMFLOAT3(-1, -1, +1), XMFLOAT3(0.0f, -1.0f, 0.0f), XMFLOAT2( 1.0f, 0.0f)},
+			{tfFloat3(-1, -1, -1), tfFloat3(0.0f, -1.0f, 0.0f), tfFloat2( 1.0f, 1.0f)},
+	        {tfFloat3(+1, -1, -1), tfFloat3(0.0f, -1.0f, 0.0f), tfFloat2( 0.0f, 1.0f)},
+	        {tfFloat3(+1, -1, +1), tfFloat3(0.0f, -1.0f, 0.0f), tfFloat2( 0.0f, 0.0f)},
+	        {tfFloat3(-1, -1, +1), tfFloat3(0.0f, -1.0f, 0.0f), tfFloat2( 1.0f, 0.0f)},
 
-			{XMFLOAT3(-1, -1, +1), XMFLOAT3(-1.0f, 0.0f, 0.0f), XMFLOAT2( 0.0f, 1.0f)},
-	        {XMFLOAT3(-1, +1, +1), XMFLOAT3(-1.0f, 0.0f, 0.0f), XMFLOAT2( 0.0f, 0.0f)},
-	        {XMFLOAT3(-1, +1, -1), XMFLOAT3(-1.0f, 0.0f, 0.0f), XMFLOAT2( 1.0f, 0.0f)},
-	        {XMFLOAT3(-1, -1, -1), XMFLOAT3(-1.0f, 0.0f, 0.0f), XMFLOAT2( 1.0f, 1.0f)},
+			{tfFloat3(-1, -1, +1), tfFloat3(-1.0f, 0.0f, 0.0f), tfFloat2( 0.0f, 1.0f)},
+	        {tfFloat3(-1, +1, +1), tfFloat3(-1.0f, 0.0f, 0.0f), tfFloat2( 0.0f, 0.0f)},
+	        {tfFloat3(-1, +1, -1), tfFloat3(-1.0f, 0.0f, 0.0f), tfFloat2( 1.0f, 0.0f)},
+	        {tfFloat3(-1, -1, -1), tfFloat3(-1.0f, 0.0f, 0.0f), tfFloat2( 1.0f, 1.0f)},
 
-			{XMFLOAT3(+1, -1, -1), XMFLOAT3(1.0f, 0.0f, 0.0f),  XMFLOAT2(0.0f, 1.0f)},
-	        {XMFLOAT3(+1, +1, -1), XMFLOAT3(1.0f, 0.0f, 0.0f),  XMFLOAT2(0.0f, 0.0f)},
-	        {XMFLOAT3(+1, +1, +1), XMFLOAT3(1.0f, 0.0f, 0.0f),  XMFLOAT2(1.0f, 0.0f)},
-			{XMFLOAT3(+1, -1, +1), XMFLOAT3(1.0f, 0.0f, 0.0f),  XMFLOAT2(1.0f, 1.0f)},
+			{tfFloat3(+1, -1, -1), tfFloat3(1.0f, 0.0f, 0.0f),  tfFloat2(0.0f, 1.0f)},
+	        {tfFloat3(+1, +1, -1), tfFloat3(1.0f, 0.0f, 0.0f),  tfFloat2(0.0f, 0.0f)},
+	        {tfFloat3(+1, +1, +1), tfFloat3(1.0f, 0.0f, 0.0f),  tfFloat2(1.0f, 0.0f)},
+			{tfFloat3(+1, -1, +1), tfFloat3(1.0f, 0.0f, 0.0f),  tfFloat2(1.0f, 1.0f)},
 		};
 
 		// scale the geometry
@@ -260,7 +261,7 @@ namespace TFCore
 	}
 
 	// TODO: Address tedious type changing issue...
-	void TFCube::UpdateResources(const XMMATRIX& a_matWVP, const XMMATRIX& a_matWorld, const XMMATRIX& a_matTex, const XMFLOAT3& a_vEyePos)
+	void TFCube::UpdateResources(const tfMatrix& a_matWVP, const tfMatrix& a_matWorld, const tfMatrix& a_matTex, const tfFloat3& a_vEyePos)
 	{
 		//UPDATE TRANSFORM RESOURCE
 		TFCore::TFBufferWVP cb;
@@ -270,9 +271,9 @@ namespace TFCore
 
 		// Update world inverse transpose matrix (used to transform normals as it will be distorted 
 		// with non uniform scaling transforms, see pg. 277 of Luna...
-		XMMATRIX _wit = a_matWorld;
+		tfMatrix _wit = a_matWorld;
 		_wit.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-		XMVECTOR _witDet = XMMatrixDeterminant(_wit);
+		tfVector _witDet = XMMatrixDeterminant(_wit);
 
 		cb.worldInvTransposeMatrix = XMMatrixInverse(&_witDet, _wit);
 

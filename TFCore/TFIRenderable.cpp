@@ -14,12 +14,12 @@ namespace TFRendering
 
 	}
 
-	void TFIRenderable::SetWorldMatrix(const XMMATRIX& a_matWorld)
+	void TFIRenderable::SetWorldMatrix(const tfMatrix& a_matWorld)
 	{
 		XMStoreFloat4x4(&m_matWorld, a_matWorld);
 	}
 
-	XMMATRIX TFIRenderable::GetWorldMatrix()
+	tfMatrix TFIRenderable::GetWorldMatrix()
 	{
 		return XMLoadFloat4x4(&m_matWorld);
 	}

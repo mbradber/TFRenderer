@@ -232,7 +232,7 @@ namespace TFRendering
 		m_vRenderables.push_back(a_pRenderable);
 	}
 
-	void TFEffect::BatchDraw(const XMMATRIX& a_matViewProj, const XMMATRIX& a_matLightVPT)
+	void TFEffect::BatchDraw(const tfMatrix& a_matViewProj, const tfMatrix& a_matLightVPT)
 	{
 		TF_ASSERT(m_pVertexShader != NULL, FILE_NAME, LINE_NO);
 

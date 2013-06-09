@@ -6,6 +6,8 @@ using namespace std;
 
 namespace TFCore
 {
+	using namespace DirectX;
+
 	TFGrid::TFGrid()
 		:m_nIndexCount(0),
 		m_bUsingHeightmap(true)
@@ -180,12 +182,12 @@ namespace TFCore
 				_vIndices[k + 2] = i * a_nWidth + j;
 
 				// Calculate normals
-				XMVECTOR _vA = XMLoadFloat3(&_vVertices[_vIndices[k]].Pos);
-				XMVECTOR _vB = XMLoadFloat3(&_vVertices[_vIndices[k + 1]].Pos);
-				XMVECTOR _vC = XMLoadFloat3(&_vVertices[_vIndices[k + 2]].Pos);
+				tfVector _vA = XMLoadFloat3(&_vVertices[_vIndices[k]].Pos);
+				tfVector _vB = XMLoadFloat3(&_vVertices[_vIndices[k + 1]].Pos);
+				tfVector _vC = XMLoadFloat3(&_vVertices[_vIndices[k + 2]].Pos);
 
-				XMVECTOR _vD = _vB - _vA;
-				XMVECTOR _vE = _vC - _vA;
+				tfVector _vD = _vB - _vA;
+				tfVector _vE = _vC - _vA;
 
 				_vE = XMVector3Cross(_vD, _vE);
 
@@ -253,7 +255,7 @@ namespace TFCore
 		// describe the cb for the WVP matrix for shadow mapping
 		ZeroMemory(&bd, sizeof(bd));
 		bd.Usage          = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth      = sizeof(XMMATRIX);
+		bd.ByteWidth      = sizeof(tfMatrix);
 		bd.BindFlags      = D3D11_BIND_CONSTANT_BUFFER;
 		bd.CPUAccessFlags = 0;
 		bd.MiscFlags      = 0;
@@ -291,19 +293,19 @@ namespace TFCore
 		m_pDeviceContext->IASetInputLayout(m_pInputLayout);
 	}
 
-	void TFGrid::SetWorldMatrix(const XMMATRIX& a_matWorld)
+	void TFGrid::SetWorldMatrix(const tfMatrix& a_matWorld)
 	{
 		m_matWorld = a_matWorld;
 	}
 
-	const XMMATRIX& TFGrid::GetWorldMatrix() const
+	const tfMatrix& TFGrid::GetWorldMatrix() const
 	{
 		return m_matWorld;
 	}
 
-	void TFGrid::UpdateShadowResources(const XMMATRIX& a_matWVP)
+	void TFGrid::UpdateShadowResources(const tfMatrix& a_matWVP)
 	{
-		XMMATRIX _matWVP = XMMatrixTranspose(a_matWVP);
+		tfMatrix _matWVP = XMMatrixTranspose(a_matWVP);
 		m_pDeviceContext->UpdateSubresource(m_pCBPerObject_Shadow, 0, NULL, &_matWVP, 0, 0);
 	}
 

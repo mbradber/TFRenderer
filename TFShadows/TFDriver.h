@@ -30,11 +30,11 @@ private:
 	TFCore::TFModel m_box1;
 	TFCore::TFModel m_box2;
 
-	XMMATRIX m_matView;
-	XMMATRIX m_matProj;
-	XMMATRIX m_matWorld;
+	tfMatrix m_matView;
+	tfMatrix m_matProj;
+	tfMatrix m_matWorld;
 
-	XMMATRIX m_matLightView;
+	tfMatrix m_matLightView;
 
 	TFRendering::TFShadowMap* m_pShadowMapFront;
 	TFRendering::TFShadowMap* m_pShadowMapBack;
