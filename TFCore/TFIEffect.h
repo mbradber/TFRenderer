@@ -7,33 +7,30 @@
 
 namespace TFRendering
 {
-	class TFEffect
+	class TFIEffect
 	{
 	public:
 
-		TFEffect();
-		virtual ~TFEffect();
+		TFIEffect(ID3D11Device* a_pDevice,
+			ID3D11DeviceContext*a_pDeviceContext,
+			std::wstring& a_wsVertexShaderPath,
+			std::wstring& a_wsPixelShaderPath);
+		virtual ~TFIEffect();
 
-		void Initialize(ID3D11Device* a_pDevice,
-			ID3D11DeviceContext* a_pDeviceContext,
-			const std::wstring& a_wsShaderPath,
-			const std::wstring& a_wsShaderPrefix);
-
-		virtual void Init() = 0;
-
-		void AddPixelShader(const std::wstring& a_sFilePathShader);
 		void AddRenderable(class TFIRenderable* a_pRenderable);
-		void SetRenderState();
 		virtual void BatchDraw(const tfMatrix& a_matViewProj, 
 			const tfMatrix& a_matLightVPT) = 0;
 
-	private:
-		// no copying
-		TFEffect(TFEffect&);
-		TFEffect& operator=(TFEffect&);
+	protected:
+		void SetRenderState();
 
-		void BuildVertexShader(const std::wstring& a_wsShaderPath);
-		void QueryVertexShader();
+	private:
+		// disable copying
+		TFIEffect(TFIEffect&);
+		TFIEffect& operator=(TFIEffect&);
+
+		void BuildVertexShaderAndInputLayout();
+		void BuildPixelShader();
 
 	protected:
 		ID3D11Device*			m_pDevice;
@@ -42,13 +39,14 @@ namespace TFRendering
 		ID3D11VertexShader*		m_pVertexShader;
 		ID3D11PixelShader*		m_pPixelShader;
 		std::wstring			m_wsShaderPrefix;
+		std::wstring			m_wsVertexShaderPath;
+		std::wstring			m_wsPixelShaderPath;
 		UINT                    m_nStartSlotVB;
 		UINT                    m_nNumVertexBuffers;
 		ID3D11Buffer**          m_pVertexBuffers;
 		std::vector<UINT>       m_vStrides;
 		std::vector<UINT>       m_vOffsets;
 		ID3D11Buffer*           m_pCBPerObject;
-
 
 		std::vector<TFIRenderable*> m_vRenderables;
 	};

@@ -7,18 +7,12 @@ namespace TFRendering
 
 	using namespace DirectX;
 
-	TFBlinnPhong::TFBlinnPhong()
-	{
-
-	}
-
-
-	TFBlinnPhong::~TFBlinnPhong()
-	{
-
-	}
-
-	void TFBlinnPhong::Init()
+	TFBlinnPhong::TFBlinnPhong(ID3D11Device* a_pDevice,
+		ID3D11DeviceContext* a_pDeviceContext)
+		:TFIEffect(a_pDevice, 
+			a_pDeviceContext, 
+			std::wstring(L"ShadowsVS.cso"),
+			std::wstring(L"ShadowsPS.cso"))
 	{
 		// describe the cb for the WVP matrix
 		D3D11_BUFFER_DESC bd;
@@ -33,7 +27,14 @@ namespace TFRendering
 		HR(m_pDevice->CreateBuffer(&bd, NULL, &m_pCBPerObject));
 	}
 
-	void TFBlinnPhong::BatchDraw(const tfMatrix& a_matViewProj, const tfMatrix& a_matLightVPT)
+
+	TFBlinnPhong::~TFBlinnPhong()
+	{
+
+	}
+
+	void TFBlinnPhong::BatchDraw(const tfMatrix& a_matViewProj, 
+		const tfMatrix& a_matLightVPT)
 	{
 		// set state for this effect
 		SetRenderState();

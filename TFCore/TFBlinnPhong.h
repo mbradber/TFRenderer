@@ -1,20 +1,25 @@
 #pragma once
 
-#include "TFEffect.h"
+#include "TFIEffect.h"
 #include "TFTypes.h"
 
 namespace TFRendering
 {
 
-	class TFBlinnPhong : public TFEffect
+	class TFBlinnPhong : public TFIEffect
 	{
 	public:
-		TFBlinnPhong();
+		TFBlinnPhong(ID3D11Device* a_pDevice,
+			ID3D11DeviceContext* a_pDeviceContext);
 		~TFBlinnPhong();
 
-		void Init();
 		void BatchDraw(const tfMatrix& a_matViewProj, 
 			const tfMatrix& a_matLightVPT);
+
+	private:
+		// disable copying
+		TFBlinnPhong(TFBlinnPhong&);
+		TFBlinnPhong& operator=(TFBlinnPhong&);
 
 	private:
 

@@ -10,7 +10,7 @@
 #include "TFReflectionMap.h"
 #include "TFTerrain.h"
 #include "TFWaterStill.h"
-#include "TFEffect.h"
+#include "TFIEffect.h"
 #include "TFModelEx.h"
 
 class TFDemoDriver : public TFCore::TFWinBase

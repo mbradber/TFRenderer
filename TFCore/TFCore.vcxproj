@@ -102,7 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TFBlinnPhong.h" />
-    <ClInclude Include="TFEffect.h" />
+    <ClInclude Include="TFIEffect.h" />
     <ClInclude Include="TFGrid.h" />
     <ClInclude Include="TFLightManager.h" />
     <ClInclude Include="TFCore.h" />
@@ -126,7 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TFBlinnPhong.cpp" />
-    <ClCompile Include="TFEffect.cpp" />
+    <ClCompile Include="TFIEffect.cpp" />
     <ClCompile Include="TFGrid.cpp" />
     <ClCompile Include="TFLightManager.cpp" />
     <ClCompile Include="TFCore.cpp" />

@@ -1,4 +1,4 @@
-#include "TFEffect.h"
+#include "TFIEffect.h"
 #include <fstream>
 #include "TFUtils.h"
 #include <D3Dcompiler.h>
@@ -8,51 +8,45 @@ namespace TFRendering
 {
 	using namespace std;
 
-	TFEffect::TFEffect()
-		:m_pDevice(NULL),
-		 m_pDeviceContext(NULL),
+	TFIEffect::TFIEffect(ID3D11Device* a_pDevice,
+		ID3D11DeviceContext* a_pDeviceContext,
+		std::wstring& a_wsVertexShaderPath,
+		std::wstring& a_wsPixelShaderPath)
+		:
+		 m_pDevice(a_pDevice),
+		 m_pDeviceContext(a_pDeviceContext),
 		 m_pInputLayout(NULL),
 		 m_pVertexShader(NULL),
 		 m_pPixelShader(NULL),
 		 m_nStartSlotVB(0),
 		 m_nNumVertexBuffers(0),
 		 m_pVertexBuffers(0),
-		 m_pCBPerObject(NULL)
+		 m_pCBPerObject(NULL),
+		 m_wsVertexShaderPath(a_wsVertexShaderPath),
+		 m_wsPixelShaderPath(a_wsPixelShaderPath)
 	{
+#ifdef _DEBUG
+		m_wsShaderPrefix = L"..\\Debug\\";
 
+#else
+		m_wsShaderPrefix = L"..\\Release\\";
+#endif		
+
+		BuildVertexShaderAndInputLayout();
+		BuildPixelShader();
 	}
 
-	TFEffect::~TFEffect()
+	TFIEffect::~TFIEffect()
 	{
 		delete[] m_pVertexBuffers;
 
 		ReleaseCOM(m_pCBPerObject);
 	}
 
-	void TFEffect::Initialize(ID3D11Device* a_pDevice,
-		ID3D11DeviceContext* a_pDeviceContext,
-		const std::wstring& a_wsShaderPath,
-		const std::wstring& a_wsShaderPrefix)
-	{
-		m_pDevice = a_pDevice;
-		m_pDeviceContext = a_pDeviceContext;
-		m_wsShaderPrefix = a_wsShaderPrefix;
-
-		BuildVertexShader(a_wsShaderPath);
-		QueryVertexShader();
-
-		Init();
-	}
-
-	void TFEffect::Init()
-	{
-
-	}
-
-	void TFEffect::BuildVertexShader(const std::wstring& a_wsShaderPath)
+	void TFIEffect::BuildVertexShaderAndInputLayout()
 	{
 		std::wstring _wsShaderPrefix = m_wsShaderPrefix;
-		_wsShaderPrefix.append(a_wsShaderPath);
+		_wsShaderPrefix.append(m_wsVertexShaderPath);
 
 		// Open compiled shader file and read it...
 		ULONG _nFileSize = 0;
@@ -85,7 +79,6 @@ namespace TFRendering
 
 		// Create vertex shader from compiled object
 		HR(m_pDevice->CreateVertexShader(_cbBuffer, _nFileSize, NULL, &_pVertexShader));
-
 
 		// REFLECTION ON VS
 
@@ -184,10 +177,10 @@ namespace TFRendering
 		delete[] _pElementDescriptions;
 	}
 
-	void TFEffect::AddPixelShader(const std::wstring& a_sFilePathShader)
+	void TFIEffect::BuildPixelShader()
 	{
 		std::wstring _wsShaderPrefix = m_wsShaderPrefix;
-		_wsShaderPrefix.append(a_sFilePathShader);
+		_wsShaderPrefix.append(m_wsPixelShaderPath);
 
 		// Open compiled shader file and read it...
 		ULONG _nFileSize = 0;
@@ -222,17 +215,12 @@ namespace TFRendering
 		delete[] _cbBuffer;
 	}
 
-	void TFEffect::QueryVertexShader()
-	{
-
-	}
-
-	void TFEffect::AddRenderable(TFIRenderable* a_pRenderable)
+	void TFIEffect::AddRenderable(TFIRenderable* a_pRenderable)
 	{
 		m_vRenderables.push_back(a_pRenderable);
 	}
 
-	void TFEffect::SetRenderState()
+	void TFIEffect::SetRenderState()
 	{
 		TF_ASSERT(m_pVertexShader != NULL, FILE_NAME, LINE_NO);
 

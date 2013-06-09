@@ -5,7 +5,7 @@
 #include "TFFreeMotionCamera.h"
 #include "TFShaderManager.h"
 #include "TFLightManager.h"
-#include "TFEffect.h"
+#include "TFIEffect.h"
 #include "TFIRenderable.h"
 #include "TFBlinnPhong.h"
 
@@ -34,7 +34,7 @@ private:
 	tfMatrix m_matWorld;
 
 	// Effects
-	TFRendering::TFEffect* m_pEffect1;
+	TFRendering::TFIEffect* m_pEffect1;
 	TFRendering::TFIRenderable* m_pModelEx1;
 };
 

@@ -78,13 +78,13 @@
     <ClInclude Include="TFReflectionMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TFEffect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TFModelEx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TFBlinnPhong.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TFIEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -134,13 +134,13 @@
     <ClCompile Include="TFReflectionMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TFEffect.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TFModelEx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TFBlinnPhong.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TFIEffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

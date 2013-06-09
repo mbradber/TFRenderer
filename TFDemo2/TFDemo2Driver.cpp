@@ -32,22 +32,9 @@ void TFDemo2Driver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	// init components
 	m_lightManager.Init(m_pd3dDevice, m_pd3dImmDeviceContext);
 	m_shaderManager.Init(m_pd3dDevice);
-	
-#ifdef _DEBUG
-	wstring _wsShaderPrefix = L"..\\Debug\\";
-
-#else
-	wstring _wsShaderPrefix = L"..\\Release\\";
-#endif
 
 	// build effects from shaders
-	m_pEffect1 = new TFBlinnPhong();
-	m_pEffect1->Initialize(m_pd3dDevice,
-		m_pd3dImmDeviceContext,
-		L"ShadowsVS.cso", // TODO: move these shader paths to the BlinnPhong file
-		_wsShaderPrefix);
-
-	m_pEffect1->AddPixelShader(L"ShadowsPS.cso");
+	m_pEffect1 = new TFBlinnPhong(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	// bind samplers
 	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
