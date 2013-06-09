@@ -14,7 +14,7 @@ namespace TFRendering
 		virtual ~TFIRenderable() {};
 
 		virtual void SetWorldMatrix(const tfMatrix& a_matWorld);
-		virtual tfMatrix GetWorldMatrix();
+		virtual tfFloat4x4& GetWorldMatrix();
 
 		virtual void Draw() = 0;
 

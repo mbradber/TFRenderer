@@ -44,7 +44,7 @@ void TFDemo2Driver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	m_pEffect1 = new TFBlinnPhong();
 	m_pEffect1->Initialize(m_pd3dDevice,
 		m_pd3dImmDeviceContext,
-		L"ShadowsVS.cso",
+		L"ShadowsVS.cso", // TODO: move these shader paths to the BlinnPhong file
 		_wsShaderPrefix);
 
 	m_pEffect1->AddPixelShader(L"ShadowsPS.cso");
@@ -69,17 +69,10 @@ void TFDemo2Driver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	// add renderables to effects
 	m_pEffect1->AddRenderable(m_pModelEx1);
 
-
-
-
-
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();
 	m_matProj  = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 1.0f, 1000.0f);
 	m_matView  = XMMatrixLookAtLH(XMVectorSet(-5.0f, 0.0f, -5.0f, 1.0f), XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f), XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-
-	// light source view matrix
-	m_matLightView = XMMatrixIdentity();
 
 	// Update the lights
 	m_lightManager.Update(1.0f, m_fmCamera.GetPosition(), true);
@@ -90,11 +83,6 @@ void TFDemo2Driver::OnResize()
 	TFWinBase::OnResize();
 	// Rebuild projection matrix on window resize
 	m_matProj = TFMatrixPerspectiveLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 1.0f, 1000.0f);
-}
-
-void TFDemo2Driver::Run()
-{
-	TFCore::TFWinBase::Run();
 }
 
 void TFDemo2Driver::UpdateScene(float a_fDelta)
@@ -128,16 +116,7 @@ void TFDemo2Driver::RenderScene()
 	// compute view-proj matrix
 	tfMatrix _matViewProj = m_matView * m_matProj;
 
-	///*** HOUSE ***/
-	//m_matWorld = m_house1.GetWorldMatrix();
-	//_matWVP = m_matWorld * _matViewProj;
-
-	//m_house1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
-	//m_house1.ActivateShaders();
-	//m_house1.Draw();
-
 	m_pEffect1->BatchDraw(_matViewProj, m_lightManager.GetVPT());
-
 
 	// Display the back buffer (vsync intervals)
 	//m_pSwapChain->Present( 1, 0 );

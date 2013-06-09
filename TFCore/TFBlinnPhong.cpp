@@ -36,9 +36,9 @@ namespace TFRendering
 	void TFBlinnPhong::BatchDraw(const tfMatrix& a_matViewProj, const tfMatrix& a_matLightVPT)
 	{
 		// set state for this effect
-		TFEffect::BatchDraw(a_matViewProj, a_matLightVPT);
+		SetRenderState();
 
-
+		// render each renderable for this effect
 		for(std::vector<TFIRenderable*>::iterator _itr = m_vRenderables.begin();
 			_itr != m_vRenderables.end();
 			++_itr)
@@ -61,29 +61,31 @@ namespace TFRendering
 		}
 	}
 
-	void TFBlinnPhong::UpdateBuffers(CXMMATRIX a_matWorld, 
+	void TFBlinnPhong::UpdateBuffers(const tfFloat4x4& a_matWorld, 
 		CXMMATRIX a_matViewProj,
 		CXMMATRIX a_matLightVPT)
 	{
 		//UPDATE TRANSFORM RESOURCE
 		BufferPerObject cb;
 
+		tfMatrix _matWorld = XMLoadFloat4x4(&a_matWorld);
+
 		// update world matrix
-		cb.worldMatrix = XMMatrixTranspose(a_matWorld);
+		cb.worldMatrix = XMMatrixTranspose(_matWorld);
 
 		// Update world inverse transpose matrix (used to transform normals as it will be distorted 
 		// with non uniform scaling transforms, see pg. 277 of Luna...
-		tfMatrix _wit = a_matWorld;
+		tfMatrix _wit = _matWorld;
 		_wit.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 		tfVector _witDet = XMMatrixDeterminant(_wit);
 
 		cb.worldInvTransposeMatrix = XMMatrixTranspose(XMMatrixInverse(&_witDet, _wit));
 
 		// update wvp of buffer
-		cb.wvpMatrix = XMMatrixTranspose(a_matWorld * a_matViewProj);
+		cb.wvpMatrix = XMMatrixTranspose(_matWorld * a_matViewProj);
 
 		// update matrix to transform from object to projective texture coords
-		cb.lightVPT = XMMatrixTranspose(a_matWorld * a_matLightVPT);
+		cb.lightVPT = XMMatrixTranspose(_matWorld * a_matLightVPT);
 
 		m_pDeviceContext->UpdateSubresource(m_pCBPerObject, 0, NULL, &cb, 0, 0);
 

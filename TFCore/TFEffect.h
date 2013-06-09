@@ -23,8 +23,9 @@ namespace TFRendering
 
 		void AddPixelShader(const std::wstring& a_sFilePathShader);
 		void AddRenderable(class TFIRenderable* a_pRenderable);
+		void SetRenderState();
 		virtual void BatchDraw(const tfMatrix& a_matViewProj, 
-			const tfMatrix& a_matLightVPT);
+			const tfMatrix& a_matLightVPT) = 0;
 
 	private:
 		// no copying

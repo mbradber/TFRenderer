@@ -19,8 +19,8 @@ namespace TFRendering
 		XMStoreFloat4x4(&m_matWorld, a_matWorld);
 	}
 
-	tfMatrix TFIRenderable::GetWorldMatrix()
+	tfFloat4x4& TFIRenderable::GetWorldMatrix()
 	{
-		return XMLoadFloat4x4(&m_matWorld);
+		return m_matWorld;
 	}
 }

@@ -308,8 +308,6 @@ void TFDemoDriver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	m_matProj  = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 1.0f, 1000.0f);
 	m_matView  = XMMatrixLookAtLH(XMVectorSet(-5.0f, 0.0f, -5.0f, 1.0f), XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f), XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 
-	// light source view matrix
-	m_matLightView = XMMatrixIdentity();
 
 	// Update the lights
 	m_lightManager.Update(1.0f, m_fmCamera.GetPosition(), true);

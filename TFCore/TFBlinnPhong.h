@@ -28,7 +28,7 @@ namespace TFRendering
 		};
 
 	private:
-		void UpdateBuffers(const tfMatrix& a_matWorld, 
+		void UpdateBuffers(const tfFloat4x4& a_matWorld, 
 			const tfMatrix& a_matViewProj,
 			const tfMatrix& a_matLightVP);
 	};
