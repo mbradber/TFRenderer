@@ -233,4 +233,69 @@ namespace TFRendering
 		// set primitive topology
 		m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
+
+	void TFIEffect::InitializeSamplers(ID3D11Device* a_pDevice,
+		ID3D11DeviceContext* a_pDeviceContext)
+	{
+		ID3D11SamplerState* _pSamplerState = NULL;
+
+		D3D11_SAMPLER_DESC _anisoSampler;
+		_anisoSampler.Filter		 = D3D11_FILTER_ANISOTROPIC;
+		_anisoSampler.AddressU		 = D3D11_TEXTURE_ADDRESS_WRAP;
+		_anisoSampler.AddressV		 = D3D11_TEXTURE_ADDRESS_WRAP;
+		_anisoSampler.AddressW		 = D3D11_TEXTURE_ADDRESS_WRAP;
+		_anisoSampler.MinLOD		 = -FLT_MAX;
+		_anisoSampler.MaxLOD		 = FLT_MAX;
+		_anisoSampler.MipLODBias     = 0;
+		_anisoSampler.MaxAnisotropy  = 16;
+		_anisoSampler.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+		HR(a_pDevice->CreateSamplerState(&_anisoSampler, &_pSamplerState));
+		a_pDeviceContext->PSSetSamplers(0, 1, &_pSamplerState);
+
+		D3D11_SAMPLER_DESC _triLinearSampler;
+		_triLinearSampler.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		_triLinearSampler.AddressU       = D3D11_TEXTURE_ADDRESS_WRAP;
+		_triLinearSampler.AddressV       = D3D11_TEXTURE_ADDRESS_WRAP;
+		_triLinearSampler.AddressW       = D3D11_TEXTURE_ADDRESS_WRAP;
+		_triLinearSampler.MinLOD		 = -FLT_MAX;
+		_triLinearSampler.MaxLOD		 = FLT_MAX;
+		_triLinearSampler.MipLODBias     = 0;
+		_triLinearSampler.MaxAnisotropy  = 16;
+		_triLinearSampler.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+		HR(a_pDevice->CreateSamplerState(&_triLinearSampler, &_pSamplerState));
+		a_pDeviceContext->PSSetSamplers(1, 1, &_pSamplerState);
+
+		D3D11_SAMPLER_DESC _pointSampler;
+		_pointSampler.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+		_pointSampler.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+		_pointSampler.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+		_pointSampler.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+		_pointSampler.MinLOD		 = -FLT_MAX;
+		_pointSampler.MaxLOD		 = FLT_MAX;
+		_pointSampler.MipLODBias     = 0;
+		_pointSampler.MaxAnisotropy  = 16;
+		_pointSampler.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+		HR(a_pDevice->CreateSamplerState(&_pointSampler, &_pSamplerState));
+		a_pDeviceContext->PSSetSamplers(3, 1, &_pSamplerState);
+
+        D3D11_SAMPLER_DESC SamDescShad = 
+        {
+            D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT,// D3D11_FILTER Filter;
+            D3D11_TEXTURE_ADDRESS_BORDER, //D3D11_TEXTURE_ADDRESS_MODE AddressU;
+            D3D11_TEXTURE_ADDRESS_BORDER, //D3D11_TEXTURE_ADDRESS_MODE AddressV;
+            D3D11_TEXTURE_ADDRESS_BORDER, //D3D11_TEXTURE_ADDRESS_MODE AddressW;
+            0,//FLOAT MipLODBias;
+            0,//UINT MaxAnisotropy;
+            D3D11_COMPARISON_LESS , //D3D11_COMPARISON_FUNC ComparisonFunc;
+            0.0,0.0,0.0,0.0,//FLOAT BorderColor[ 4 ];
+            0,//FLOAT MinLOD;
+            0//FLOAT MaxLOD;   
+        };
+
+		HR(a_pDevice->CreateSamplerState(&SamDescShad, &_pSamplerState));
+		a_pDeviceContext->PSSetSamplers(2, 1, &_pSamplerState);
+	}
 }

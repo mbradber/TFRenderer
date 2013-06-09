@@ -15,8 +15,6 @@ namespace TFRendering
 	{
 	public:
 
-		friend class TFIEffect;
-
 		TFModelEx(ID3D11Device* a_pDevice, 
 			ID3D11DeviceContext* a_pDeviceContext,
 			const std::string& a_sAssetPath);

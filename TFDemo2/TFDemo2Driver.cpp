@@ -1,9 +1,6 @@
 #include "TFDemo2Driver.h"
-#include "TFMath.h"
 #include "TFInput.h"
-#include "TFVertices.h"
 #include "TFUtils.h"
-#include "TFModel.h"
 #include <sstream>
 #include <string>
 #include "TFModelEx.h"
@@ -13,15 +10,17 @@ using namespace TFRendering;
 using namespace std;
 using namespace DirectX;
 
-TFDemo2Driver::TFDemo2Driver(void)
+TFDemo2Driver::TFDemo2Driver()
 {
 }
 
-
-TFDemo2Driver::~TFDemo2Driver(void)
+TFDemo2Driver::~TFDemo2Driver()
 {
-	delete m_pEffect1;
-	delete m_pModelEx1;
+	delete m_pBlinnPhongFX;
+	delete m_pTerrainFX;
+
+	delete m_pHouseModel;
+	delete m_pTerrain;
 }
 
 void TFDemo2Driver::Init(HINSTANCE hInstance, int a_nCmdShow)
@@ -33,28 +32,22 @@ void TFDemo2Driver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	m_lightManager.Init(m_pd3dDevice, m_pd3dImmDeviceContext);
 	m_shaderManager.Init(m_pd3dDevice);
 
-	// build effects from shaders
-	m_pEffect1 = new TFBlinnPhong(m_pd3dDevice, m_pd3dImmDeviceContext);
-
 	// bind samplers
-	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
-	m_pd3dImmDeviceContext->PSSetSamplers(0, 1, &_defaultSampler);
-	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_TRILINEAR);
-	m_pd3dImmDeviceContext->PSSetSamplers(1, 1, &_defaultSampler);
-	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_SHADOW);
-	m_pd3dImmDeviceContext->PSSetSamplers(2, 1, &_defaultSampler);
-	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_POINT);
-	m_pd3dImmDeviceContext->PSSetSamplers(3, 1, &_defaultSampler);
+	TFIEffect::InitializeSamplers(m_pd3dDevice, m_pd3dImmDeviceContext);
+
+	// build effects from shaders
+	m_pBlinnPhongFX = new TFBlinnPhong(m_pd3dDevice, m_pd3dImmDeviceContext);
+
 
 	tfMatrix _matWorld = XMMatrixIdentity();
 	
 	// init renderables
-	m_pModelEx1 = new TFModelEx(m_pd3dDevice, m_pd3dImmDeviceContext, "..\\Models\\house_obj.obj");
+	m_pHouseModel = new TFModelEx(m_pd3dDevice, m_pd3dImmDeviceContext, "..\\Models\\house_obj.obj");
 	_matWorld  = XMMatrixScaling(0.015f, 0.015f, 0.015f);
-	m_pModelEx1->SetWorldMatrix(_matWorld);
+	m_pHouseModel->SetWorldMatrix(_matWorld);
 	
 	// add renderables to effects
-	m_pEffect1->AddRenderable(m_pModelEx1);
+	m_pBlinnPhongFX->AddRenderable(m_pHouseModel);
 
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();
@@ -69,7 +62,7 @@ void TFDemo2Driver::OnResize()
 {
 	TFWinBase::OnResize();
 	// Rebuild projection matrix on window resize
-	m_matProj = TFMatrixPerspectiveLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 1.0f, 1000.0f);
+	m_matProj = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_nClientWidth / static_cast<float>(m_nClientHeight), 1.0f, 1000.0f);
 }
 
 void TFDemo2Driver::UpdateScene(float a_fDelta)
@@ -103,7 +96,7 @@ void TFDemo2Driver::RenderScene()
 	// compute view-proj matrix
 	tfMatrix _matViewProj = m_matView * m_matProj;
 
-	m_pEffect1->BatchDraw(_matViewProj, m_lightManager.GetVPT());
+	m_pBlinnPhongFX->BatchDraw(_matViewProj, m_lightManager.GetVPT());
 
 	// Display the back buffer (vsync intervals)
 	//m_pSwapChain->Present( 1, 0 );

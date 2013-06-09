@@ -10,7 +10,8 @@ namespace TFRendering
 	{
 	public:
 
-		TFIRenderable();
+		TFIRenderable(ID3D11Device* a_pDevice, 
+			ID3D11DeviceContext* a_pDeviceContext);
 		virtual ~TFIRenderable() {};
 
 		virtual void SetWorldMatrix(const tfMatrix& a_matWorld);
@@ -29,6 +30,8 @@ namespace TFRendering
 		ID3D11Device*			m_pDevice;
 		ID3D11DeviceContext*	m_pDeviceContext;
 		tfFloat4x4              m_matWorld;
+		UINT					m_nVertexCount;
+		UINT					m_nIndexCount;
 
 		// buffers
 		ID3D11Buffer* m_pPositionVertexBuffer;

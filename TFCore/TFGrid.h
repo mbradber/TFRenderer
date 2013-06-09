@@ -9,8 +9,6 @@
 namespace TFCore
 {
 
-
-
 	class TFGrid
 	{
 	public:
@@ -25,8 +23,6 @@ namespace TFCore
 			const std::string& a_sHeightmap,
 			int a_nGridWidth,
 			int a_nGridDepth);
-
-
 		void Draw();
 		void ActivateShaders();
 		void SetWorldMatrix(const tfMatrix& a_matWorld);
@@ -36,7 +32,6 @@ namespace TFCore
 		void AddShadowShaders(ID3D11VertexShader* a_pVertexShader,
 			ID3D11PixelShader* a_pPixelShader,
 			ID3D11InputLayout* a_pInputLayout);
-
 		void SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap, size_t a_nIndex);
 		void UnloadShadowMap(size_t a_nIndex);
 

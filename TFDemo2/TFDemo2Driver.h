@@ -34,7 +34,12 @@ private:
 	tfMatrix m_matWorld;
 
 	// Effects
-	TFRendering::TFIEffect* m_pEffect1;
-	TFRendering::TFIRenderable* m_pModelEx1;
+	TFRendering::TFIEffect* m_pBlinnPhongFX;
+	TFRendering::TFIEffect* m_pTerrainFX;
+
+	// Renderables
+	TFRendering::TFIRenderable* m_pHouseModel;
+	TFRendering::TFIRenderable* m_pTerrain;
+
 };
 

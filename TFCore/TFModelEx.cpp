@@ -11,12 +11,8 @@ namespace TFRendering
 		ID3D11DeviceContext* a_pDeviceContext,
 		const std::string& a_sAssetPath)
 		:
-		 m_nVertexCount(0),
-		 m_nIndexCount(0)
+	    TFIRenderable(a_pDevice, a_pDeviceContext)
 	{
-		m_pDevice = a_pDevice;
-		m_pDeviceContext = a_pDeviceContext;
-
 		Init(a_sAssetPath);
 	}
 

@@ -235,7 +235,7 @@ namespace TFCore
 		ZeroMemory( &InitData, sizeof(InitData) );
 		InitData.pSysMem = &_vVertices[0];
 
-		// Create a buffer to hold this cube's vert data in video memory
+		// Create a buffer to hold this grid's vert data in video memory
 		HR(m_pd3dDevice->CreateBuffer(&bd, &InitData, &m_pVertexBuffer));
 
 		D3D11_BUFFER_DESC ibd;
