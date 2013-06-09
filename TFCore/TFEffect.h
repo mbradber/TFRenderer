@@ -3,6 +3,7 @@
 #include <d3d11.h>
 #include <string>
 #include <vector>
+#include <xnamath.h>
 
 namespace TFRendering
 {
@@ -11,16 +12,18 @@ namespace TFRendering
 	public:
 
 		TFEffect();
-		~TFEffect();
+		virtual ~TFEffect();
 
 		void Initialize(ID3D11Device* a_pDevice,
 			ID3D11DeviceContext* a_pDeviceContext,
 			const std::wstring& a_wsShaderPath,
 			const std::wstring& a_wsShaderPrefix);
 
+		virtual void Init() = 0;
+
 		void AddPixelShader(const std::wstring& a_sFilePathShader);
 		void AddRenderable(class TFIRenderable* a_pRenderable);
-		void BatchDraw();
+		virtual void BatchDraw(const XMMATRIX& a_matViewProj, const XMMATRIX& a_matLightVPT);
 
 	private:
 		// no copying
@@ -42,6 +45,7 @@ namespace TFRendering
 		ID3D11Buffer**          m_pVertexBuffers;
 		std::vector<UINT>       m_vStrides;
 		std::vector<UINT>       m_vOffsets;
+		ID3D11Buffer*           m_pCBPerObject;
 
 
 		std::vector<TFIRenderable*> m_vRenderables;

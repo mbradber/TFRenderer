@@ -81,12 +81,22 @@ namespace TFCore
 				size_t* a_pNumVerts, 
 				size_t* a_pNumIndices);
 
-			void ProcessNode(const aiScene* const a_pScene, 
-				aiNode* a_pNode, 
-				TFPosNormTexTan*& a_pVertices, 
-				UINT*& a_pIndices, 
-				size_t* a_pVertexOffset, 
-				size_t* a_pIndexOffset);
+			//void ProcessNode(const aiScene* const a_pScene, 
+			//	aiNode* a_pNode, 
+			//	TFPosNormTexTan*& a_pVertices, 
+			//	UINT*& a_pIndices, 
+			//	size_t* a_pVertexOffset, 
+			//	size_t* a_pIndexOffset);
+
+			void ProcessNode(const aiScene* const a_pScene,
+				aiNode* a_pNode,
+				XMFLOAT3*& a_pPositionBuffer,
+				XMFLOAT3*& a_pNormalBuffer,
+				XMFLOAT2*& a_pTexCoordBuffer,
+				XMFLOAT3*& a_pTangentBuffer,
+				UINT*&     a_pIndices,
+				UINT*      a_pVertexOffset,
+				UINT*      a_pIndexOffset);
 
 			void GenerateShaderResources();
 
@@ -110,6 +120,12 @@ namespace TFCore
 		std::vector<ID3D11ShaderResourceView*>  m_vMeshTexturesColor;
 		std::vector<ID3D11ShaderResourceView*>  m_vMeshTexturesNormals;
 		XMMATRIX                                m_matWorld;
+
+
+		ID3D11Buffer* m_pPositionVertexBuffer;
+		ID3D11Buffer* m_pNormalVertexBuffer;
+		ID3D11Buffer* m_pTexCoordVertexBuffer;
+		ID3D11Buffer* m_pTangentVertexBuffer;
 	};
 
 }

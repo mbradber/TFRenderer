@@ -19,9 +19,8 @@ TFDemo2Driver::TFDemo2Driver(void)
 
 TFDemo2Driver::~TFDemo2Driver(void)
 {
-	// Delete renderable objects
-	//delete m_pShadowMapFront;
-	//delete m_pReflectionMap;
+	delete m_pEffect1;
+	delete m_pModelEx1;
 }
 
 void TFDemo2Driver::Init(HINSTANCE hInstance, int a_nCmdShow)
@@ -41,12 +40,13 @@ void TFDemo2Driver::Init(HINSTANCE hInstance, int a_nCmdShow)
 #endif
 
 	// build effects from shaders
-	m_effect1.Initialize(m_pd3dDevice,
+	m_pEffect1 = new TFBlinnPhong();
+	m_pEffect1->Initialize(m_pd3dDevice,
 		m_pd3dImmDeviceContext,
 		L"ShadowsVS.cso",
 		_wsShaderPrefix);
 
-	m_effect1.AddPixelShader(L"ShadowsPS.cso");
+	m_pEffect1->AddPixelShader(L"ShadowsPS.cso");
 
 	// bind samplers
 	ID3D11SamplerState* _defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_ANISOTROPIC);
@@ -58,14 +58,15 @@ void TFDemo2Driver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	_defaultSampler = m_shaderManager.GetSamplerState(TF_SAMPLER_POINT);
 	m_pd3dImmDeviceContext->PSSetSamplers(3, 1, &_defaultSampler);
 
-
-
+	XMMATRIX _matWorld = XMMatrixIdentity();
+	
 	// init renderables
-	m_pModelEx1 = new TFModelEx(m_pd3dDevice, m_pd3dImmDeviceContext, "..\\Models\\SimpleCube.obj");
-	m_pModelEx1->SetWorldMatrix(XMMatrixIdentity());
+	m_pModelEx1 = new TFModelEx(m_pd3dDevice, m_pd3dImmDeviceContext, "..\\Models\\house_obj.obj");
+	_matWorld  = XMMatrixScaling(0.015f, 0.015f, 0.015f);
+	m_pModelEx1->SetWorldMatrix(_matWorld);
 	
 	// add renderables to effects
-	m_effect1.AddRenderable(m_pModelEx1);
+	m_pEffect1->AddRenderable(m_pModelEx1);
 
 
 
@@ -125,7 +126,6 @@ void TFDemo2Driver::RenderScene()
 
 	// compute view-proj matrix
 	XMMATRIX _matViewProj = m_matView * m_matProj;
-	XMMATRIX _matWVP = XMMatrixIdentity();
 
 	///*** HOUSE ***/
 	//m_matWorld = m_house1.GetWorldMatrix();
@@ -135,7 +135,7 @@ void TFDemo2Driver::RenderScene()
 	//m_house1.ActivateShaders();
 	//m_house1.Draw();
 
-	m_effect1.BatchDraw();
+	m_pEffect1->BatchDraw(_matViewProj, m_lightManager.GetVPT());
 
 
 	// Display the back buffer (vsync intervals)

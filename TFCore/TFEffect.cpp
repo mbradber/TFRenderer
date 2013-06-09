@@ -16,7 +16,8 @@ namespace TFRendering
 		 m_pPixelShader(NULL),
 		 m_nStartSlotVB(0),
 		 m_nNumVertexBuffers(0),
-		 m_pVertexBuffers(0)
+		 m_pVertexBuffers(0),
+		 m_pCBPerObject(NULL)
 	{
 
 	}
@@ -24,6 +25,8 @@ namespace TFRendering
 	TFEffect::~TFEffect()
 	{
 		delete[] m_pVertexBuffers;
+
+		ReleaseCOM(m_pCBPerObject);
 	}
 
 	void TFEffect::Initialize(ID3D11Device* a_pDevice,
@@ -37,6 +40,13 @@ namespace TFRendering
 
 		BuildVertexShader(a_wsShaderPath);
 		QueryVertexShader();
+
+		Init();
+	}
+
+	void TFEffect::Init()
+	{
+
 	}
 
 	void TFEffect::BuildVertexShader(const std::wstring& a_wsShaderPath)
@@ -154,13 +164,17 @@ namespace TFRendering
 				TF_ASSERT(false, FILE_NAME, LINE_NO);
 			}
 
-			_pElementDescriptions[i].AlignedByteOffset = 0;
+			//_pElementDescriptions[i].AlignedByteOffset = 0;
+			_pElementDescriptions[i].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 			_pElementDescriptions[i].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 			_pElementDescriptions[i].InstanceDataStepRate = 0;
 		}
 
 		// alloc space for vertex buffers
 		m_pVertexBuffers = new ID3D11Buffer*[m_nNumVertexBuffers];
+
+		// Create vertex shader
+		HR(m_pDevice->CreateVertexShader(_cbBuffer, _nFileSize, NULL, &m_pVertexShader));
 
 		// Create input layout from shader object
 		HR(m_pDevice->CreateInputLayout(_pElementDescriptions, _nInputArgs, _cbBuffer, _nFileSize, &m_pInputLayout));
@@ -218,8 +232,10 @@ namespace TFRendering
 		m_vRenderables.push_back(a_pRenderable);
 	}
 
-	void TFEffect::BatchDraw()
+	void TFEffect::BatchDraw(const XMMATRIX& a_matViewProj, const XMMATRIX& a_matLightVPT)
 	{
+		TF_ASSERT(m_pVertexShader != NULL, FILE_NAME, LINE_NO);
+
 		// set vertex shader for this effect
 		m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
 		// set pixel shader for this effect

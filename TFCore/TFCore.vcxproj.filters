@@ -151,9 +151,18 @@
     <FxCompile Include="SkyVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="ShadowsPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ShadowsVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="SkyCommon.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="ShadowsCommon.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

@@ -69,7 +69,6 @@ namespace TFRendering
 		UINT									m_nIndexCount;
 		std::vector<ID3D11ShaderResourceView*>  m_vMeshTexturesColor;
 		std::vector<ID3D11ShaderResourceView*>  m_vMeshTexturesNormals;
-		XMMATRIX                                m_matWorld;
 		std::vector<TFMesh>                     m_meshes;
 	};
 }

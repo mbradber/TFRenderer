@@ -52,7 +52,7 @@ private:
 
 
 	// Effects
-	TFRendering::TFBlinnPhong m_effect1;
+	TFRendering::TFEffect* m_pEffect1;
 	TFRendering::TFIRenderable* m_pModelEx1;
 };
 

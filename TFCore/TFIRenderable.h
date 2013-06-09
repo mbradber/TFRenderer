@@ -14,7 +14,7 @@ namespace TFRendering
 		virtual ~TFIRenderable() {};
 
 		virtual void SetWorldMatrix(const XMMATRIX& a_matWorld);
-		virtual XMMATRIX& GetWorldMatrix();
+		virtual XMMATRIX GetWorldMatrix();
 
 		virtual void Draw() = 0;
 
@@ -28,7 +28,7 @@ namespace TFRendering
 	protected:
 		ID3D11Device*			m_pDevice;
 		ID3D11DeviceContext*	m_pDeviceContext;
-		XMMATRIX                m_matWorld;
+		XMFLOAT4X4              m_matWorld;
 
 		// buffers
 		ID3D11Buffer* m_pPositionVertexBuffer;
