@@ -14,10 +14,16 @@ namespace TFRendering
 		int a_nGridWidth,
 		int a_nGridDepth)
 		:
-	    TFIRenderable(a_pDevice, a_pDeviceContext),
-		m_bUsingHeightmap(true)
+	    TFIRenderable(a_pDevice, a_pDeviceContext)
 	{
-
+		if(a_sHeightmap.length() > 0)
+		{
+			m_bUsingHeightmap = true;
+		}
+		else
+		{
+			m_bUsingHeightmap = false;
+		}
 	}
 
 

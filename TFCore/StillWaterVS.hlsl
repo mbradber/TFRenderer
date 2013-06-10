@@ -15,10 +15,8 @@ VertexOut main( VertexIn vin )
 
 	// per vertex transforms
 	vout.PosH    = mul(float4(vin.PosL, 1.0f), WorldViewProjectionMatrix);
-	vout.PosW    = mul(float4(vin.PosL, 1.0f), WorldMatrix);
 	vout.PosND   = mul(float4(vin.PosL, 1.0f), WorldViewProjectionMatrix);
 	vout.NormW   = mul(float4(vin.NormL, 0.0f), WorldInverseTransposeMatrix);
-	vout.ProjTex = vin.TexC; // save these coords before transform
 	vout.TexC.xy = mul(float4(vin.TexC.xy, 0, 1), TexTransform).xy;
 	vout.TexC.zw = mul(float4(vin.TexC.xy, 0, 1), TexTransformNeg).xy;
 	vout.TanW    = mul(float4(vin.TanU, 0.0f), WorldMatrix);

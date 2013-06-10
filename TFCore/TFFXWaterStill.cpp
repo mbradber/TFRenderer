@@ -1,4 +1,4 @@
-#include "TFFXTerrain.h"
+#include "TFFXWaterStill.h"
 #include "TFUtils.h"
 #include "TFIRenderable.h"
 
@@ -7,13 +7,12 @@ namespace TFRendering
 
 	using namespace DirectX;
 
-	TFFXTerrain::TFFXTerrain(ID3D11Device* a_pDevice,
+	TFFXWaterStill::TFFXWaterStill(ID3D11Device* a_pDevice,
 		ID3D11DeviceContext* a_pDeviceContext)
-		:TFIEffect(a_pDevice, 
-			a_pDeviceContext, 
-			std::wstring(L"TerrainVS.cso"),
-			std::wstring(L"TerrainPS.cso"))
-		
+		:TFIEffect(a_pDevice,
+			a_pDeviceContext,
+			std::wstring(L"StillWaterVS.cso"),
+			std::wstring(L"StillWaterPS.cso"))
 	{
 		// describe the cb for the per object data
 		D3D11_BUFFER_DESC bd;
@@ -29,12 +28,12 @@ namespace TFRendering
 	}
 
 
-	TFFXTerrain::~TFFXTerrain()
+	TFFXWaterStill::~TFFXWaterStill()
 	{
 
 	}
 
-	void TFFXTerrain::BatchDraw(const tfMatrix& a_matViewProj, 
+	void TFFXWaterStill::BatchDraw(const tfMatrix& a_matViewProj, 
 		const tfMatrix& a_matLightVPT)
 	{
 		SetRenderState();
@@ -53,6 +52,7 @@ namespace TFRendering
 			m_pVertexBuffers[0] = _pRenderable->GetPositionBuffer();
 			m_pVertexBuffers[1] = _pRenderable->GetNormalBuffer();
 			m_pVertexBuffers[2] = _pRenderable->GetTexCoordBuffer();
+			m_pVertexBuffers[3] = _pRenderable->GetTangentBuffer();
 
 			m_pDeviceContext->IASetVertexBuffers(0, m_nNumVertexBuffers, m_pVertexBuffers, &m_vStrides[0], &m_vOffsets[0]);
 			m_pDeviceContext->IASetIndexBuffer(_pRenderable->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
@@ -61,7 +61,7 @@ namespace TFRendering
 		}
 	}
 
-	void TFFXTerrain::UpdateBuffers(const tfFloat4x4& a_matWorld, 
+	void TFFXWaterStill::UpdateBuffers(const tfFloat4x4& a_matWorld, 
 		const tfMatrix& a_matViewProj,
 		const tfMatrix& a_matLightVPT)
 	{
@@ -90,11 +90,6 @@ namespace TFRendering
 		m_pDeviceContext->UpdateSubresource(m_pCBPerObject, 0, NULL, &cb, 0, 0);
 
 		m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pCBPerObject);
-	}
-
-	void TFFXTerrain::SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap)
-	{
-		m_pDeviceContext->PSSetShaderResources(6, 1, &a_pShadowMap);
 	}
 
 }

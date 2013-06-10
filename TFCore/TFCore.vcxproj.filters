@@ -99,6 +99,12 @@
     <ClInclude Include="TFFXDepthRender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TFWaterStillEx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TFFXWaterStill.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TFCore.cpp">
@@ -167,6 +173,12 @@
     <ClCompile Include="TFFXDepthRender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TFWaterStillEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TFFXWaterStill.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="SkyPS.hlsl">
@@ -193,6 +205,12 @@
     <FxCompile Include="RenderDepthVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="StillWaterPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="StillWaterVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="SkyCommon.hlsli">
@@ -205,6 +223,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="RenderDepthCommon.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="StillWaterCommon.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

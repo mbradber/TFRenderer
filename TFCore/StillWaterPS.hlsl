@@ -27,13 +27,6 @@ SamplerState samLinear              : register(s1);
 SamplerComparisonState samShadowPCF : register(s2);
 SamplerState pointSampler           : register(s3);
 
-float3 DistortNormal(float3 a_f3BumpedNormal, float2 a_f2TexCoords)
-{
-	a_f3BumpedNormal.x += a_f2TexCoords.x;
-	a_f3BumpedNormal.z += a_f2TexCoords.y;
-
-	return normalize(a_f3BumpedNormal);
-}
 
 float3 GetBumpedNormal(float2 a_f2TexCoords, VertexOut pin)
 {
@@ -79,9 +72,6 @@ float4 main(VertexOut pin) : SV_TARGET
 	_f2SampleCoords.y += _bumpedNormal.z * dx;
 	float4 _f4Reflection = ReflectionMap.Sample(samAnisotropic, _f2SampleCoords);
 	_f4Reflection *= 0.75f;
-
-	//_bumpedNormal = DistortNormal(_bumpedNormal, pin.ProjTex.xy);
-
 
 	// calculate color based on light direction against normal 
 	float4 _lightVec     = float4(LightObj.Direction, 0.0f) * -1.0f;

@@ -28,12 +28,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="StillWaterPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="StillWaterVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="FoliageVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -42,9 +36,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="StillWaterCommon.hlsli">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="FoliageCommon.hlsli">
       <Filter>Shaders</Filter>
     </None>

@@ -4,11 +4,9 @@ struct VertexOut
 {
 	float4 PosH    : SV_POSITION;
 	float4 PosND   : POSITION0;
-	float3 PosW    : POSITION1;
 	float3 NormW   : NORMAL;
 	float4 TexC    : TEXCOORD0;
 	float3 TanW    : TANGENT;
-	float4 ProjTex : TEXCOORD1;
 };
 
 cbuffer cbPerObject : register(b0)
