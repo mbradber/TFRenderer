@@ -77,6 +77,7 @@ void TFDemo2Driver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	// add renderables to effects
 	m_pBlinnPhongFX->AddRenderable(m_pHouseModel);
 	m_pTerrainFX->AddRenderable(m_pTerrain);
+	m_pRenderDepthFX->AddRenderable(m_pHouseModel);
 
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();
@@ -110,12 +111,15 @@ void TFDemo2Driver::RenderToShadowMap()
 {
 	TFDepthBiasRender(m_pd3dDevice, m_pd3dImmDeviceContext);
 
+	tfMatrix _matWVP;
+	tfMatrix _matViewProj = m_lightManager.GetView() * m_lightManager.GetProjection();
+
 	// Set viewport to shadow map viewport, set render target to null (Disables color writes)
 	// and set the depth draws to shadow map depth stencil view
 	m_pShadowMapFront->SetRenderState();
 
 
-
+	m_pRenderDepthFX->BatchDraw(_matViewProj, XMMatrixIdentity());
 
 
 	// reset render target
