@@ -7,7 +7,7 @@
 #include "TFLightManager.h"
 #include "TFIEffect.h"
 #include "TFIRenderable.h"
-#include "TFBlinnPhong.h"
+#include "TFShadowMap.h"
 
 class TFDemo2Driver : public TFCore::TFWinBase
 {
@@ -33,9 +33,13 @@ private:
 	tfMatrix m_matProj;
 	tfMatrix m_matWorld;
 
+	// render to texture views
+	TFRendering::TFShadowMap* m_pShadowMapFront;
+
 	// Effects
 	TFRendering::TFIEffect* m_pBlinnPhongFX;
 	TFRendering::TFIEffect* m_pTerrainFX;
+	TFRendering::TFIEffect* m_pRenderDepthFX;
 
 	// Renderables
 	TFRendering::TFIRenderable* m_pHouseModel;

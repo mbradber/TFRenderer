@@ -648,7 +648,7 @@ void TFDemoDriver::RenderScene()
 	m_pd3dImmDeviceContext->PSSetShaderResources(0, 1, &m_cubeMapSRV); // bind cube map SRV
 	m_ellipsoid.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_ellipsoid.ActivateShaders();
-	m_ellipsoid.Draw();
+	//m_ellipsoid.Draw();
 
 	// restore default states
 	m_box1.UnloadShadowMap(2); // unbind shadow maps as shader resources because we are about to rebind them as depth stencil views

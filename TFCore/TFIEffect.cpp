@@ -298,4 +298,10 @@ namespace TFRendering
 		HR(a_pDevice->CreateSamplerState(&SamDescShad, &_pSamplerState));
 		a_pDeviceContext->PSSetSamplers(2, 1, &_pSamplerState);
 	}
+
+	void TFIEffect::SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap)
+	{
+
+	}
+
 }

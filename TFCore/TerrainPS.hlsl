@@ -74,7 +74,7 @@ float4 main(VertexOut pin) : SV_TARGET
 
 	// Calculate lighting factors
 	float4 _f4LightVec = float4(LightObj.Direction, 0.0f) * -1.0f;
-	float  _fLambert   = max(0, dot(_f4LightVec, pin.NormW));
+	float  _fLambert   = max(0, dot(_f4LightVec.xyz, pin.NormW));
 	float4 _f4DiffuseLight = _fLambert * LightObj.Diffuse;
 	float4 _f4AmbientLight = LightObj.Ambient;
 

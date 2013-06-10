@@ -83,50 +83,30 @@ namespace TFRendering
 		{
 			for(int j = 0; j < a_nWidth; ++j)
 			{
-				//_vVertices[_nVertIdx].Pos.x = (float)j - (a_nWidth / 2);
 				_vPositionBuffer[_nVertIdx].x = (float)j - (a_nWidth / 2);
 
 				// determine whether to read height from heightmap
 				if(m_bUsingHeightmap)
 				{
-					//_vVertices[_nVertIdx].Pos.y = m_hmData[_nVertIdx] / 2.0f;
 					_vPositionBuffer[_nVertIdx].y = m_hmData[_nVertIdx] / 2.0f;
 				}
 				else
 				{
-					//_vVertices[_nVertIdx].Pos.y = 0;
 					_vPositionBuffer[_nVertIdx].y = 0;
 				}
 
-				//_vVertices[_nVertIdx].Pos.z = (float)i - (a_nDepth / 2);
 				_vPositionBuffer[_nVertIdx].z = (float)i - (a_nDepth / 2);
-
-				//_vVertices[_nVertIdx].Norm.x = 0;
-				//_vVertices[_nVertIdx].Norm.y = 1;
-				//_vVertices[_nVertIdx].Norm.z = 0;	
 
 				_vNormalBuffer[_nVertIdx].x = 0;
 				_vNormalBuffer[_nVertIdx].y = 1;
 				_vNormalBuffer[_nVertIdx].z = 0;	
 
-				//_vVertices[_nVertIdx].TanU.x = 1;
-				//_vVertices[_nVertIdx].TanU.y = 0;
-				//_vVertices[_nVertIdx].TanU.z = 0;	
-
 				_vTangentBuffer[_nVertIdx].x = 1;
 				_vTangentBuffer[_nVertIdx].y = 0;
 				_vTangentBuffer[_nVertIdx].z = 0;	
 
-				// set repeating tiles UV coords
-				//_vVertices[_nVertIdx].TexC.x = (float)j / a_fTextureScale;
-				//_vVertices[_nVertIdx].TexC.y = (float)((a_nDepth - 1) - i) / a_fTextureScale;
-
 				_vTexCoordBuffer[_nVertIdx].x = (float)j / a_fTextureScale;
 				_vTexCoordBuffer[_nVertIdx].y = (float)((a_nDepth - 1) - i) / a_fTextureScale;
-
-				// Set blend map's UV coords
-				//_vVertices[_nVertIdx].TexC.z = (float)j / a_nWidth;
-				//_vVertices[_nVertIdx].TexC.w = (float)((a_nDepth - 1) - i) / a_nDepth;
 
 				_vTexCoordBuffer[_nVertIdx].z = (float)j / a_nWidth;
 				_vTexCoordBuffer[_nVertIdx].w = (float)((a_nDepth - 1) - i) / a_nDepth;
@@ -158,18 +138,6 @@ namespace TFRendering
 
 					else
 					{
-						//float _fTotalHeight = _vVertices[k + a_nWidth + 1].Pos.y;
-						//_fTotalHeight += _vVertices[k + 1].Pos.y;
-						//_fTotalHeight += _vVertices[k - a_nWidth + 1].Pos.y;
-						//_fTotalHeight += _vVertices[k + a_nWidth].Pos.y;
-						//_fTotalHeight += _vVertices[k].Pos.y;
-						//_fTotalHeight += _vVertices[k - a_nWidth].Pos.y;
-						//_fTotalHeight += _vVertices[k + a_nWidth - 1].Pos.y;
-						//_fTotalHeight += _vVertices[k - 1].Pos.y;
-						//_fTotalHeight += _vVertices[k - a_nWidth - 1].Pos.y;
-
-						//_vVertices[k].Pos.y = (_fTotalHeight / 9.0f);
-
 						float _fTotalHeight = _vPositionBuffer[k + a_nWidth + 1].y;
 						_fTotalHeight += _vPositionBuffer[k + 1].y;
 						_fTotalHeight += _vPositionBuffer[k - a_nWidth + 1].y;
@@ -202,10 +170,6 @@ namespace TFRendering
 				_vIndices[k + 2] = i * a_nWidth + j;
 
 				// Calculate normals
-				//tfVector _vA = XMLoadFloat3(&_vVertices[_vIndices[k]].Pos);
-				//tfVector _vB = XMLoadFloat3(&_vVertices[_vIndices[k + 1]].Pos);
-				//tfVector _vC = XMLoadFloat3(&_vVertices[_vIndices[k + 2]].Pos);
-
 				tfVector _vA = XMLoadFloat3(&_vPositionBuffer[_vIndices[k]]);
 				tfVector _vB = XMLoadFloat3(&_vPositionBuffer[_vIndices[k + 1]]);
 				tfVector _vC = XMLoadFloat3(&_vPositionBuffer[_vIndices[k + 2]]);
@@ -216,9 +180,6 @@ namespace TFRendering
 				_vE = XMVector3Cross(_vD, _vE);
 
 				// Store the new normal
-				//XMStoreFloat3(&_vVertices[_vIndices[k]].Norm, _vE);
-				//XMStoreFloat3(&_vVertices[_vIndices[k + 1]].Norm, _vE);
-				//XMStoreFloat3(&_vVertices[_vIndices[k + 2]].Norm, _vE);
 				XMStoreFloat3(&_vNormalBuffer[_vIndices[k]], _vE);
 				XMStoreFloat3(&_vNormalBuffer[_vIndices[k + 1]], _vE);
 				XMStoreFloat3(&_vNormalBuffer[_vIndices[k + 2]], _vE);
@@ -229,10 +190,7 @@ namespace TFRendering
 				_vIndices[k + 4] = (i + 1) * a_nWidth + j + 1;
 				_vIndices[k + 5] = i * a_nWidth + j + 1;
 
-				// Calculate normals
-				//_vA = XMLoadFloat3(&_vVertices[_vIndices[k + 3]].Pos);
-				//_vB = XMLoadFloat3(&_vVertices[_vIndices[k + 4]].Pos);
-				//_vC = XMLoadFloat3(&_vVertices[_vIndices[k + 5]].Pos);	
+				// Calculate normals	
 				_vA = XMLoadFloat3(&_vPositionBuffer[_vIndices[k + 3]]);
 				_vB = XMLoadFloat3(&_vPositionBuffer[_vIndices[k + 4]]);
 				_vC = XMLoadFloat3(&_vPositionBuffer[_vIndices[k + 5]]);	
@@ -243,9 +201,6 @@ namespace TFRendering
 				_vE = XMVector3Cross(_vD, _vE);
 
 				// Store the new normal
-				//XMStoreFloat3(&_vVertices[_vIndices[k + 3]].Norm, _vE);
-				//XMStoreFloat3(&_vVertices[_vIndices[k + 4]].Norm, _vE);
-				//XMStoreFloat3(&_vVertices[_vIndices[k + 5]].Norm, _vE);
 				XMStoreFloat3(&_vNormalBuffer[_vIndices[k + 3]], _vE);
 				XMStoreFloat3(&_vNormalBuffer[_vIndices[k + 4]], _vE);
 				XMStoreFloat3(&_vNormalBuffer[_vIndices[k + 5]], _vE);
@@ -254,24 +209,6 @@ namespace TFRendering
 				k += 6;
 			}
 		}
-
-		// describe this buffer
-		//D3D11_BUFFER_DESC bd;
-		//ZeroMemory( &bd, sizeof(bd) );
-		//bd.Usage          = D3D11_USAGE_DEFAULT;
-		//bd.ByteWidth      = sizeof( TFPosNormTex4Tan ) * _vVertices.size();
-		//bd.BindFlags      = D3D11_BIND_VERTEX_BUFFER;
-		//bd.CPUAccessFlags = 0; // No cpu access
-		//bd.MiscFlags      = 0; // Unused
-
-		//D3D11_SUBRESOURCE_DATA InitData;
-		//ZeroMemory( &InitData, sizeof(InitData) );
-		//InitData.pSysMem = &_vVertices[0];
-
-		//// Create a buffer to hold this grid's vert data in video memory
-		//HR(m_pd3dDevice->CreateBuffer(&bd, &InitData, &m_pVertexBuffer));
-
-
 
 		// describe the buffers for this model
 
@@ -359,20 +296,7 @@ namespace TFRendering
 		D3D11_SUBRESOURCE_DATA iinitData;
 		iinitData.pSysMem = &_vIndices[0];
 
-		HR(m_pDevice->CreateBuffer(&ibd, &iinitData, &m_pIndexBuffer));
-
-		// GENERATE SHADER RESOURCES
-
-		//// describe the cb for the WVP matrix for shadow mapping
-		//ZeroMemory(&bd, sizeof(bd));
-		//bd.Usage          = D3D11_USAGE_DEFAULT;
-		//bd.ByteWidth      = sizeof(tfMatrix);
-		//bd.BindFlags      = D3D11_BIND_CONSTANT_BUFFER;
-		//bd.CPUAccessFlags = 0;
-		//bd.MiscFlags      = 0;
-
-		//// Create the constant buffer with the device
-		//HR(m_pd3dDevice->CreateBuffer(&bd, NULL, &m_pCBPerObject_Shadow));		
+		HR(m_pDevice->CreateBuffer(&ibd, &iinitData, &m_pIndexBuffer));	
 	}
 
 }

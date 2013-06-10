@@ -661,7 +661,7 @@ namespace TFCore
 		_wit.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 		tfVector _witDet = XMMatrixDeterminant(_wit);
 
-		cb.worldInvTransposeMatrix = XMMatrixTranspose(XMMatrixInverse(&_witDet, _wit));
+		cb.worldInvTransposeMatrix = XMMatrixInverse(&_witDet, _wit);
 
 		// update wvp of buffer
 		cb.wvpMatrix = XMMatrixTranspose(a_matWVP);

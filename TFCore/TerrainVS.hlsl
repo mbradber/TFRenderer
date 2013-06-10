@@ -15,7 +15,7 @@ VertexOut main( VertexIn vin )
 
 	// per vertex transforms
 	vout.PosH    = mul(float4(vin.PosL, 1.0f), WorldViewProjectionMatrix);
-	vout.NormW   = mul(float4(vin.NormL, 0.0f), WorldInverseTransposeMatrix);
+	vout.NormW   = mul(float4(vin.NormL, 0.0f), WorldInverseTransposeMatrix).xyz;
 	vout.TexC    = vin.TexC;
 	vout.ProjTex = mul(float4(vin.PosL, 1.0f), LightWVPT);
 
@@ -25,7 +25,7 @@ VertexOut main( VertexIn vin )
 	// the reflection map) that do use it, the value will be 1.
 	//
 	// We do not want to render anything "below" this surface in the reflection so we will clip
-	// all reversed geometry that is ABOVE the reflective surface in world space (which means its actually
+	// all reversed geometry that is ABOVE the reflective surface in world space (which means it's actually
 	// below it).
 	float4 _f4WorldPos = mul(float4(vin.PosL, 1.0f), WorldMatrix);
 	vout.ClipD = (ClipData.x - _f4WorldPos.y) * ClipData.y;

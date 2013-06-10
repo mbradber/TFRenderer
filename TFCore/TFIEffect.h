@@ -20,6 +20,7 @@ namespace TFRendering
 		void AddRenderable(class TFIRenderable* a_pRenderable);
 		virtual void BatchDraw(const tfMatrix& a_matViewProj, 
 			const tfMatrix& a_matLightVPT) = 0;
+		virtual void SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap);
 
 		static void InitializeSamplers(ID3D11Device* a_pDevice,
 			ID3D11DeviceContext* a_pDeviceContext);

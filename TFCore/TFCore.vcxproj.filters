@@ -81,10 +81,22 @@
     <ClInclude Include="TFModelEx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TFBlinnPhong.h">
+    <ClInclude Include="TFIEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TFIEffect.h">
+    <ClInclude Include="TFGridEx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TFTerrainEx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TFFXBlinnPhong.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TFFXTerrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TFFXDepthRender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -137,10 +149,22 @@
     <ClCompile Include="TFModelEx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TFBlinnPhong.cpp">
+    <ClCompile Include="TFIEffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TFIEffect.cpp">
+    <ClCompile Include="TFGridEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TFTerrainEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TFFXBlinnPhong.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TFFXTerrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TFFXDepthRender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -157,12 +181,30 @@
     <FxCompile Include="ShadowsVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="TerrainPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="TerrainVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="RenderDepthPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="RenderDepthVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="SkyCommon.hlsli">
       <Filter>Shaders</Filter>
     </None>
     <None Include="ShadowsCommon.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="TerrainCommon.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="RenderDepthCommon.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

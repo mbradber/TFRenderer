@@ -28,29 +28,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ShadowsCommon.hlsli">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="RenderDepthCommon.hlsli">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="GnomeCommon.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="ShadowsPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="ShadowsVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="RenderDepthPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="RenderDepthVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="GnomeVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>

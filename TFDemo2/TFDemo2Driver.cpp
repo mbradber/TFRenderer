@@ -4,6 +4,10 @@
 #include <sstream>
 #include <string>
 #include "TFModelEx.h"
+#include "TFFXBlinnPhong.h"
+#include "TFFXTerrain.h"
+#include "TFTerrainEx.h"
+#include "TFFXDepthRender.h"
 
 using namespace TFCore;
 using namespace TFRendering;
@@ -16,11 +20,17 @@ TFDemo2Driver::TFDemo2Driver()
 
 TFDemo2Driver::~TFDemo2Driver()
 {
+	// delete FX
 	delete m_pBlinnPhongFX;
 	delete m_pTerrainFX;
+	delete m_pRenderDepthFX;
 
+	// delete models
 	delete m_pHouseModel;
 	delete m_pTerrain;
+
+	// delete render to texture resources
+	delete m_pShadowMapFront;
 }
 
 void TFDemo2Driver::Init(HINSTANCE hInstance, int a_nCmdShow)
@@ -36,18 +46,37 @@ void TFDemo2Driver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	TFIEffect::InitializeSamplers(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	// build effects from shaders
-	m_pBlinnPhongFX = new TFBlinnPhong(m_pd3dDevice, m_pd3dImmDeviceContext);
+	m_pBlinnPhongFX = new TFFXBlinnPhong(m_pd3dDevice, m_pd3dImmDeviceContext);
+	m_pTerrainFX = new TFFXTerrain(m_pd3dDevice, m_pd3dImmDeviceContext);
+	m_pRenderDepthFX = new TFFXDepthRender(m_pd3dDevice, m_pd3dImmDeviceContext);
 
+	// create render to texture maps
+	m_pShadowMapFront = new TFRendering::TFShadowMap(m_pd3dDevice, m_pd3dImmDeviceContext, 2048, 2048);
 
-	tfMatrix _matWorld = XMMatrixIdentity();
 	
 	// init renderables
+
+	tfMatrix _matWorld = XMMatrixIdentity();
+
+	// HOUSE
 	m_pHouseModel = new TFModelEx(m_pd3dDevice, m_pd3dImmDeviceContext, "..\\Models\\house_obj.obj");
 	_matWorld  = XMMatrixScaling(0.015f, 0.015f, 0.015f);
+	_matWorld *= XMMatrixRotationAxis(m_fmCamera.GetUpVector(), XM_PIDIV2);
+	_matWorld *= XMMatrixTranslation(79.0f, 54.5, -70.0f);
 	m_pHouseModel->SetWorldMatrix(_matWorld);
+
+	// TERRAIN
+	m_pTerrain = new TFTerrainEx(m_pd3dDevice, 
+		m_pd3dImmDeviceContext, 
+		"..\\Textures\\Terrain\\heightmap_1.bmp", 
+		257, 
+		257);
+	_matWorld = XMMatrixRotationAxis(m_fmCamera.GetUpVector(), -XM_PI);
+	m_pTerrain->SetWorldMatrix(_matWorld);
 	
 	// add renderables to effects
 	m_pBlinnPhongFX->AddRenderable(m_pHouseModel);
+	m_pTerrainFX->AddRenderable(m_pTerrain);
 
 	// Set up initial matrices for WVP
 	m_matWorld = XMMatrixIdentity();
@@ -79,7 +108,18 @@ void TFDemo2Driver::UpdateScene(float a_fDelta)
 
 void TFDemo2Driver::RenderToShadowMap()
 {
+	TFDepthBiasRender(m_pd3dDevice, m_pd3dImmDeviceContext);
 
+	// Set viewport to shadow map viewport, set render target to null (Disables color writes)
+	// and set the depth draws to shadow map depth stencil view
+	m_pShadowMapFront->SetRenderState();
+
+
+
+
+
+	// reset render target
+	ResetRenderTarget();
 }
 
 void TFDemo2Driver::RenderToReflectionMap()
@@ -91,15 +131,22 @@ void TFDemo2Driver::RenderScene()
 {
 	TFCore::TFWinBase::RenderScene();
 
+	RenderToShadowMap();
+
 	//TFRenderWireframe(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	// compute view-proj matrix
 	tfMatrix _matViewProj = m_matView * m_matProj;
 
+	// draw blinn-phong shaded objects
+	m_pBlinnPhongFX->SetShadowMap(m_pShadowMapFront->GetDepthMapSRV());
 	m_pBlinnPhongFX->BatchDraw(_matViewProj, m_lightManager.GetVPT());
 
+	// draw terrain objects
+	m_pTerrainFX->SetShadowMap(m_pShadowMapFront->GetDepthMapSRV());
+	m_pTerrainFX->BatchDraw(_matViewProj, m_lightManager.GetVPT());
+
 	// Display the back buffer (vsync intervals)
-	//m_pSwapChain->Present( 1, 0 );
 	m_pSwapChain->Present(0, 0);
 }
 

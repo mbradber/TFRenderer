@@ -101,7 +101,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="TFBlinnPhong.h" />
+    <ClInclude Include="TFFXBlinnPhong.h" />
+    <ClInclude Include="TFFXDepthRender.h" />
+    <ClInclude Include="TFFXTerrain.h" />
+    <ClInclude Include="TFGridEx.h" />
     <ClInclude Include="TFIEffect.h" />
     <ClInclude Include="TFGrid.h" />
     <ClInclude Include="TFLightManager.h" />
@@ -117,6 +120,7 @@
     <ClInclude Include="TFShaderManager.h" />
     <ClInclude Include="TFShadowMap.h" />
     <ClInclude Include="TFTerrain.h" />
+    <ClInclude Include="TFTerrainEx.h" />
     <ClInclude Include="TFTextManager.h" />
     <ClInclude Include="TFTimer.h" />
     <ClInclude Include="TFTypes.h" />
@@ -125,7 +129,10 @@
     <ClInclude Include="TFWaterStill.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="TFBlinnPhong.cpp" />
+    <ClCompile Include="TFFXBlinnPhong.cpp" />
+    <ClCompile Include="TFFXDepthRender.cpp" />
+    <ClCompile Include="TFFXTerrain.cpp" />
+    <ClCompile Include="TFGridEx.cpp" />
     <ClCompile Include="TFIEffect.cpp" />
     <ClCompile Include="TFGrid.cpp" />
     <ClCompile Include="TFLightManager.cpp" />
@@ -140,11 +147,28 @@
     <ClCompile Include="TFShaderManager.cpp" />
     <ClCompile Include="TFShadowMap.cpp" />
     <ClCompile Include="TFTerrain.cpp" />
+    <ClCompile Include="TFTerrainEx.cpp" />
     <ClCompile Include="TFTextManager.cpp" />
     <ClCompile Include="TFTimer.cpp" />
     <ClCompile Include="TFWaterStill.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="RenderDepthPS.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="RenderDepthVS.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="ShadowsPS.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">main</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -177,10 +201,28 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="TerrainPS.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="TerrainVS.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="RenderDepthCommon.hlsli" />
     <None Include="ShadowsCommon.hlsli" />
     <None Include="SkyCommon.hlsli" />
+    <None Include="TerrainCommon.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

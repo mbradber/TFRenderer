@@ -6,20 +6,21 @@
 namespace TFRendering
 {
 
-	class TFBlinnPhong : public TFIEffect
+	class TFFXBlinnPhong : public TFIEffect
 	{
 	public:
-		TFBlinnPhong(ID3D11Device* a_pDevice,
+		TFFXBlinnPhong(ID3D11Device* a_pDevice,
 			ID3D11DeviceContext* a_pDeviceContext);
-		~TFBlinnPhong();
+		~TFFXBlinnPhong();
 
 		void BatchDraw(const tfMatrix& a_matViewProj, 
 			const tfMatrix& a_matLightVPT);
+		void SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap);
 
 	private:
 		// disable copying
-		TFBlinnPhong(TFBlinnPhong&);
-		TFBlinnPhong& operator=(TFBlinnPhong&);
+		TFFXBlinnPhong(TFFXBlinnPhong&);
+		TFFXBlinnPhong& operator=(TFFXBlinnPhong&);
 
 	private:
 

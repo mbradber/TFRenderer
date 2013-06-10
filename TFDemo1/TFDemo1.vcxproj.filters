@@ -28,12 +28,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="TerrainVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="TerrainPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="StillWaterPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -48,9 +42,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="TerrainCommon.hlsli">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="StillWaterCommon.hlsli">
       <Filter>Shaders</Filter>
     </None>

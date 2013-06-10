@@ -1,20 +1,21 @@
-#include "TFBlinnPhong.h"
-#include "TFModelEx.h"
+#include "TFFXTerrain.h"
 #include "TFUtils.h"
+#include "TFIRenderable.h"
 
 namespace TFRendering
 {
 
 	using namespace DirectX;
 
-	TFBlinnPhong::TFBlinnPhong(ID3D11Device* a_pDevice,
+	TFFXTerrain::TFFXTerrain(ID3D11Device* a_pDevice,
 		ID3D11DeviceContext* a_pDeviceContext)
 		:TFIEffect(a_pDevice, 
 			a_pDeviceContext, 
-			std::wstring(L"ShadowsVS.cso"),
-			std::wstring(L"ShadowsPS.cso"))
+			std::wstring(L"TerrainVS.cso"),
+			std::wstring(L"TerrainPS.cso"))
+		
 	{
-		// describe the cb for the WVP matrix
+		// describe the cb for the per object data
 		D3D11_BUFFER_DESC bd;
 		ZeroMemory(&bd, sizeof(bd));
 		bd.Usage          = D3D11_USAGE_DEFAULT;
@@ -28,15 +29,14 @@ namespace TFRendering
 	}
 
 
-	TFBlinnPhong::~TFBlinnPhong()
+	TFFXTerrain::~TFFXTerrain()
 	{
 
 	}
 
-	void TFBlinnPhong::BatchDraw(const tfMatrix& a_matViewProj, 
+	void TFFXTerrain::BatchDraw(const tfMatrix& a_matViewProj, 
 		const tfMatrix& a_matLightVPT)
 	{
-		// set state for this effect
 		SetRenderState();
 
 		// render each renderable for this effect
@@ -62,9 +62,9 @@ namespace TFRendering
 		}
 	}
 
-	void TFBlinnPhong::UpdateBuffers(const tfFloat4x4& a_matWorld, 
-		CXMMATRIX a_matViewProj,
-		CXMMATRIX a_matLightVPT)
+	void TFFXTerrain::UpdateBuffers(const tfFloat4x4& a_matWorld, 
+		const tfMatrix& a_matViewProj,
+		const tfMatrix& a_matLightVPT)
 	{
 		//UPDATE TRANSFORM RESOURCE
 		BufferPerObject cb;
@@ -92,4 +92,10 @@ namespace TFRendering
 
 		m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pCBPerObject);
 	}
+
+	void TFFXTerrain::SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap)
+	{
+		m_pDeviceContext->PSSetShaderResources(6, 1, &a_pShadowMap);
+	}
+
 }

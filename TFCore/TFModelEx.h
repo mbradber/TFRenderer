@@ -63,8 +63,6 @@ namespace TFRendering
 
 	private:
 
-		UINT									m_nVertexCount;
-		UINT									m_nIndexCount;
 		std::vector<ID3D11ShaderResourceView*>  m_vMeshTexturesColor;
 		std::vector<ID3D11ShaderResourceView*>  m_vMeshTexturesNormals;
 		std::vector<TFMesh>                     m_meshes;
