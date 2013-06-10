@@ -56,7 +56,7 @@ float4 main( VertexOut pin ) : SV_TARGET
 
 	// Get normal sample and decompress it
 	float4 _normalSample = NormalMap.Sample(samLinear, pin.TexC); 
-	float3 _normalT      = (2.0f * _normalSample - float4(1.0f, 1.0f, 1.0f, 1.0f)).xyz;
+	float3 _normalT      = 2.0f * _normalSample.xyz - 1.0f;
 	// Get the (tangent - projection of tangent onto normal) vector
 	float3 T = normalize(pin.TanW - (dot(pin.TanW, pin.NormW) * pin.NormW));
 	float3 N = pin.NormW;
@@ -64,10 +64,7 @@ float4 main( VertexOut pin ) : SV_TARGET
 
 	// construct transform from tangent to object space...
 	float3x3 TBN = float3x3(T, B, N);
-	// calculate "bumped normal" as sample normal in object space
-	float3 _bumpedNormal = mul(_normalT, TBN);
-	// bring bumped normal from object space to world space
-	_bumpedNormal = normalize(mul(float4(_bumpedNormal, 0.0f), WorldMatrix).xyz);
+	float3 _bumpedNormal = normalize(mul(_normalT, TBN));
 
 	// Sample the diffuse map for the crate
 	float4 _texColor = DiffuseMap.Sample(samAnisotropic, pin.TexC);
