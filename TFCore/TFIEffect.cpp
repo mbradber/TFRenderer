@@ -33,7 +33,12 @@ namespace TFRendering
 #endif		
 
 		BuildVertexShaderAndInputLayout();
-		BuildPixelShader();
+
+		// check if this effect wants to bind a pixel shader
+		if(a_wsPixelShaderPath.length() > 0)
+		{
+			BuildPixelShader();
+		}
 	}
 
 	TFIEffect::~TFIEffect()
@@ -300,6 +305,11 @@ namespace TFRendering
 	}
 
 	void TFIEffect::SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap)
+	{
+
+	}
+
+	void TFIEffect::UnbindShadowMap()
 	{
 
 	}

@@ -11,7 +11,7 @@ namespace TFRendering
 			:TFIEffect(a_pDevice, 
 			a_pDeviceContext, 
 			std::wstring(L"RenderDepthVS.cso"),
-			std::wstring(L"RenderDepthPS.cso"))
+			std::wstring(L""))
 	{
 		// describe the cb for the per object data
 		D3D11_BUFFER_DESC bd;

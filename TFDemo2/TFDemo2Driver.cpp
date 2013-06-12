@@ -121,7 +121,7 @@ void TFDemo2Driver::RenderToShadowMap()
 
 	m_pRenderDepthFX->BatchDraw(_matViewProj, XMMatrixIdentity());
 
-
+	m_pd3dImmDeviceContext->RSSetState(0);
 	// reset render target
 	ResetRenderTarget();
 }
@@ -149,6 +149,7 @@ void TFDemo2Driver::RenderScene()
 	// draw terrain objects
 	m_pTerrainFX->SetShadowMap(m_pShadowMapFront->GetDepthMapSRV());
 	m_pTerrainFX->BatchDraw(_matViewProj, m_lightManager.GetVPT());
+	m_pTerrainFX->UnbindShadowMap();
 
 	// Display the back buffer (vsync intervals)
 	m_pSwapChain->Present(0, 0);

@@ -97,4 +97,10 @@ namespace TFRendering
 		m_pDeviceContext->PSSetShaderResources(6, 1, &a_pShadowMap);
 	}
 
+	void TFFXTerrain::UnbindShadowMap()
+	{
+		ID3D11ShaderResourceView* _pSRV[1] = {NULL};
+		m_pDeviceContext->PSSetShaderResources(6, 1, _pSRV);
+	}
+
 }
