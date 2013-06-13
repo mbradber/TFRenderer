@@ -14,8 +14,8 @@ namespace TFCore
 		 m_vUp(0.0f, 1.0f, 0.0f, 0.0f),
 		 m_xmvUp(XMLoadFloat4(&m_vUp)),
 		 m_vSide(0.0f, 0.0f, -1.0f, 0.0f),
-		 CAMERA_ROTATION_BUFFER_YAW(1000.0f),
-		 CAMERA_MOVEMENT_BUFFER(50.0f)
+		 CAMERA_ROTATION_BUFFER_YAW(500.0f),
+		 CAMERA_MOVEMENT_BUFFER(20.0f)
 	{
 		// normalize forward vector
 		tfVector _vForward = XMLoadFloat4(&m_vForward);
