@@ -12,7 +12,7 @@ namespace TFCore
 		 m_pVertexShader(NULL),
 		 m_pInputLayout(NULL),
 		 m_cbDefaultPosColShaderPath(L"SimplePosCol.hlsl")
-	{ 
+	{
 
 	}
 
