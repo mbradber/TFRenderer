@@ -49,9 +49,14 @@ private:
 	// Renderables
 	TFRendering::TFIRenderable* m_pHouseModel;
 	TFRendering::TFIRenderable* m_pTree1;
+	TFRendering::TFIRenderable* m_pTree2;
+	TFRendering::TFIRenderable* m_pTree3;
 	TFRendering::TFIRenderable* m_pTerrain;
 	TFRendering::TFIRenderable* m_pWater1;
+	TFRendering::TFIRenderable* m_pWater2;
 	TFRendering::TFIRenderable* m_pSkybox;
+	TFRendering::TFIRenderable* m_pGnome;
+	TFRendering::TFIRenderable* m_pDoor1;
 
 };
 
