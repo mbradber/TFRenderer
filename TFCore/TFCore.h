@@ -1,5 +1,11 @@
 #pragma once
 
+/*** 
+	Represents the core Win32/D3D initialization and game loop functionality.
+	Primary components accessed from this class include the Direct3D device,
+	immediate context, game timer, and main window handle.
+***/
+
 #include <d3d11.h>
 #include "TFTimer.h"
 
@@ -20,6 +26,11 @@ namespace TFCore
 		virtual void    RenderScene();
 		void            ResetRenderTarget();
 
+	private:
+		// disable copying
+		TFWinBase(TFWinBase&);
+		TFWinBase& operator=(TFWinBase&);
+
 	protected:
 		ID3D11Device*           m_pd3dDevice;
 		ID3D11DeviceContext*    m_pd3dImmDeviceContext;
@@ -37,8 +48,6 @@ namespace TFCore
 		size_t m_nClientWidth;
 		size_t m_nClientHeight;
 		bool   m_bResizing;
-
-		//TFShaderManager m_shaderManager;
 		TFTimer m_timer;
 	};
 }

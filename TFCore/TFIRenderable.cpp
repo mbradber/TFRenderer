@@ -1,5 +1,5 @@
 #include "TFIRenderable.h"
-
+#include "TFUtils.h"
 
 namespace TFRendering
 {
@@ -14,6 +14,15 @@ namespace TFRendering
 		 m_pTexCoordVertexBuffer(NULL),
 		 m_pTangentVertexBuffer(NULL)
 	{
+	}
+
+	TFIRenderable::~TFIRenderable()
+	{
+		ReleaseCOM(m_pPositionVertexBuffer);
+		ReleaseCOM(m_pNormalVertexBuffer);
+		ReleaseCOM(m_pTexCoordVertexBuffer);
+		ReleaseCOM(m_pTangentVertexBuffer);
+		ReleaseCOM(m_pIndexBuffer);
 	}
 
 	void TFIRenderable::SetWorldMatrix(const tfMatrix& a_matWorld)

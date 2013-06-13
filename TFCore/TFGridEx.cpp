@@ -8,6 +8,7 @@ namespace TFRendering
 	using namespace std;
 	using namespace DirectX;
 
+	/*** Ctor. Consumes a heightmap path and grid dimensions to be initialized with ***/
 	TFGridEx::TFGridEx(ID3D11Device* a_pDevice, 
 		ID3D11DeviceContext* a_pDeviceContext,
 		const std::string& a_sHeightmap,
@@ -32,7 +33,7 @@ namespace TFRendering
 
 	}
 
-	// utility function to handle little endian data
+	/*** Utility function to handle little endian data ***/
 	int TFGridEx::GetNextValue4B(ifstream& a_bmStream)
 	{
 		char c[4];
@@ -46,6 +47,7 @@ namespace TFRendering
 		return d;
 	}
 
+	/*** Read in heightmap data from a .bmp file and populate the m_hmData member variable ***/
 	void TFGridEx::GenerateHeightmapFromBMP(const std::string& a_sFilePath)
 	{
 		ifstream _bmStream(a_sFilePath, ifstream::binary);
@@ -73,6 +75,9 @@ namespace TFRendering
 		_bmStream.close();
 	}
 
+	/*** Generate grid geometry from the grid parameters including positions, normals, tangents, and 
+		 texture coordinates. This routine also utilizes vertex smoothing to provide relief to harsh edges. This 
+		 method also determines and creates input buffer data. ***/
 	void TFGridEx::GenerateGrid(int a_nWidth, int a_nDepth, float a_fTextureScale)
 	{
 		int _nFaceCount = (a_nWidth - 1) * (a_nDepth - 1) * 2;

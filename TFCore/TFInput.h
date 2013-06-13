@@ -1,4 +1,8 @@
 #pragma once
+
+/*** Input singleton class. Uses DirectInput to manage the state of mouse
+	 and keyboard ***/
+
 #include <Windows.h>
 #include <dinput.h>
 

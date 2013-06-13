@@ -1,5 +1,10 @@
 #pragma once
 
+/*** Concrete renderable class encapsulating 3D models. Utilizies the Open Asset Import Library
+	 API to populate vertex and index buffers and create shader resource views from asset 
+	 textures such as normal and diffuse maps. Also implements the virtual Draw() method
+	 to provide custom drawing functionality for this renderable type ***/
+
 #include <d3d11.h>
 #include <string>
 #include "TFTypes.h"

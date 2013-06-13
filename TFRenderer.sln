@@ -3,17 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TFCore", "TFCore\TFCore.vcxproj", "{A579FCC6-46CB-436D-AB08-06BA3915275C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TFShadows", "TFShadows\TFShadows.vcxproj", "{73EAE43B-A8F9-4771-AEC1-F462B22AF421}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A579FCC6-46CB-436D-AB08-06BA3915275C} = {A579FCC6-46CB-436D-AB08-06BA3915275C}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TFDemo1", "TFDemo1\TFDemo1.vcxproj", "{156C63BB-A0AE-45D0-BF98-36AF5679E6CA}"
-	ProjectSection(ProjectDependencies) = postProject
-		{73EAE43B-A8F9-4771-AEC1-F462B22AF421} = {73EAE43B-A8F9-4771-AEC1-F462B22AF421}
-		{A579FCC6-46CB-436D-AB08-06BA3915275C} = {A579FCC6-46CB-436D-AB08-06BA3915275C}
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7ECC2D26-A5AD-4FDD-9692-D70F0A749B0F}"
 	ProjectSection(SolutionItems) = preProject
 		Performance1.psess = Performance1.psess
@@ -34,14 +23,6 @@ Global
 		{A579FCC6-46CB-436D-AB08-06BA3915275C}.Debug|Win32.Build.0 = Debug|Win32
 		{A579FCC6-46CB-436D-AB08-06BA3915275C}.Release|Win32.ActiveCfg = Release|Win32
 		{A579FCC6-46CB-436D-AB08-06BA3915275C}.Release|Win32.Build.0 = Release|Win32
-		{73EAE43B-A8F9-4771-AEC1-F462B22AF421}.Debug|Win32.ActiveCfg = Debug|Win32
-		{73EAE43B-A8F9-4771-AEC1-F462B22AF421}.Debug|Win32.Build.0 = Debug|Win32
-		{73EAE43B-A8F9-4771-AEC1-F462B22AF421}.Release|Win32.ActiveCfg = Release|Win32
-		{73EAE43B-A8F9-4771-AEC1-F462B22AF421}.Release|Win32.Build.0 = Release|Win32
-		{156C63BB-A0AE-45D0-BF98-36AF5679E6CA}.Debug|Win32.ActiveCfg = Debug|Win32
-		{156C63BB-A0AE-45D0-BF98-36AF5679E6CA}.Debug|Win32.Build.0 = Debug|Win32
-		{156C63BB-A0AE-45D0-BF98-36AF5679E6CA}.Release|Win32.ActiveCfg = Release|Win32
-		{156C63BB-A0AE-45D0-BF98-36AF5679E6CA}.Release|Win32.Build.0 = Release|Win32
 		{2E086E8C-7EA3-4629-8210-123831FD1A54}.Debug|Win32.ActiveCfg = Debug|Win32
 		{2E086E8C-7EA3-4629-8210-123831FD1A54}.Debug|Win32.Build.0 = Debug|Win32
 		{2E086E8C-7EA3-4629-8210-123831FD1A54}.Release|Win32.ActiveCfg = Release|Win32

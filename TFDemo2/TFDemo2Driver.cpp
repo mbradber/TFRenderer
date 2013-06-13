@@ -56,7 +56,6 @@ void TFDemo2Driver::Init(HINSTANCE hInstance, int a_nCmdShow)
 
 	// init components
 	m_lightManager.Init(m_pd3dDevice, m_pd3dImmDeviceContext);
-	m_shaderManager.Init(m_pd3dDevice);
 
 	// bind samplers
 	TFIEffect::InitializeSamplers(m_pd3dDevice, m_pd3dImmDeviceContext);

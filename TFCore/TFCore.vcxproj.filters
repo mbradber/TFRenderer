@@ -27,13 +27,7 @@
     <ClInclude Include="TFUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TFCube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TFMath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TFVertices.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TFTypes.h">
@@ -51,28 +45,10 @@
     <ClInclude Include="TFIRenderable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TFShaderManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TFLightManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TFTextManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TFModel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TFShadowMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TFTerrain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TFGrid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TFWaterStill.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TFReflectionMap.h">
@@ -116,9 +92,6 @@
     <ClCompile Include="TFCore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TFCube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TFInput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -131,28 +104,10 @@
     <ClCompile Include="TFIRenderable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TFShaderManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TFLightManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TFTextManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TFModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TFShadowMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TFTerrain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TFGrid.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TFWaterStill.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TFReflectionMap.cpp">

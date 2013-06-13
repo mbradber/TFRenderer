@@ -1,5 +1,10 @@
 #pragma once
 
+/*** Abstract interface representing an effect to be executed on the GPU. This serves as a batch rendering 
+	 manager as it holds a container to renderable objects, grabs the vertex components
+	 required from that renderable, then sets the state of the GPU to render the effect
+	 (render states/shaders/buffer data/textures from renderables). ***/
+
 #include <d3d11.h>
 #include <string>
 #include <vector>

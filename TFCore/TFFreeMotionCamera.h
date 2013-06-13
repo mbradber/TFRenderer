@@ -1,5 +1,8 @@
 #pragma once
 
+/*** This class serves as a simple input driven free motion camera to 
+	 navigate a 3D environment. ***/
+
 #include <d3d11.h>
 #include "TFTypes.h"
 
@@ -24,6 +27,11 @@ namespace TFCore
 		tfFloat3 GetPosition() const;
 		tfVector GetForward() const;
 		inline tfVector& GetUpVector() { return m_xmvUp; }
+
+	private:
+		// disable copying
+		TFFreeMotionCamera(TFFreeMotionCamera&);
+		TFFreeMotionCamera& operator=(TFFreeMotionCamera&);
 
 	private:
 		tfFloat4 m_vPosition;

@@ -5,6 +5,7 @@ namespace TFCore
 {
 	using namespace DirectX;
 
+	/*** Ctor. Initializes camera position, camera rotation buffer, and camera movement buffer ***/
 	TFFreeMotionCamera::TFFreeMotionCamera()
 		:/*m_vPosition(-220.0f, 180.0f, -49.0f, 1.0f),*/
 		//m_vPosition(0, 100, 0, 1.0f),
@@ -22,11 +23,12 @@ namespace TFCore
 		XMStoreFloat4(&m_vForward, _vForward);
 	}
 
-
+	/*** Dtor ***/
 	TFFreeMotionCamera::~TFFreeMotionCamera()
 	{
 	}
 
+	/*** Query input singleton to adjust the camera position/rotation ***/
 	void TFFreeMotionCamera::Update(float a_fDelta)
 	{
 		// Camera updates from keyboard (directional)
@@ -60,6 +62,7 @@ namespace TFCore
 		RotateCameraPitch(a_fDelta, static_cast<float>(TFInput::Instance()->GetMouseDeltaY()));
 	}
 
+	/*** Move camera along the side vector (Strafe) ***/
 	void TFFreeMotionCamera::MoveRight(float a_fDelta)
 	{
 		// Move the position along the side axis
@@ -71,6 +74,7 @@ namespace TFCore
 		XMStoreFloat4(&m_vPosition, _vPos);
 	}
 
+	/*** Move camera along the side vector (Strafe) ***/
 	void TFFreeMotionCamera::MoveLeft(float a_fDelta)
 	{
 		// Move the position along the side axis
@@ -82,6 +86,7 @@ namespace TFCore
 		XMStoreFloat4(&m_vPosition, _vPos);
 	}
 
+	/*** Move camera along the forward vector ***/
 	void TFFreeMotionCamera::MoveForward(float a_fDelta)
 	{
 		tfVector _vPos = XMLoadFloat4(&m_vPosition);
@@ -92,6 +97,7 @@ namespace TFCore
 		XMStoreFloat4(&m_vPosition, _vPos);
 	}
 
+	/*** Move camera back along the forward vector ***/
 	void TFFreeMotionCamera::MoveBack(float a_fDelta)
 	{
 		tfVector _vPos = XMLoadFloat4(&m_vPosition);
@@ -102,6 +108,7 @@ namespace TFCore
 		XMStoreFloat4(&m_vPosition, _vPos);
 	}
 
+	/*** Move camera along world up vector ***/
 	void TFFreeMotionCamera::MoveUp(float a_fDelta)
 	{
 		tfVector _vPos = XMLoadFloat4(&m_vPosition);
@@ -112,6 +119,7 @@ namespace TFCore
 		XMStoreFloat4(&m_vPosition, _vPos);
 	}
 
+	/*** Move camera down the world up vector ***/
 	void TFFreeMotionCamera::MoveDown(float a_fDelta)
 	{
 		tfVector _vPos = XMLoadFloat4(&m_vPosition);
@@ -122,6 +130,7 @@ namespace TFCore
 		XMStoreFloat4(&m_vPosition, _vPos);
 	}
 
+	/*** Build and return a view matrix that has a target in front of the camera ***/
 	tfMatrix TFFreeMotionCamera::GetView()
 	{
 		tfVector _vPos = XMLoadFloat4(&m_vPosition);
@@ -137,6 +146,7 @@ namespace TFCore
 		return XMMatrixLookAtLH(_vPos, _vAt, _vUp);
 	}
 
+	/*** Query camera position ***/
 	tfFloat3 TFFreeMotionCamera::GetPosition() const
 	{
 		tfFloat3 _pos;
@@ -147,11 +157,14 @@ namespace TFCore
 		return _pos;
 	}
 
+	/*** Return camera forward vector ***/
 	tfVector TFFreeMotionCamera::GetForward() const
 	{
 		return XMLoadFloat4(&m_vForward);
 	}
 
+	/*** Based on horizontal mouse movement, yaw the camera by rotating the forward and side vector about
+		 the world up vector ***/
 	void TFFreeMotionCamera::RotateCameraYaw(float a_fDeltaTime, float a_fDeltaDistance)
 	{
 		tfVector _vUp   = XMLoadFloat4(&m_vUp);
@@ -173,6 +186,8 @@ namespace TFCore
 		XMStoreFloat4(&m_vSide, _vSide);
 	}
 
+	/*** Based on vertical mouse movement, pitch the camera by rotating the forward vector about the camera
+		 side vector ***/
 	void TFFreeMotionCamera::RotateCameraPitch(float a_fDeltaTime, float a_fDeltaDistance)
 	{
 		tfVector _vUp   = XMLoadFloat4(&m_vUp);

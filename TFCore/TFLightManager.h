@@ -45,7 +45,6 @@ namespace TFCore
 
 		ID3D11Device* m_pDevice;
 		ID3D11DeviceContext* m_pDeviceContext;
-		//TODO: Should probably group these in a pair or struct (the light and the struct that maps its buffer)
 		TFDirectionalLight m_directionalLight1;
 		TFBufferDirectionalLight m_directionaLight1Buffer;
 		ID3D11Buffer* m_pCBDirectionalLight;

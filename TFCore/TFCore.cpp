@@ -6,15 +6,17 @@
 
 namespace TFCore
 {
+	/*** Handle to the application to pass to the windows procedure ***/
 	TFWinBase* g_TFWinBase = NULL;
 
-	/** Global callback function which will forward messages to application class **/
+	/*** Global callback function which will forward messages to application class ***/
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		TF_ASSERT(g_TFWinBase != NULL, FILE_NAME, LINE_NO);
 		return g_TFWinBase->TFWinBaseProc(hWnd, msg, wParam, lParam);
 	}
 
+	/*** Ctor ***/
 	TFWinBase::TFWinBase()
 		:m_pd3dDevice(NULL),
 		 m_pd3dImmDeviceContext(NULL),
@@ -33,6 +35,7 @@ namespace TFCore
 		g_TFWinBase = this;
 	}
 
+	/*** Dtor. Release all COM references ***/
 	TFWinBase::~TFWinBase()
 	{
 		g_TFWinBase = NULL;
@@ -51,6 +54,7 @@ namespace TFCore
 		ReleaseCOM(m_pDepthStencilView);
 	}
 
+	/*** Windows callback (handle windows messages here ***/
 	LRESULT TFWinBase::TFWinBaseProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		switch(msg)
@@ -87,6 +91,7 @@ namespace TFCore
 		return DefWindowProc(hWnd, msg, wParam, lParam);
 	}
 
+	/*** Init window, configure main window properties here ***/
 	bool TFWinBase::InitWindowsApp(HINSTANCE instanceHandle, int show)
 	{
 		WNDCLASS wc;
@@ -137,6 +142,8 @@ namespace TFCore
 		return true;
 	}
 
+	/*** Initialize Direct3D. Use this method to query feature levels, MSAA and configure 
+		 the swap chain. ***/
 	bool TFWinBase::InitD3D()
 	{
 		UINT _createDeviceFlags = 0;
@@ -239,6 +246,10 @@ namespace TFCore
 		return true;
 	}
 
+	/*** Encapsulates all necessary adjustments to the application upon a window resize message.
+		 Here the swap chain is resized based on the new window dimensions, then a render target view
+		 and depth stencil view is reconstructed with those new dimensions. The render viewport is
+		 also adjusted to reflect the changes ***/
 	void TFWinBase::OnResize()
 	{
 		TF_ASSERT(m_pd3dImmDeviceContext != NULL, FILE_NAME, LINE_NO);
@@ -294,6 +305,9 @@ namespace TFCore
 		m_pd3dImmDeviceContext->RSSetViewports(1, &m_screenViewport);
 	}
 
+	/*** Quick routine to reset the render target to the Texture2D that was created for the back buffer
+		 and the depth stencil view. Also resets the application viewport. This is primary used after 
+		 the application has used render to texture for shadow mapping and reflection to texture. ***/
 	void TFWinBase::ResetRenderTarget()
 	{
 		// reset render state to original
@@ -301,6 +315,7 @@ namespace TFCore
 		m_pd3dImmDeviceContext->RSSetViewports(1, &m_screenViewport);
 	}
 
+	/*** Game loop. Process messages then update/render ***/
 	void TFWinBase::Run()
 	{
 		MSG msg = {0};
@@ -328,6 +343,7 @@ namespace TFCore
 		}
 	}
 
+	/*** Put any common application update code here. ***/
 	void TFWinBase::UpdateScene(float a_fDelta)
 	{
 		std::stringstream _ss;
@@ -335,6 +351,8 @@ namespace TFCore
 		SetWindowTextA(m_hMainWnd, _ss.str().c_str());
 	}
 
+	/*** Put any common application render code here. Currently this simply clears the render
+		 target view and depth-stencil view ***/
 	void TFWinBase::RenderScene()
 	{
 		// Just clear the backbuffer and depth stencil view

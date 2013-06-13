@@ -1,9 +1,7 @@
 #pragma once
 
 #include "TFCore.h"
-#include "TFCube.h"
 #include "TFFreeMotionCamera.h"
-#include "TFShaderManager.h"
 #include "TFLightManager.h"
 #include "TFIEffect.h"
 #include "TFIRenderable.h"
@@ -28,7 +26,6 @@ private:
 
 	TFCore::TFFreeMotionCamera m_fmCamera;
 	TFCore::TFLightManager m_lightManager;
-	TFCore::TFShaderManager m_shaderManager;
 
 	tfMatrix m_matView;
 	tfMatrix m_matProj;

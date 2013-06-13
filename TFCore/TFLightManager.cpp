@@ -88,11 +88,6 @@ namespace TFCore
 
 		// Bind the constant buffer containing the light info to the shaders it will be used in
 		m_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pCBDirectionalLight);
-
-		// update light's position
-/*		tfVector _vDir = XMVectorSet(m_directionalLight1.Direction.x, m_directionalLight1.Direction.y, m_directionalLight1.Direction.z, 0.0f);
-		XMVector4Normalize(_vDir);
-		m_vPos = -_vDir * 300;	*/	
 	}
 
 	tfFloat3 TFLightManager::GetPosition() const

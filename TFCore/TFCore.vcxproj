@@ -109,27 +109,19 @@
     <ClInclude Include="TFFXWaterStill.h" />
     <ClInclude Include="TFGridEx.h" />
     <ClInclude Include="TFIEffect.h" />
-    <ClInclude Include="TFGrid.h" />
     <ClInclude Include="TFLightManager.h" />
     <ClInclude Include="TFCore.h" />
-    <ClInclude Include="TFCube.h" />
     <ClInclude Include="TFFreeMotionCamera.h" />
     <ClInclude Include="TFInput.h" />
     <ClInclude Include="TFIRenderable.h" />
     <ClInclude Include="TFMath.h" />
-    <ClInclude Include="TFModel.h" />
     <ClInclude Include="TFModelEx.h" />
     <ClInclude Include="TFReflectionMap.h" />
-    <ClInclude Include="TFShaderManager.h" />
     <ClInclude Include="TFShadowMap.h" />
-    <ClInclude Include="TFTerrain.h" />
     <ClInclude Include="TFTerrainEx.h" />
-    <ClInclude Include="TFTextManager.h" />
     <ClInclude Include="TFTimer.h" />
     <ClInclude Include="TFTypes.h" />
     <ClInclude Include="TFUtils.h" />
-    <ClInclude Include="TFVertices.h" />
-    <ClInclude Include="TFWaterStill.h" />
     <ClInclude Include="TFWaterStillEx.h" />
   </ItemGroup>
   <ItemGroup>
@@ -141,23 +133,16 @@
     <ClCompile Include="TFFXWaterStill.cpp" />
     <ClCompile Include="TFGridEx.cpp" />
     <ClCompile Include="TFIEffect.cpp" />
-    <ClCompile Include="TFGrid.cpp" />
     <ClCompile Include="TFLightManager.cpp" />
     <ClCompile Include="TFCore.cpp" />
-    <ClCompile Include="TFCube.cpp" />
     <ClCompile Include="TFFreeMotionCamera.cpp" />
     <ClCompile Include="TFInput.cpp" />
     <ClCompile Include="TFIRenderable.cpp" />
-    <ClCompile Include="TFModel.cpp" />
     <ClCompile Include="TFModelEx.cpp" />
     <ClCompile Include="TFReflectionMap.cpp" />
-    <ClCompile Include="TFShaderManager.cpp" />
     <ClCompile Include="TFShadowMap.cpp" />
-    <ClCompile Include="TFTerrain.cpp" />
     <ClCompile Include="TFTerrainEx.cpp" />
-    <ClCompile Include="TFTextManager.cpp" />
     <ClCompile Include="TFTimer.cpp" />
-    <ClCompile Include="TFWaterStill.cpp" />
     <ClCompile Include="TFWaterStillEx.cpp" />
   </ItemGroup>
   <ItemGroup>

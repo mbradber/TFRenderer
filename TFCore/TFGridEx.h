@@ -1,5 +1,9 @@
 #pragma once
 
+/*** Represents a customizable grid renderable object. This can be customized by
+	 passing in a heightmap. Common uses for this class will include fluid bodies
+	 and terrain ***/
+
 #include "TFIRenderable.h"
 #include <vector>
 #include <fstream>

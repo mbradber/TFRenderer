@@ -1,5 +1,9 @@
 #pragma once
 
+/*** Abstract interface representing all renderable objects in the engine. Provides common utilities
+	 such as accessors for the object's world matrix and component vertex buffers. Enforces
+	 concrete classes to implement their Draw functionality ***/
+
 #include <d3d11.h>
 #include <string>
 #include "TFTypes.h"
@@ -12,7 +16,7 @@ namespace TFRendering
 
 		TFIRenderable(ID3D11Device* a_pDevice, 
 			ID3D11DeviceContext* a_pDeviceContext);
-		virtual ~TFIRenderable() {};
+		virtual ~TFIRenderable();
 
 		virtual void SetWorldMatrix(const tfMatrix& a_matWorld);
 		virtual tfFloat4x4& GetWorldMatrix();

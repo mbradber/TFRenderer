@@ -8,6 +8,8 @@ namespace TFRendering
 {
 	using namespace std;
 
+	/*** Ctor. Takes in the vertex and pixel shader paths, then makes calls to build the shader
+		 objects and input layout for this effect ***/
 	TFIEffect::TFIEffect(ID3D11Device* a_pDevice,
 		ID3D11DeviceContext* a_pDeviceContext,
 		std::wstring& a_wsVertexShaderPath,
@@ -46,9 +48,15 @@ namespace TFRendering
 	{
 		delete[] m_pVertexBuffers;
 
+		ReleaseCOM(m_pInputLayout);
+		ReleaseCOM(m_pVertexShader);
+		ReleaseCOM(m_pPixelShader);
 		ReleaseCOM(m_pCBPerObject);
+		ReleaseCOM(m_pCBPerFrame);
 	}
 
+	/*** Routine to build the vertex shader from a compiled shader object. Also uses reflection to 
+	 *** dynamically build an input layout for the vertex shader ***/
 	void TFIEffect::BuildVertexShaderAndInputLayout()
 	{
 		std::wstring _wsShaderPrefix = m_wsShaderPrefix;
@@ -183,6 +191,7 @@ namespace TFRendering
 		delete[] _pElementDescriptions;
 	}
 
+	/*** Routine to build the pixel shader from a .cso ***/
 	void TFIEffect::BuildPixelShader()
 	{
 		std::wstring _wsShaderPrefix = m_wsShaderPrefix;
@@ -221,11 +230,14 @@ namespace TFRendering
 		delete[] _cbBuffer;
 	}
 
+	/*** Add a renderable to this effect. Allows for batched render states ***/
 	void TFIEffect::AddRenderable(TFIRenderable* a_pRenderable)
 	{
 		m_vRenderables.push_back(a_pRenderable);
 	}
 
+	/*** Common code to set the render state for this effect. All renderable objects of this effect
+		 would share the same vertex/pixel shader, input layout, and primitive topology ***/
 	void TFIEffect::SetRenderState()
 	{
 		TF_ASSERT(m_pVertexShader != NULL, FILE_NAME, LINE_NO);
@@ -240,6 +252,7 @@ namespace TFRendering
 		m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 
+	/*** Common texture samplers to bind to the GPU ***/
 	void TFIEffect::InitializeSamplers(ID3D11Device* a_pDevice,
 		ID3D11DeviceContext* a_pDeviceContext)
 	{
@@ -304,6 +317,8 @@ namespace TFRendering
 		HR(a_pDevice->CreateSamplerState(&SamDescShad, &_pSamplerState));
 		a_pDeviceContext->PSSetSamplers(2, 1, &_pSamplerState);
 	}
+
+	/*** Empty virtual functions for child polymorphic effect classes. ***/
 
 	void TFIEffect::SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap)
 	{
