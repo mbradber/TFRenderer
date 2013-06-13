@@ -379,7 +379,6 @@ void TFDemoDriver::RenderToShadowMap()
 	m_house1.ActivateShadowShaders();
 	m_house1.Draw();
 
-
 	/*** TREE 1 ***/
 	m_matWorld = m_tree1.GetWorldMatrix();
 	_matWVP = m_matWorld * _matViewProj;

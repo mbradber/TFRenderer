@@ -3,9 +3,6 @@
 struct VertexIn
 {
 	float3 PosL  : POSITION;
-	float3 NormL : NORMAL;
-	float2 TexC  : TEXCOORD;
-	float3 TanU  : TANGENT;
 };
 
 VertexOut main(VertexIn vin)

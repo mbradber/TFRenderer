@@ -8,6 +8,7 @@
 #include "TFIEffect.h"
 #include "TFIRenderable.h"
 #include "TFShadowMap.h"
+#include "TFReflectionMap.h"
 
 class TFDemo2Driver : public TFCore::TFWinBase
 {
@@ -35,15 +36,21 @@ private:
 
 	// render to texture views
 	TFRendering::TFShadowMap* m_pShadowMapFront;
+	TFRendering::TFReflectionMap* m_pReflectionMap;
 
 	// Effects
 	TFRendering::TFIEffect* m_pBlinnPhongFX;
 	TFRendering::TFIEffect* m_pTerrainFX;
 	TFRendering::TFIEffect* m_pRenderDepthFX;
+	TFRendering::TFIEffect* m_pWaterStillFX;
+	TFRendering::TFIEffect* m_pSkyboxFX;
 
 	// Renderables
 	TFRendering::TFIRenderable* m_pHouseModel;
+	TFRendering::TFIRenderable* m_pTree1;
 	TFRendering::TFIRenderable* m_pTerrain;
+	TFRendering::TFIRenderable* m_pWater1;
+	TFRendering::TFIRenderable* m_pSkybox;
 
 };
 

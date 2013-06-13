@@ -22,6 +22,9 @@ namespace TFRendering
 			const tfMatrix& a_matLightVPT) = 0;
 		virtual void SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap);
 		virtual void UnbindShadowMap();
+		virtual void SetReflectionMap(ID3D11ShaderResourceView* a_pReflectionMap);
+		virtual void UnbindReflectionMap();
+		virtual void SetBlendState();
 
 		static void InitializeSamplers(ID3D11Device* a_pDevice,
 			ID3D11DeviceContext* a_pDeviceContext);
@@ -52,6 +55,7 @@ namespace TFRendering
 		std::vector<UINT>       m_vStrides;
 		std::vector<UINT>       m_vOffsets;
 		ID3D11Buffer*           m_pCBPerObject;
+		ID3D11Buffer*			m_pCBPerFrame;
 
 		std::vector<TFIRenderable*> m_vRenderables;
 	};

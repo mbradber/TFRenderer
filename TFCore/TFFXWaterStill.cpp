@@ -12,7 +12,9 @@ namespace TFRendering
 		:TFIEffect(a_pDevice,
 			a_pDeviceContext,
 			std::wstring(L"StillWaterVS.cso"),
-			std::wstring(L"StillWaterPS.cso"))
+			std::wstring(L"StillWaterPS.cso")),
+			m_fWaterOffsetX(0.0f),
+			m_fWaterOffsetY(0.0f)
 	{
 		// describe the cb for the per object data
 		D3D11_BUFFER_DESC bd;
@@ -25,12 +27,28 @@ namespace TFRendering
 
 		// Create the constant buffer with the device
 		HR(m_pDevice->CreateBuffer(&bd, NULL, &m_pCBPerObject));
+
+		// create blend state for water
+		D3D11_BLEND_DESC blendDesc1 = {0};
+		blendDesc1.AlphaToCoverageEnable = false;
+		blendDesc1.IndependentBlendEnable = false;
+
+		blendDesc1.RenderTarget[0].BlendEnable = true;
+		blendDesc1.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		blendDesc1.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc1.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc1.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc1.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blendDesc1.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendDesc1.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+		m_pDevice->CreateBlendState(&blendDesc1, &m_pBlendState1);
 	}
 
 
 	TFFXWaterStill::~TFFXWaterStill()
 	{
-
+		ReleaseCOM(m_pBlendState1);
 	}
 
 	void TFFXWaterStill::BatchDraw(const tfMatrix& a_matViewProj, 
@@ -84,12 +102,42 @@ namespace TFRendering
 		// update wvp of buffer
 		cb.wvpMatrix = XMMatrixTranspose(_matWorld * a_matViewProj);
 
+
+
+		// update texture transform matrices
+		XMMATRIX _matTexTransformPos = XMMatrixTranslation(fmod(m_fWaterOffsetX, 12.0f), 0, 0);
+		XMMATRIX _matTexTransformNeg = XMMatrixTranslation(fmod(m_fWaterOffsetY, 12.0f), 0, 0)
+				* XMMatrixScaling(0.5f, 0.5f, 0.5f);
+
 		// update matrix to transform from object to projective texture coords
-		cb.lightVPT = XMMatrixTranspose(_matWorld * a_matLightVPT);
+		cb.texTransformNeg = XMMatrixTranspose(_matTexTransformNeg);
+		cb.texTransformPos = XMMatrixTranspose(_matTexTransformPos);
 
 		m_pDeviceContext->UpdateSubresource(m_pCBPerObject, 0, NULL, &cb, 0, 0);
-
 		m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pCBPerObject);
+	}
+
+	void TFFXWaterStill::SetReflectionMap(ID3D11ShaderResourceView* a_pReflectionMap)
+	{
+		m_pDeviceContext->PSSetShaderResources(0, 1, &a_pReflectionMap);
+	}
+
+	void TFFXWaterStill::UnbindReflectionMap()
+	{
+		ID3D11ShaderResourceView* _pSRV[1] = {NULL};
+		m_pDeviceContext->PSSetShaderResources(0, 1, _pSRV);
+	}
+
+	void TFFXWaterStill::UpdateWater(float a_fDelta)
+	{
+		m_fWaterOffsetX += a_fDelta * 0.1f;
+		m_fWaterOffsetY += -a_fDelta * 0.1f;
+	}
+
+	void TFFXWaterStill::SetBlendState()
+	{
+		float blendFactors[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		m_pDeviceContext->OMSetBlendState(m_pBlendState1, blendFactors, 0xffffffff);
 	}
 
 }

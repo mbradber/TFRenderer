@@ -103,6 +103,7 @@
   <ItemGroup>
     <ClInclude Include="TFFXBlinnPhong.h" />
     <ClInclude Include="TFFXDepthRender.h" />
+    <ClInclude Include="TFFXSkybox.h" />
     <ClInclude Include="TFFXTerrain.h" />
     <ClInclude Include="TFFXWaterStill.h" />
     <ClInclude Include="TFGridEx.h" />
@@ -133,6 +134,7 @@
   <ItemGroup>
     <ClCompile Include="TFFXBlinnPhong.cpp" />
     <ClCompile Include="TFFXDepthRender.cpp" />
+    <ClCompile Include="TFFXSkybox.cpp" />
     <ClCompile Include="TFFXTerrain.cpp" />
     <ClCompile Include="TFFXWaterStill.cpp" />
     <ClCompile Include="TFGridEx.cpp" />

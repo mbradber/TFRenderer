@@ -13,7 +13,6 @@ namespace TFRendering
 			a_pDeviceContext, 
 			std::wstring(L"TerrainVS.cso"),
 			std::wstring(L"TerrainPS.cso"))
-		
 	{
 		// describe the cb for the per object data
 		D3D11_BUFFER_DESC bd;
@@ -26,6 +25,21 @@ namespace TFRendering
 
 		// Create the constant buffer with the device
 		HR(m_pDevice->CreateBuffer(&bd, NULL, &m_pCBPerObject));
+
+		// describe the cb for the WVP matrix
+		D3D11_BUFFER_DESC sbd;
+		ZeroMemory(&sbd, sizeof(sbd));
+		sbd.Usage          = D3D11_USAGE_DEFAULT;
+		sbd.ByteWidth      = sizeof(tfFloat4); // must be multiple of 16 for constant buffer
+		sbd.BindFlags      = D3D11_BIND_CONSTANT_BUFFER;
+		sbd.CPUAccessFlags = 0;
+		sbd.MiscFlags      = 0;
+
+		// Create the constant buffer with the device
+		HR(m_pDevice->CreateBuffer(&sbd, NULL, &m_pCBPerFrame));
+
+		m_fOffsetData.x = 0;
+		m_fOffsetData.y = 0;
 	}
 
 
@@ -68,7 +82,14 @@ namespace TFRendering
 		//UPDATE TRANSFORM RESOURCE
 		BufferPerObject cb;
 
-		tfMatrix _matWorld = XMLoadFloat4x4(&a_matWorld);
+		tfMatrix _matFlip = XMMatrixIdentity();
+		if(m_fOffsetData.y > 0)
+		{
+			_matFlip   = XMMatrixScaling(1.0f, -1.0f * m_fOffsetData.y, 1.0f);
+		}
+
+		tfMatrix _matOffset = XMMatrixTranslation(0, 2 * m_fOffsetData.x, 0); // move the object up by 2 * reflection plane offset...
+		tfMatrix _matWorld  = _matFlip * _matOffset * XMLoadFloat4x4(&a_matWorld);
 
 		// update world matrix
 		cb.worldMatrix = XMMatrixTranspose(_matWorld);
@@ -102,5 +123,17 @@ namespace TFRendering
 		ID3D11ShaderResourceView* _pSRV[1] = {NULL};
 		m_pDeviceContext->PSSetShaderResources(6, 1, _pSRV);
 	}
+	void TFFXTerrain::UpdatePerFrameData(const tfFloat4& a_fPerFrameData)
+	{
+		m_fOffsetData.x = a_fPerFrameData.x;
+		m_fOffsetData.y = a_fPerFrameData.y;
+
+		// update resource
+		m_pDeviceContext->UpdateSubresource(m_pCBPerFrame , 0, NULL, &a_fPerFrameData, 0, 0);
+
+		// bind to vertex shader for terrain
+		m_pDeviceContext->VSSetConstantBuffers(1, 1, &m_pCBPerFrame);
+	}
+
 
 }

@@ -14,9 +14,7 @@ namespace TFRendering
 			"", // not using heightmap
 			a_nGridWidth,
 			a_nGridDepth),
-		m_pNormalMapSRV(NULL),
-		m_fWaterOffsetX(0.0f),
-		m_fWaterOffsetY(0.0f)
+		m_pNormalMapSRV(NULL)
 	{
 		GenerateGrid(a_nGridWidth, a_nGridDepth, 20.0f);
 

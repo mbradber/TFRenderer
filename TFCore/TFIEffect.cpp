@@ -22,6 +22,7 @@ namespace TFRendering
 		 m_nNumVertexBuffers(0),
 		 m_pVertexBuffers(0),
 		 m_pCBPerObject(NULL),
+		 m_pCBPerFrame(NULL),
 		 m_wsVertexShaderPath(a_wsVertexShaderPath),
 		 m_wsPixelShaderPath(a_wsPixelShaderPath)
 	{
@@ -310,6 +311,21 @@ namespace TFRendering
 	}
 
 	void TFIEffect::UnbindShadowMap()
+	{
+
+	}
+
+	void TFIEffect::SetReflectionMap(ID3D11ShaderResourceView* a_pReflectionMap)
+	{
+
+	}
+
+	void TFIEffect::UnbindReflectionMap()
+	{
+
+	}
+
+	void TFIEffect::SetBlendState()
 	{
 
 	}

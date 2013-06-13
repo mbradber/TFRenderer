@@ -17,10 +17,6 @@ namespace TFRendering
 
 	private:
 		ID3D11ShaderResourceView* m_pNormalMapSRV;
-		tfFloat4x4 m_matTexTransformPos;
-		tfFloat4x4 m_matTexTransformNeg;
-		float      m_fWaterOffsetX;
-		float      m_fWaterOffsetY;
 	};
 
 

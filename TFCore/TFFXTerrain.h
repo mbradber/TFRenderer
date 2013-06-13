@@ -15,6 +15,7 @@ namespace TFRendering
 			const tfMatrix& a_matLightVPT);
 		void SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap);
 		void UnbindShadowMap();
+		void UpdatePerFrameData(const tfFloat4& a_fPerFrameData);
 
 	private:
 		// only allocate this type on the stack (xmmatrix is 16 byte aligned, causes problems on x86 heap)
@@ -30,6 +31,8 @@ namespace TFRendering
 		void UpdateBuffers(const tfFloat4x4& a_matWorld, 
 			const tfMatrix& a_matViewProj,
 			const tfMatrix& a_matLightVPT);
+		
+		tfFloat2 m_fOffsetData;
 	};
 
 

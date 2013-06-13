@@ -95,7 +95,8 @@ float4 main(VertexOut pin) : SV_TARGET
 	_f4DarkDirtColor = (_f4DarkDirtColorBlended * _f4DiffuseLight)
 		+ (_f4DarkDirtColorBlended * _f4AmbientLight);
 
-	float _fShadowFactor = CalcShadow(pin.ProjTex);
+	//float _fShadowFactor = CalcShadow(pin.ProjTex);
+	float _fShadowFactor = 1.0f;
 
 	// return alpha blended terrain color
 	float4 _f4TerrainColor = _f4GrassColor + _f4DullGrassColor + _f4DirtColor + _f4DarkDirtColor;
