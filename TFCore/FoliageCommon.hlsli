@@ -15,6 +15,5 @@ cbuffer cbPerObject : register(b0)
 	float4x4 WorldMatrix;
 	float4x4 WorldInverseTransposeMatrix;
 	float4x4 WorldViewProjectionMatrix;
-	float4x4 TexTransform;
 	float4x4 LightWVPT;
 }

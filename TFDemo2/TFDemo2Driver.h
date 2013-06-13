@@ -44,6 +44,7 @@ private:
 	TFRendering::TFIEffect* m_pRenderDepthFX;
 	TFRendering::TFIEffect* m_pWaterStillFX;
 	TFRendering::TFIEffect* m_pSkyboxFX;
+	TFRendering::TFIEffect* m_pFoliageFX;
 
 	// Renderables
 	TFRendering::TFIRenderable* m_pHouseModel;

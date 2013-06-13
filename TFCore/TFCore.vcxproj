@@ -103,6 +103,7 @@
   <ItemGroup>
     <ClInclude Include="TFFXBlinnPhong.h" />
     <ClInclude Include="TFFXDepthRender.h" />
+    <ClInclude Include="TFFXFoliage.h" />
     <ClInclude Include="TFFXSkybox.h" />
     <ClInclude Include="TFFXTerrain.h" />
     <ClInclude Include="TFFXWaterStill.h" />
@@ -134,6 +135,7 @@
   <ItemGroup>
     <ClCompile Include="TFFXBlinnPhong.cpp" />
     <ClCompile Include="TFFXDepthRender.cpp" />
+    <ClCompile Include="TFFXFoliage.cpp" />
     <ClCompile Include="TFFXSkybox.cpp" />
     <ClCompile Include="TFFXTerrain.cpp" />
     <ClCompile Include="TFFXWaterStill.cpp" />
@@ -159,6 +161,22 @@
     <ClCompile Include="TFWaterStillEx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="FoliagePS.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="FoliageVS.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="RenderDepthPS.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">main</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -241,6 +259,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="FoliageCommon.hlsli" />
     <None Include="RenderDepthCommon.hlsli" />
     <None Include="ShadowsCommon.hlsli" />
     <None Include="SkyCommon.hlsli" />

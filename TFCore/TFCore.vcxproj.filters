@@ -108,6 +108,9 @@
     <ClInclude Include="TFFXSkybox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TFFXFoliage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TFCore.cpp">
@@ -185,6 +188,9 @@
     <ClCompile Include="TFFXSkybox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TFFXFoliage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="SkyPS.hlsl">
@@ -217,6 +223,12 @@
     <FxCompile Include="StillWaterVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="FoliagePS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="FoliageVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="SkyCommon.hlsli">
@@ -232,6 +244,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="StillWaterCommon.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="FoliageCommon.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

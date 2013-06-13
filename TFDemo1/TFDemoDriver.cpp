@@ -551,9 +551,11 @@ void TFDemoDriver::RenderScene()
 	m_matWorld = m_house1.GetWorldMatrix();
 	_matWVP = m_matWorld * _matViewProj;
 
+	m_house1.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2); // bind shadow map
 	m_house1.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_house1.ActivateShaders();
 	m_house1.Draw();
+	m_house1.UnloadShadowMap(2);
 
 	/*** GNOME ***/
 	m_matWorld = m_gnome.GetWorldMatrix();
@@ -600,6 +602,7 @@ void TFDemoDriver::RenderScene()
 	m_terrain.ActivateShaders();
 	m_terrain.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 6); // bind shadow map
 	m_terrain.Draw();
+	m_terrain.UnloadShadowMap(6);
 
 	/*** WATER 1 ***/
 	m_matWorld = m_waterBody1.GetWorldMatrix();
@@ -632,9 +635,11 @@ void TFDemoDriver::RenderScene()
 	m_matWorld = m_door.GetWorldMatrix();
 	_matWVP = m_matWorld * _matViewProj;
 
+	m_door.SetShadowMap(m_pShadowMapFront->GetDepthMapSRV(), 2); // bind shadow map
 	m_door.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_door.ActivateShaders();
 	m_door.Draw();	
+	m_door.UnloadShadowMap(2);
 
 	/*** SKY ***/
 	m_matWorld = XMMatrixScaling(1000.0f, 1000.0f, 1000.0f);
@@ -647,11 +652,11 @@ void TFDemoDriver::RenderScene()
 	m_pd3dImmDeviceContext->PSSetShaderResources(0, 1, &m_cubeMapSRV); // bind cube map SRV
 	m_ellipsoid.UpdateResources(_matWVP, m_matWorld, m_matWorld * m_lightManager.GetVPT(), XMMatrixIdentity(), m_fmCamera.GetPosition());
 	m_ellipsoid.ActivateShaders();
-	//m_ellipsoid.Draw();
+	m_ellipsoid.Draw();
 
 	// restore default states
-	m_box1.UnloadShadowMap(2); // unbind shadow maps as shader resources because we are about to rebind them as depth stencil views
-	m_terrain.UnloadShadowMap(6);
+	//m_box1.UnloadShadowMap(2); // unbind shadow maps as shader resources because we are about to rebind them as depth stencil views
+	//m_terrain.UnloadShadowMap(6);
 	m_pd3dImmDeviceContext->RSSetState(0);
 	m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
 

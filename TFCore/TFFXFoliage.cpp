@@ -1,18 +1,20 @@
-#include "TFFXBlinnPhong.h"
-#include "TFIRenderable.h"
+#include "TFFXFoliage.h"
 #include "TFUtils.h"
+#include "TFIRenderable.h"
+
 
 namespace TFRendering
 {
 
 	using namespace DirectX;
 
-	TFFXBlinnPhong::TFFXBlinnPhong(ID3D11Device* a_pDevice,
-		ID3D11DeviceContext* a_pDeviceContext)
-		:TFIEffect(a_pDevice, 
-			a_pDeviceContext, 
-			std::wstring(L"ShadowsVS.cso"),
-			std::wstring(L"ShadowsPS.cso"))
+	TFFXFoliage::TFFXFoliage(ID3D11Device* a_pDevice,
+			ID3D11DeviceContext* a_pDeviceContext)
+			:
+			TFIEffect(a_pDevice,
+				a_pDeviceContext,
+				std::wstring(L"FoliageVS.cso"),
+				std::wstring(L"FoliagePS.cso"))
 	{
 		// describe the cb for the per object data
 		D3D11_BUFFER_DESC bd;
@@ -28,12 +30,12 @@ namespace TFRendering
 	}
 
 
-	TFFXBlinnPhong::~TFFXBlinnPhong()
+	TFFXFoliage::~TFFXFoliage()
 	{
-
 	}
 
-	void TFFXBlinnPhong::BatchDraw(const tfMatrix& a_matViewProj, 
+
+	void TFFXFoliage::BatchDraw(const tfMatrix& a_matViewProj, 
 		const tfMatrix& a_matLightVPT)
 	{
 		// set state for this effect
@@ -62,9 +64,9 @@ namespace TFRendering
 		}
 	}
 
-	void TFFXBlinnPhong::UpdateBuffers(const tfFloat4x4& a_matWorld, 
-		CXMMATRIX a_matViewProj,
-		CXMMATRIX a_matLightVPT)
+	void TFFXFoliage::UpdateBuffers(const tfFloat4x4& a_matWorld, 
+		const tfMatrix& a_matViewProj,
+		const tfMatrix& a_matLightVPT)
 	{
 		//UPDATE TRANSFORM RESOURCE
 		BufferPerObject cb;
@@ -94,7 +96,8 @@ namespace TFRendering
 		m_pDeviceContext->PSSetConstantBuffers(0, 1, &m_pCBPerObject);
 	}
 
-	void TFFXBlinnPhong::SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap)
+
+	void TFFXFoliage::SetShadowMap(ID3D11ShaderResourceView* a_pShadowMap)
 	{
 		m_pDeviceContext->PSSetShaderResources(2, 1, &a_pShadowMap);
 	}

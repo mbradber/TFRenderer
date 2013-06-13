@@ -11,6 +11,7 @@
 #include "TFWaterStillEx.h"
 #include "TFFXWaterStill.h"
 #include "TFFXSkybox.h"
+#include "TFFXFoliage.h"
 
 using namespace TFCore;
 using namespace TFRendering;
@@ -29,6 +30,7 @@ TFDemo2Driver::~TFDemo2Driver()
 	delete m_pRenderDepthFX;
 	delete m_pWaterStillFX;
 	delete m_pSkyboxFX;
+	delete m_pFoliageFX;
 
 	// delete models
 	delete m_pHouseModel;
@@ -59,6 +61,7 @@ void TFDemo2Driver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	m_pRenderDepthFX = new TFFXDepthRender(m_pd3dDevice, m_pd3dImmDeviceContext);
 	m_pWaterStillFX  = new TFFXWaterStill(m_pd3dDevice, m_pd3dImmDeviceContext);
 	m_pSkyboxFX      = new TFFXSkybox(m_pd3dDevice, m_pd3dImmDeviceContext);
+	m_pFoliageFX     = new TFFXFoliage(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	// create render to texture maps
 	m_pShadowMapFront = new TFRendering::TFShadowMap(m_pd3dDevice, m_pd3dImmDeviceContext, 2048, 2048);
@@ -105,9 +108,10 @@ void TFDemo2Driver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	
 	// add renderables to effects
 	m_pBlinnPhongFX->AddRenderable(m_pHouseModel);
-	m_pBlinnPhongFX->AddRenderable(m_pTree1);
+	m_pFoliageFX->AddRenderable(m_pTree1);
 	m_pTerrainFX->AddRenderable(m_pTerrain);
 	m_pRenderDepthFX->AddRenderable(m_pHouseModel);
+	m_pRenderDepthFX->AddRenderable(m_pTree1);
 	m_pWaterStillFX->AddRenderable(m_pWater1);
 	m_pSkyboxFX->AddRenderable(m_pSkybox);
 
@@ -174,7 +178,7 @@ void TFDemo2Driver::RenderToReflectionMap()
 
 	/*** TERRAIN ***/
 	tfFloat4 _f4ClipData;
-	_f4ClipData.x = _fPlaneVerticalOffset; // height of this reflective surface in world space
+	_f4ClipData.x = 39.5; // height of this reflective surface in world space
 	_f4ClipData.y = 1.0f;  // whether or not to use a clip plane in the VS
 
 	// draw terrain objects
@@ -184,8 +188,10 @@ void TFDemo2Driver::RenderToReflectionMap()
 	// transform view-proj matrix so that it flips all geometry after terrain and accounts for offset
 	_matViewProj = _matFlip * _matOffset * m_matView * m_matProj;
 
-	/*** TREE 1 ***/
+	/*** BLINN-PHONG OBJECTS ***/
 	m_pBlinnPhongFX->BatchDraw(_matViewProj, m_lightManager.GetVPT());
+	/*** FOLIAGE ***/
+	m_pFoliageFX->BatchDraw(_matViewProj, m_lightManager.GetVPT());
 
 	/*** SKY ***/
 
@@ -219,6 +225,10 @@ void TFDemo2Driver::RenderScene()
 	/*** BLINN-PHONG MODELS ***/
 	m_pBlinnPhongFX->SetShadowMap(m_pShadowMapFront->GetDepthMapSRV());
 	m_pBlinnPhongFX->BatchDraw(_matViewProj, m_lightManager.GetVPT());
+
+	/*** FOLIAGE ***/
+	m_pFoliageFX->SetShadowMap(m_pShadowMapFront->GetDepthMapSRV());
+	m_pFoliageFX->BatchDraw(_matViewProj, m_lightManager.GetVPT());
 
 	/*** TERRAIN ***/
 	tfFloat4 _f4ClipData;

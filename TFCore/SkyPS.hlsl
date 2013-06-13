@@ -1,7 +1,7 @@
 #include "SkyCommon.hlsli"
 
 TextureCube CubeMap : register(t0);
-SamplerState samTriLinear : register(s0);
+SamplerState samTriLinear : register(s0); // this is actually anisotropic
 
 float4 main(VertexOut pin) : SV_Target
 {
