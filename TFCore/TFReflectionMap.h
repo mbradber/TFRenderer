@@ -1,5 +1,8 @@
 #pragma once
 
+/*** Encapsulates a render to texture object for reflections. This is currently being used
+	 for the texture that is applied to the water bodies ***/
+
 #include <d3d11.h>
 
 namespace TFRendering

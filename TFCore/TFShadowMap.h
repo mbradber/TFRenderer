@@ -1,5 +1,8 @@
 #pragma once
 
+/*** Encapsulates a render to texture for render to depth buffer. This is
+	 currently used for shadow maps. ***/
+
 #include <D3D11.h>
 
 namespace TFRendering
