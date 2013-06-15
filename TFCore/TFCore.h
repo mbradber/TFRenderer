@@ -49,5 +49,12 @@ namespace TFCore
 		size_t m_nClientHeight;
 		bool   m_bResizing;
 		TFTimer m_timer;
+
+		// Common application states
+		ID3D11RasterizerState*   m_pRSWireframe;
+		ID3D11RasterizerState*   m_pRSNoCull;
+		ID3D11RasterizerState*   m_pRSFrontFaceCull;
+		ID3D11RasterizerState*	 m_pRSDepthBias;
+		ID3D11DepthStencilState* m_pDSLessEqual;
 	};
 }

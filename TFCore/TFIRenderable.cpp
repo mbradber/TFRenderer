@@ -18,6 +18,9 @@ namespace TFRendering
 
 	TFIRenderable::~TFIRenderable()
 	{
+		ReleaseCOM(m_pDevice);
+		ReleaseCOM(m_pDeviceContext);
+
 		ReleaseCOM(m_pPositionVertexBuffer);
 		ReleaseCOM(m_pNormalVertexBuffer);
 		ReleaseCOM(m_pTexCoordVertexBuffer);

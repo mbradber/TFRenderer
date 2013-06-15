@@ -52,6 +52,12 @@ namespace TFCore
 		ReleaseCOM(m_pDepthStencilBuffer);
 		ReleaseCOM(m_pRenderTargetView);
 		ReleaseCOM(m_pDepthStencilView);
+
+		ReleaseCOM(m_pRSWireframe);
+		ReleaseCOM(m_pRSNoCull);
+		ReleaseCOM(m_pRSFrontFaceCull);
+		ReleaseCOM(m_pRSDepthBias);
+		ReleaseCOM(m_pDSLessEqual);
 	}
 
 	/*** Windows callback (handle windows messages here ***/
@@ -241,7 +247,55 @@ namespace TFCore
 
 		OnResize();
 
-		//ShowCursor(false);
+		/*** Init common application states ***/
+
+		D3D11_RASTERIZER_DESC rd;
+
+		// Create wireframe/no cull mode for debug
+		ZeroMemory(&rd, sizeof(D3D11_RASTERIZER_DESC));
+		rd.FillMode = D3D11_FILL_WIREFRAME;
+		rd.CullMode = D3D11_CULL_NONE;
+		rd.FrontCounterClockwise = false;
+		rd.DepthClipEnable = true;
+
+		m_pd3dDevice->CreateRasterizerState(&rd, &m_pRSWireframe);
+
+		// Create no cull render mode
+		ZeroMemory(&rd, sizeof(D3D11_RASTERIZER_DESC));
+		rd.FillMode = D3D11_FILL_SOLID;
+		rd.CullMode = D3D11_CULL_NONE;
+		rd.FrontCounterClockwise = false;
+		rd.DepthClipEnable = true;
+
+		m_pd3dDevice->CreateRasterizerState(&rd, &m_pRSNoCull);
+
+		// Create front face cull render mode
+		ZeroMemory(&rd, sizeof(D3D11_RASTERIZER_DESC));
+		rd.FillMode = D3D11_FILL_SOLID;
+		rd.CullMode = D3D11_CULL_FRONT;
+
+		m_pd3dDevice->CreateRasterizerState(&rd, &m_pRSFrontFaceCull);
+
+		// Create depth bias render mode
+		ZeroMemory(&rd, sizeof(D3D11_RASTERIZER_DESC));
+		rd.DepthBias = 8000;
+		rd.DepthBiasClamp = 0.0f;
+		rd.SlopeScaledDepthBias = 1.0f;
+		rd.FillMode = D3D11_FILL_SOLID;
+		rd.CullMode = D3D11_CULL_BACK;
+
+		m_pd3dDevice->CreateRasterizerState(&rd, &m_pRSDepthBias);
+
+		// Create depth less than or equal comparison state
+		D3D11_DEPTH_STENCIL_DESC _dsDesc;
+		ZeroMemory(&_dsDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+
+		_dsDesc.DepthEnable = true;
+		_dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		_dsDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+		_dsDesc.StencilEnable = false;
+
+		m_pd3dDevice->CreateDepthStencilState(&_dsDesc, &m_pDSLessEqual);
 
 		return true;
 	}

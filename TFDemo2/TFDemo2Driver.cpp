@@ -156,6 +156,7 @@ void TFDemo2Driver::Init(HINSTANCE hInstance, int a_nCmdShow)
 	m_pRenderDepthFX->AddRenderable(m_pTree1);
 	m_pRenderDepthFX->AddRenderable(m_pTree2);
 	m_pRenderDepthFX->AddRenderable(m_pTree3);
+	m_pRenderDepthFX->AddRenderable(m_pGnome);
 	m_pWaterStillFX->AddRenderable(m_pWater1);
 	m_pWaterStillFX->AddRenderable(m_pWater2);
 	m_pSkyboxFX->AddRenderable(m_pSkybox);
@@ -193,7 +194,7 @@ void TFDemo2Driver::UpdateScene(float a_fDelta)
 
 void TFDemo2Driver::RenderToShadowMap()
 {
-	TFDepthBiasRender(m_pd3dDevice, m_pd3dImmDeviceContext);
+	m_pd3dImmDeviceContext->RSSetState(m_pRSDepthBias);
 
 	tfMatrix _matWVP;
 	tfMatrix _matViewProj = m_lightManager.GetView() * m_lightManager.GetProjection();
@@ -212,7 +213,7 @@ void TFDemo2Driver::RenderToReflectionMap()
 {
 	m_pReflectionMap->SetRenderTarget();
 
-	TFRenderFrontFaceCull(m_pd3dDevice, m_pd3dImmDeviceContext);
+	m_pd3dImmDeviceContext->RSSetState(m_pRSFrontFaceCull);
 
 	// compute view-proj matrix
 	float _fPlaneVerticalOffset = 39.0f;
@@ -241,17 +242,15 @@ void TFDemo2Driver::RenderToReflectionMap()
 	/*** SKY ***/
 
 	// update render state and depth/stencil state for ellipsoid
-	TFRenderNoCull(m_pd3dDevice, m_pd3dImmDeviceContext);
-	TFSetDepthLessEqual(m_pd3dDevice, m_pd3dImmDeviceContext);
+	m_pd3dImmDeviceContext->RSSetState(m_pRSNoCull);
+	m_pd3dImmDeviceContext->OMSetDepthStencilState(m_pDSLessEqual, 0);
 
 	m_pSkyboxFX->BatchDraw(_matViewProj, m_lightManager.GetVPT());
 
-	// restore default states
+	/*** Reset rasterizer and render target ***/
 	m_pd3dImmDeviceContext->RSSetState(0);
 	m_pd3dImmDeviceContext->OMSetDepthStencilState(0, 0);
 
-	/*** Reset rasterizer and render target ***/
-	m_pd3dImmDeviceContext->RSSetState(0);
 	ResetRenderTarget();
 }
 
@@ -262,7 +261,7 @@ void TFDemo2Driver::RenderScene()
 	RenderToShadowMap();
 	RenderToReflectionMap();
 
-	//TFRenderWireframe(m_pd3dDevice, m_pd3dImmDeviceContext);
+	////TFRenderWireframe(m_pd3dDevice, m_pd3dImmDeviceContext);
 
 	// compute view-proj matrix
 	tfMatrix _matViewProj = m_matView * m_matProj;
@@ -297,8 +296,8 @@ void TFDemo2Driver::RenderScene()
 	/*** SKY ***/
 
 	// update render state and depth/stencil state for ellipsoid
-	TFRenderNoCull(m_pd3dDevice, m_pd3dImmDeviceContext);
-	TFSetDepthLessEqual(m_pd3dDevice, m_pd3dImmDeviceContext);
+	m_pd3dImmDeviceContext->RSSetState(m_pRSNoCull);
+	m_pd3dImmDeviceContext->OMSetDepthStencilState(m_pDSLessEqual, 0);
 
 	m_pSkyboxFX->BatchDraw(_matViewProj, m_lightManager.GetVPT());
 

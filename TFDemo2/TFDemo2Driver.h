@@ -54,6 +54,5 @@ private:
 	TFRendering::TFIRenderable* m_pSkybox;
 	TFRendering::TFIRenderable* m_pGnome;
 	TFRendering::TFIRenderable* m_pDoor1;
-
 };
 

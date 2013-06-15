@@ -48,6 +48,9 @@ namespace TFRendering
 	{
 		delete[] m_pVertexBuffers;
 
+		//ReleaseCOM(m_pDevice);
+		//ReleaseCOM(m_pDeviceContext);
+
 		ReleaseCOM(m_pInputLayout);
 		ReleaseCOM(m_pVertexShader);
 		ReleaseCOM(m_pPixelShader);
