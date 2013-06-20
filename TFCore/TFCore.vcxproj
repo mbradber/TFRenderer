@@ -41,11 +41,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>$(ProjectName)</TargetName>
-    <IncludePath>$(DXSDK_DIR)\Include\;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);$(ASSIMP_DIR)\include\;$(ProjectDir)..\External\Assimp\include\</IncludePath>
+    <IncludePath>$(DXSDK_DIR)\Include\;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);$(ProjectDir)..\External\Assimp\include\</IncludePath>
     <LibraryPath>$(DXSDK_DIR)\Lib\x86\;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSDK_LibraryPath_x86);$(ProjectDir)..\External\Assimp\lib\x86\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(DXSDK_DIR)\Include\;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);$(ASSIMP_DIR)\include\;$(ProjectDir)..\External\Assimp\include\</IncludePath>
+    <IncludePath>$(DXSDK_DIR)\Include\;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);$(ProjectDir)..\External\Assimp\include\</IncludePath>
     <LibraryPath>$(DXSDK_DIR)\Lib\x86\;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSDK_LibraryPath_x86);$(ProjectDir)..\External\Assimp\lib\x86\</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

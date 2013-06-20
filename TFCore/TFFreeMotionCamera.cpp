@@ -7,9 +7,9 @@ namespace TFCore
 
 	/*** Ctor. Initializes camera position, camera rotation buffer, and camera movement buffer ***/
 	TFFreeMotionCamera::TFFreeMotionCamera()
-		:/*m_vPosition(-220.0f, 180.0f, -49.0f, 1.0f),*/
-		//m_vPosition(0, 100, 0, 1.0f),
-		 m_vPosition(-102.281f, 84.5717f, 94.1944f, 1.0f),
+		:
+		 m_vPosition(0, 50, 0, 1.0f),
+		 //m_vPosition(-102.281f, 84.5717f, 94.1944f, 1.0f),
 		 m_vForward(1.0f, 0.0f, 0.0f, 0.0f),
 		 m_vUp(0.0f, 1.0f, 0.0f, 0.0f),
 		 m_xmvUp(XMLoadFloat4(&m_vUp)),

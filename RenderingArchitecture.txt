@@ -1,0 +1,56 @@
+:: Architecture Overview ::
+
+Project structure:
+
+	The TFCore project is a static library used by client applications. This solution comes with 
+	a TFDemo2 client project that utilizes the library. Clients of this library extend TFCore::TFWinBase
+	and can override some of the common methods provided by the library such as UpdateScene, RenderScene, 
+	OnResize, etc. TFDemoDriver2(.h/cpp) provides an example of this.
+
+Components:
+
+	-- TFCore --
+	
+	TFCore(.h/cpp) provides the base Win32 functionality for initializing a window, the DirectX initialization
+	code, and the underlying application loop. It also holds the handle to the graphics device as well 
+	as common render states for convenience.
+	
+	-- TFIRenderable --
+	
+	Every object that can be displayed with this renderer will be some type of TFIRenderable object. This 
+	interface houses common renderable attributes such as a handle to the device and device context, 
+	and different vertex buffers (position, normal, tangent, texture coords etc). Renderables split up
+	their vertex data into multiple buffers in order to decouple the asset data from the effect that
+	it will be registered with. For example if a user wanted to render a model into a depth buffer for
+	shadow mapping, it would be wasteful to send normals, tangents and texture coordinates when only 
+	the position data is needed, however a different type of effect might want to use all of these 
+	vertex components later such as a Blinn-Phong shader.
+	
+	The types of renderables that can be found in the renderer so far can be seen with TFGridEx (which 
+	serves as an interface for TFTerrainEx and TFWaterStill) and TFModelEx (which represents traditonal
+	static 3D models).
+	
+	Renderables will be registered with a TFIEffect for batch rendering.
+	
+	-- TFIEffect --
+	
+	In order to minimize API calls including render state switches, this renderer uses a batch rendering
+	structure. The interface provided by TFIEffect(.h/cpp) defines how an "effect" should be implemented.
+	Classes that implement this interface will serve as the application version of shaders to be run 
+	on the GPU, and each shader will have a unique effect application class.
+	
+	This interface consumes compiled shader files (.cso) and builds out vertex and pixel shader objects
+	from them. The interface also utilizes the DiretX 11 shader reflection API to build out an 
+	appropriate input layout from the vertex shader input signature so that there is no need for 
+	explicit input layout / vertex structure definitions in the codebase providing easy extensibility
+	and type safety. The interface also defines a pure virtual function called BatchDraw that each
+	child effect will implement. Also provided are functions for commonly used shader bindings such as 
+	shadow map and reflection map resources.
+	
+	Objects that implement the TFIRenderable interface will register themselves with a particular effect
+	using the TFIEffect::AddRenderable method, allowing for batch rendering of objects that share shaders,
+	primitive topologies, and input layouts.
+	
+	The source for the various effects that are supported so far are prefixed with TFFX* to indicate that
+	they serve as effect files representing some shader the GPU can execute.
+	
