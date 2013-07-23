@@ -400,9 +400,9 @@ namespace TFCore
 	/*** Put any common application update code here. ***/
 	void TFWinBase::UpdateScene(float a_fDelta)
 	{
-		std::stringstream _ss;
-		_ss << "TreeFrog Engine 1.1" << " MPF:" << a_fDelta * 1000.0f;
-		SetWindowTextA(m_hMainWnd, _ss.str().c_str());
+		//std::stringstream _ss;
+		//_ss << "TreeFrog Engine 1.1" << " MPF:" << a_fDelta * 1000.0f;
+		//SetWindowTextA(m_hMainWnd, _ss.str().c_str());
 	}
 
 	/*** Put any common application render code here. Currently this simply clears the render
